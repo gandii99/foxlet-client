@@ -1,0 +1,26 @@
+header {
+  /* background-color: black; */
+  min-height: 10vh;
+  padding: 10px 15px;
+}
+
+.login-header {
+  margin-left: 70px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.login-header > span {
+  height: auto;
+  padding: 10px 0;
+  margin-right: 10px;
+}
+
+.login-header > img {
+  border: 2px solid black;
+  background: #000;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
