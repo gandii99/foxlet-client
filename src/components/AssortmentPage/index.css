@@ -1,0 +1,23 @@
+.palette-box {
+  /* width: 400px; */
+  /* height: 200px; */
+}
+
+.products-box {
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+}
+
+.asside-menu-account > div {
+  width: 100px;
+  height: 100px;
+}
+
+.asside-menu-account div {
+  border-top: 1px solid #ced4da;
+}
+
+.account-icon {
+  font-size: 30px;
+}

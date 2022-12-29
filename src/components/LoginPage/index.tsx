@@ -21,11 +21,10 @@ const LoginPage: React.FC = () => {
     console.log('error', error);
     toast.error('Logowanie nie powiodło się!');
   };
-  // col-11 col-sm-10 col-md-8
-  // col-11 col-sm-10
+
   return (
     <div className="content-min-height d-flex justify-content-around align-items-start flex-wrap col-lg-12 col-xl-8 m-auto py-5">
-      <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5 px-4 border rounded-4 py-4 content-fit-height border-shadow mb-5">
+      <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5 px-4 border rounded-4 py-4 border-shadow my-4">
         <h3 className="pb-4">Zaloguj się</h3>
         <form
           onSubmit={async e => {
@@ -60,7 +59,7 @@ const LoginPage: React.FC = () => {
           </Button>
         </form>
       </div>
-      <aside className="col-11 col-sm-10 col-md-8 col-lg-5 col-xl-5 px-4 py-4 content-fit-height">
+      <aside className="col-11 col-sm-10 col-md-8 col-lg-5 col-xl-5 px-4 py-4 ">
         <div>
           <h3 className="">Nie masz konta?</h3>
           <Link to="/register" className="button-orange-second py-1 mt-4 ">

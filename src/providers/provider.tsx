@@ -10,10 +10,16 @@ export const AuthContext = React.createContext<AuthContextType>(null!);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<SessionType | null>(null);
+  const [isUserChecked, setIsUserChecked] = useState(false);
   const navigate = useNavigate();
+  console.log(session);
 
   useEffect(() => {
-    setSession(getLocalStorage('session'));
+    const loggedUser = getLocalStorage('session');
+    if (loggedUser) {
+      setSession(loggedUser);
+    }
+    setIsUserChecked(true);
   }, []);
 
   const login = async (
@@ -42,7 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     navigate('/');
   };
 
-  const value = { session, login, logout };
+  const value = { session, login, logout, isUserChecked };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

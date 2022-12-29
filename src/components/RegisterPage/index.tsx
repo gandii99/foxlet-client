@@ -11,10 +11,13 @@ const RegisterPage = () => {
 
   return (
     <div className="content-min-height d-flex justify-content-around align-items-start flex-wrap col-lg-12 col-xl-8 m-auto py-5">
-      <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5 px-4 border rounded-4 py-4 content-fit-height border-shadow mb-5">
+      <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5 px-4 border rounded-4 py-4 content-fit-height border-shadow my-4">
         <h3 className="pb-4">Zaloguj się</h3>
         <form
-          onSubmit={() => authAPI.register({ email, password, name, role })}
+          onSubmit={e => {
+            e.preventDefault();
+            authAPI.register({ email, password, name, role });
+          }}
         >
           <div className="w-100 mb-3">
             <input

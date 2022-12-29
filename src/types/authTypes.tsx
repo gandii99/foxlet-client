@@ -29,4 +29,5 @@ export interface AuthContextType {
     onError?: (error: APIError) => void
   ) => void;
   logout: () => void;
+  isUserChecked: boolean;
 }
