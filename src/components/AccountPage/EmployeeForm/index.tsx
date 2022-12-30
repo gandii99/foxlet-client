@@ -108,10 +108,15 @@ const EmployeeForm = () => {
 
   const [activeField, setActiveField] = useState('pallets');
 
+  const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    accountAPI.updateMyEmployeeProfileData(formsValues);
+  };
+
   return (
     <div>
       <h2>Pracownik</h2>
-      <form>
+      <form onSubmit={async e => formHandler(e)}>
         {Fields.map(field => {
           return (
             <div className="col-xl-12" key={field.id}>

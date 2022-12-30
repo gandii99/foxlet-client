@@ -8,24 +8,28 @@ const Fields = [
   {
     title: 'Email',
     id: 'email',
+    type: 'input',
     require: false,
     class: '',
   },
   {
     title: 'Nazwa',
     id: 'name',
-    require: true,
+    type: 'input',
+    require: false,
     class: '',
   },
   {
     title: 'Rola',
     id: 'role',
-    require: true,
+    type: 'input',
+    require: false,
     class: '',
   },
   {
     title: 'Hasło',
     id: 'password',
+    type: 'password',
     require: true,
     class: '',
   },
@@ -65,9 +69,9 @@ const UserForm = () => {
 
   const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //TODO Update user data
-    // api.post()
+    accountAPI.updateMyUserProfileData(formsValues);
   };
+
   return (
     <div>
       <h2>Moje dane</h2>
@@ -81,6 +85,7 @@ const UserForm = () => {
               <input
                 className="form-control font-xs"
                 id={field.id}
+                type={field.type}
                 placeholder={field.title}
                 value={formsValues[field.id]}
                 onChange={e => updateFormValues(field.id, e.target.value)}

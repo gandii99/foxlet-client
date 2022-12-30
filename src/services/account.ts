@@ -19,6 +19,41 @@ interface CreateEmployee {
   street: string;
 }
 
+interface UserType {
+  email: string;
+  password: string;
+  name: string;
+  role: string;
+}
+
+interface EmployeeType {
+  first_name: string;
+  last_name: string;
+  PESEL: string;
+  phone: string;
+  email: string;
+  country: string;
+  province: string;
+  postal_code: string;
+  city: string;
+  street: string;
+}
+
+interface CompanyType {
+  first_name: string;
+  last_name: string;
+  company_name: string;
+  NIP: string;
+  REGON: string;
+  phone: string;
+  email: string;
+  country: string;
+  province: string;
+  postal_code: string;
+  city: string;
+  street: string;
+}
+
 const createUser = async (formData: CreateEmployee) => {
   const result = await api.post('/users', formData);
   return result;
@@ -49,6 +84,18 @@ const getMyEmployeeProfile = async () => {
   const result = await api.get(`/employees/my-employee-profile`);
   return result;
 };
+const updateMyUserProfileData = async (body: UserType) => {
+  const result = await api.patch(`/users/my-user-profile`, body);
+  return result;
+};
+const updateMyEmployeeProfileData = async (body: EmployeeType) => {
+  const result = await api.patch(`/employees/my-employee-profile`, body);
+  return result;
+};
+const updateMyCompanyProfileData = async (body: CompanyType) => {
+  const result = await api.patch(`/companies/my-company-profile`, body);
+  return result;
+};
 
 const accountAPI = {
   createUser,
@@ -58,6 +105,9 @@ const accountAPI = {
   getAllEmployees,
   getMyEmployeeProfile,
   getMyCompany,
+  updateMyUserProfileData,
+  updateMyEmployeeProfileData,
+  updateMyCompanyProfileData,
 };
 
 export default accountAPI;
