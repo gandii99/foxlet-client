@@ -6,5 +6,10 @@
   height: auto;
 }
 
-.logo-text {
+.home-image {
+  max-height: auto;
+  max-width: 550px;
+  width: 100%;
+  /* flex-basis: 250px; */
+  /* object-fit: cover; */
 }

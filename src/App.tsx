@@ -13,8 +13,16 @@ import AccountPage from './components/AccountPage';
 import UserForm from './components/AccountPage/UserForm';
 import CompanyForm from './components/AccountPage/CompanyForm';
 import EmployeeForm from './components/AccountPage/EmployeeForm';
-import SupplierForm from './components/AccountPage/SupplierForm';
 import GuardSession from './components/GuardSession';
+import SupplierForm from './components/AssortmentPage/SupplierView/SupplierForm';
+import SupplierView from './components/AssortmentPage/SupplierView';
+import PalletView from './components/AssortmentPage/PalletView';
+import ProductView from './components/AssortmentPage/ProductView';
+import PalletForm from './components/AssortmentPage/PalletView/PalletForm';
+import PalletDetails from './components/AssortmentPage/PalletView/PalletDetails';
+import dayjs from 'dayjs';
+require('dayjs/locale/pl');
+dayjs.locale('pl');
 
 const App: React.FC = () => {
   return (
@@ -47,13 +55,28 @@ const App: React.FC = () => {
                 <Route path="user" element={<UserForm />} />
                 <Route path="employee" element={<EmployeeForm />} />
                 <Route path="company" element={<CompanyForm />} />
-                <Route path="suppliers" element={<SupplierForm />} />
                 <Route index element={<UserForm />} />
+              </Route>
+              <Route
+                path="assortment"
+                element={
+                  <GuardSession>
+                    <AssortmentPage />
+                  </GuardSession>
+                }
+              >
+                <Route path="pallets" element={<PalletView />} />
+                <Route path="pallets/:id_pallet" element={<PalletDetails />} />
+                <Route path="products" element={<ProductView />} />
+                <Route path="suppliers" element={<SupplierView />} />
+                <Route path="add-pallet" element={<PalletForm />} />
+                <Route path="add-supplier" element={<SupplierForm />} />
+                <Route index element={<PalletView />} />
               </Route>
 
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
-              <Route path="assortment" element={<AssortmentPage />} />
+              {/* <Route path="assortment" element={<AssortmentPage />} /> */}
               <Route path="*" element={<HomePage />} />
             </Route>
           </Routes>

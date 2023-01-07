@@ -74,6 +74,7 @@ type FieldsType = Record<typeof Fields[number]['id'], string>;
 
 const EmployeeForm = () => {
   const { session } = useAuth();
+  const [isExistsEmployeeProfile, setIsExistsEmployeeProfile] = useState(false);
   const [formsValues, setFormsValues] = useState<FieldsType>({
     first_name: '',
     last_name: '',
@@ -93,7 +94,10 @@ const EmployeeForm = () => {
         .getMyEmployeeProfile()
         .then(response => {
           console.log(response.data);
-          setFormsValues({ ...response.data });
+          if (response.data) {
+            setIsExistsEmployeeProfile(true);
+            setFormsValues({ ...response.data });
+          }
         })
         .catch(err => {
           console.log('error', err);
@@ -106,20 +110,31 @@ const EmployeeForm = () => {
     setFormsValues({ ...formsValues, [name]: value });
   };
 
-  const [activeField, setActiveField] = useState('pallets');
-
   const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    accountAPI.updateMyEmployeeProfileData(formsValues);
+    if (isExistsEmployeeProfile) {
+      console.log('istnieje');
+      const formsWhitoutNull = Object.fromEntries(
+        Object.entries(formsValues).filter(([key, value]) => value !== null)
+      );
+      console.log(formsWhitoutNull);
+      accountAPI.updateMyEmployeeProfileData(formsWhitoutNull);
+    } else {
+      console.log('nie istnieje');
+      accountAPI.createEmployee(formsValues);
+    }
   };
 
   return (
     <div>
       <h2>Pracownik</h2>
-      <form onSubmit={async e => formHandler(e)}>
+      <form
+        className="d-flex flex-wrap justify-content-around"
+        onSubmit={async e => formHandler(e)}
+      >
         {Fields.map(field => {
           return (
-            <div className="col-xl-12" key={field.id}>
+            <div className="col-6 px-2" key={field.id}>
               <label htmlFor={field.id} className="font-xs">
                 {field.title}
               </label>
@@ -136,7 +151,7 @@ const EmployeeForm = () => {
           );
         })}
         <Button type="submit" className="w-100 mt-4 button-orange-first">
-          Aktualizuj
+          {isExistsEmployeeProfile ? 'Aktualizuj' : 'Utwórz konto pracownicze'}
         </Button>
       </form>
     </div>

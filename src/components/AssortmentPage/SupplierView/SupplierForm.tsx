@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+// import { useAuth } from '../../../hooks/use-auth';
 import { useAuth } from '../../../hooks/use-auth';
-import accountAPI from '../../../services/account';
+import { APIError } from '../../../lib/api/types';
+import assortmentAPI from '../../../services/assortment';
+// import accountAPI from '../../../services/account';
 
 const Fields = [
   {
     title: 'Imię',
     id: 'first_name',
-    require: false,
+    require: true,
     class: '',
   },
   {
@@ -17,35 +22,35 @@ const Fields = [
     class: '',
   },
   {
-    title: 'Nazwa firmy',
-    id: 'company_name',
-    require: true,
+    title: 'Nazwa dostawcy',
+    id: 'supplier_name',
+    require: false,
     class: '',
   },
   {
     title: 'NIP',
     id: 'NIP',
-    require: true,
+    require: false,
     class: '',
   },
   {
     title: 'REGON',
     id: 'REGON',
-    require: true,
+    require: false,
     class: '',
   },
 
   {
     title: 'Telefon',
     id: 'phone',
-    require: true,
+    require: false,
     class: '',
   },
 
   {
     title: 'Adres e-mail',
     id: 'email',
-    require: true,
+    require: false,
     class: '',
   },
 
@@ -86,11 +91,21 @@ const Fields = [
 type FieldsType = Record<typeof Fields[number]['id'], string>;
 
 const SupplierForm = () => {
+  const navigation = useNavigate();
+  const onSucess = () => {
+    navigation('/assortment/suppliers');
+    toast.success('Sprzedawca został dodany.', {});
+    console.log('git');
+  };
+  const onError = (error: APIError) => {
+    console.log('error', error);
+    toast.error('Dodanie sprzedawcy nie powiodło się!');
+  };
   const { session } = useAuth();
   const [formsValues, setFormsValues] = useState<FieldsType>({
     first_name: '',
     last_name: '',
-    company_name: '',
+    supplier_name: '',
     NIP: '',
     REGON: '',
     phone: '',
@@ -102,34 +117,31 @@ const SupplierForm = () => {
     street: '',
   });
 
-  useEffect(() => {
-    // if (session?.user.id) {
-    //   const suppliersData = accountAPI
-    //     .getSelectedUsers([session?.user.id])
-    //     .then(response => {
-    //       console.log(response.data[0]);
-    //       setFormsValues({ ...response.data[0] });
-    //     })
-    //     .catch(err => {
-    //       console.log('error', err);
-    //     });
-    //   console.log(suppliersData);
-    // }
-  }, []);
-
   const updateFormValues = (name: string, value: string) => {
     setFormsValues({ ...formsValues, [name]: value });
   };
 
-  const [activeField, setActiveField] = useState('pallets');
+  const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    assortmentAPI.createSupplier(formsValues, onSucess, onError);
+  };
 
   return (
     <div>
-      <form>
+      <h2>Dodaj dostawcę</h2>
+
+      <form
+        className="d-flex flex-wrap justify-content-around"
+        onSubmit={async e => formHandler(e)}
+      >
         {Fields.map(field => {
           return (
-            <div className="col-xl-12" key={field.id}>
+            <div className="col-xl-6 px-2" key={field.id}>
+              <label htmlFor={field.id} className="font-xs">
+                {field.title}
+              </label>
               <input
+                id={field.id}
                 className="form-control font-xs"
                 placeholder={field.title}
                 value={formsValues[field.id]}
@@ -140,7 +152,7 @@ const SupplierForm = () => {
           );
         })}
         <Button type="submit" className="w-100 mt-4 button-orange-first">
-          Aktualizuj
+          Dodaj
         </Button>
       </form>
     </div>

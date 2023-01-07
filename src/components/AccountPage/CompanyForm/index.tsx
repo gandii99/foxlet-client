@@ -87,6 +87,7 @@ type FieldsType = Record<typeof Fields[number]['id'], string>;
 
 const CompanyForm = () => {
   const { session } = useAuth();
+  const [isExistsCompany, setIsExistsCompany] = useState(false);
   const [formsValues, setFormsValues] = useState<FieldsType>({
     first_name: '',
     last_name: '',
@@ -107,8 +108,11 @@ const CompanyForm = () => {
       const userData = accountAPI
         .getMyCompany()
         .then(response => {
-          console.log(response.data[0]);
-          setFormsValues({ ...response.data });
+          console.log(response.data);
+          if (response.data) {
+            setIsExistsCompany(true);
+            setFormsValues({ ...response.data });
+          }
         })
         .catch(err => {
           console.log('error', err);
@@ -117,8 +121,6 @@ const CompanyForm = () => {
     }
   }, []);
 
-  // accountAPI.createEmployee()
-
   const updateFormValues = (name: string, value: string) => {
     setFormsValues({ ...formsValues, [name]: value });
   };
@@ -126,15 +128,31 @@ const CompanyForm = () => {
   const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     accountAPI.updateMyCompanyProfileData(formsValues);
+
+    e.preventDefault();
+    if (isExistsCompany) {
+      console.log('istnieje');
+      const formsWhitoutNull = Object.fromEntries(
+        Object.entries(formsValues).filter(([key, value]) => value !== null)
+      );
+      console.log(formsWhitoutNull);
+      accountAPI.updateMyCompanyProfileData(formsWhitoutNull);
+    } else {
+      console.log('nie istnieje');
+      accountAPI.createCompany(formsValues);
+    }
   };
 
   return (
     <div>
       <h2>Firma</h2>
-      <form onSubmit={async e => formHandler(e)}>
+      <form
+        className="d-flex flex-wrap justify-content-around"
+        onSubmit={async e => formHandler(e)}
+      >
         {Fields.map(field => {
           return (
-            <div className="col-xl-12" key={field.id}>
+            <div className="col-6 px-2" key={field.id}>
               <label htmlFor={field.id} className="font-xs">
                 {field.title}
               </label>
@@ -150,7 +168,7 @@ const CompanyForm = () => {
           );
         })}
         <Button type="submit" className="w-100 mt-4 button-orange-first">
-          Aktualizuj
+          {isExistsCompany ? 'Aktualizuj' : 'Utwórz konto firmy'}
         </Button>
       </form>
     </div>

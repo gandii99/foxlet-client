@@ -7,28 +7,6 @@ import { RegisterInputType, CredentialsType } from '../types/authTypes';
 interface CreateEmployee {
   first_name: string;
   last_name: string;
-  company_name: string;
-  NIP: string;
-  REGON: string;
-  phone: string;
-  email: string;
-  country: string;
-  province: string;
-  postal_code: string;
-  city: string;
-  street: string;
-}
-
-interface UserType {
-  email: string;
-  password: string;
-  name: string;
-  role: string;
-}
-
-interface EmployeeType {
-  first_name: string;
-  last_name: string;
   PESEL: string;
   phone: string;
   email: string;
@@ -39,12 +17,47 @@ interface EmployeeType {
   street: string;
 }
 
+interface UserType {
+  email?: string;
+  password?: string;
+  name?: string;
+  role?: string;
+}
+
+interface EmployeeType {
+  first_name?: string;
+  last_name?: string;
+  PESEL?: string;
+  phone?: string;
+  email?: string;
+  country?: string;
+  province?: string;
+  postal_code?: string;
+  city?: string;
+  street?: string;
+}
+
 interface CompanyType {
+  first_name?: string;
+  last_name?: string;
+  company_name?: string;
+  NIP?: string;
+  REGON?: string;
+  phone?: string;
+  email?: string;
+  country?: string;
+  province?: string;
+  postal_code?: string;
+  city?: string;
+  street?: string;
+}
+
+interface CreateCompany {
   first_name: string;
   last_name: string;
   company_name: string;
   NIP: string;
-  REGON: string;
+  REGON?: string;
   phone: string;
   email: string;
   country: string;
@@ -54,10 +67,10 @@ interface CompanyType {
   street: string;
 }
 
-const createUser = async (formData: CreateEmployee) => {
-  const result = await api.post('/users', formData);
-  return result;
-};
+// const createUser = async (formData: CreateUser) => {
+//   const result = await api.post('/users', formData);
+//   return result;
+// };
 
 const getAllUsers = async () => {
   const result = await api.get('/users');
@@ -71,9 +84,17 @@ const createEmployee = async (formData: CreateEmployee) => {
   const result = await api.post('/employees', formData);
   return result;
 };
+const createCompany = async (formData: CreateCompany) => {
+  const result = await api.post('/companies', formData);
+  return result;
+};
 
 const getAllEmployees = async () => {
   const result = await api.get('/employees');
+  return result;
+};
+const getMyUser = async () => {
+  const result = await api.get(`/users/my-user-profile`);
   return result;
 };
 const getMyCompany = async () => {
@@ -98,13 +119,15 @@ const updateMyCompanyProfileData = async (body: CompanyType) => {
 };
 
 const accountAPI = {
-  createUser,
+  // createUser,
   getAllUsers,
   getSelectedUsers,
   createEmployee,
   getAllEmployees,
   getMyEmployeeProfile,
+  createCompany,
   getMyCompany,
+  getMyUser,
   updateMyUserProfileData,
   updateMyEmployeeProfileData,
   updateMyCompanyProfileData,
