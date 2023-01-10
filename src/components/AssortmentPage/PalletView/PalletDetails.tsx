@@ -7,7 +7,9 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../../../hooks/use-auth';
 import accountAPI from '../../../services/account';
 import assortmentAPI from '../../../services/assortment';
+import ModalWrapper from '../../ModalWrapper';
 import { SupplierCardType } from '../SupplierView/types';
+import BatchAdd from './BatchAdd';
 import BatchProductCard from './BatchProductCard';
 import InputEdit from './InputEdit';
 import { FieldsType, PalletCardType } from './types';
@@ -31,6 +33,7 @@ const PalletDetails = () => {
   const [pallet, setPallet] = useState<PalletCardType>({});
   const { id_pallet } = useParams();
   const [editActive, setEditActive] = useState(false);
+  const [modalActive, setModalActive] = useState(false);
   const [formsValues, setFormsValues] = useState<PalletDetailsType | null>(
     null
   );
@@ -79,6 +82,10 @@ const PalletDetails = () => {
       ...formsValues,
       [name]: value,
     });
+  };
+
+  const handleCloseModal = () => {
+    setModalActive(!modalActive);
   };
 
   return pallet.id_pallet ? (
@@ -183,18 +190,33 @@ const PalletDetails = () => {
       <div className="d-flex flex-wrap my-4">
         <div className="d-flex flex-wrap justify-content-start align-items-center col-12">
           <h2 className="mb-0">Partie produktów </h2>
-          <Link
+          {/* <Link
             className="button-orange-first button-add-size mx-3"
             to="/assortment/add-pallet"
           >
             <FontAwesomeIcon icon={faPlus} className="account-icon w-100" />
-          </Link>
+          </Link> */}
+          <Button
+            className="button-orange-first button-add-size mx-3"
+            onClick={handleCloseModal}
+          >
+            <FontAwesomeIcon icon={faPlus} className=" account-icon w-100" />
+          </Button>
         </div>
 
         {pallet?.batch?.map((batch, index) => (
           <BatchProductCard key={index} {...batch} />
         ))}
       </div>
+      {modalActive && (
+        <ModalWrapper
+          title={'Dodaj partię'}
+          handleCloseModal={handleCloseModal}
+        >
+          {/* <div className={'d- grid grid-cols-[3fr_2fr] gap-5 min-h-[500px] '} /> */}
+          <BatchAdd />
+        </ModalWrapper>
+      )}
     </div>
   ) : (
     <></>

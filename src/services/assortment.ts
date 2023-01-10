@@ -1,5 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { PalletCardType } from '../components/AssortmentPage/PalletView/types';
+import {
+  BatchType,
+  PalletCardType,
+} from '../components/AssortmentPage/PalletView/types';
 import { useAuth } from '../hooks/use-auth';
 import api from '../lib/api';
 import { APIError } from '../lib/api/types';
@@ -86,11 +89,20 @@ const getAllSuppliers = async () => {
   return result;
 };
 
+const getAllProducts = async () => {
+  const result = await api.get('/products');
+  return result;
+};
+
+const getAllConditions = async () => {
+  const result = await api.get('/conditions');
+  return result;
+};
+
 const getMySuppliers = async () => {
   const result = await api.get(`/suppliers/my-suppliers`);
   return result;
 };
-
 const createPallet = async (
   formData: CreatePalletType,
   onSucess?: VoidFunction,
@@ -105,6 +117,23 @@ const createPallet = async (
       //   id_supplier: parseInt(formData.id_supplier),
       // }
     )
+    .then(respons => {
+      console.log(respons);
+      onSucess && onSucess();
+    })
+    .catch(error => {
+      onError && onError(error);
+    });
+  return result;
+};
+
+const createBatch = async (
+  formData: BatchType,
+  onSucess?: VoidFunction,
+  onError?: (error: APIError) => void
+) => {
+  const result = api
+    .post('/batches', formData)
     .then(respons => {
       console.log(respons);
       onSucess && onSucess();
@@ -147,6 +176,9 @@ const assortmentAPI = {
   createPallet,
   getMyPallets,
   updatePallet,
+  getAllProducts,
+  getAllConditions,
+  createBatch,
 };
 
 export default assortmentAPI;
