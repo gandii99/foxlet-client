@@ -101,7 +101,7 @@ const BatchAdd = () => {
       className="d-flex flex-wrap justify-content-around"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <label className=" font-xs">
+      <label className="font-xs col-5">
         Product
         <select className="form-control" {...register('id_product')}>
           <option key={0} value="" disabled>
@@ -115,12 +115,12 @@ const BatchAdd = () => {
         </select>
         {errors.id_product && <span>{errors.id_product.message}</span>}
       </label>
-      <label className=" font-xs">
+      <label className="font-xs col-5">
         Paleta
         <input className="form-control" {...register('id_product')} />
         {errors.id_pallet && <span>{errors.id_pallet.message}</span>}
       </label>
-      <label className="font-xs">
+      <label className="font-xs col-5 mt-3">
         Stan
         <select {...register('id_condition')} className="form-control">
           <option key={0} value="" disabled>
@@ -133,38 +133,35 @@ const BatchAdd = () => {
           ))}
         </select>
       </label>
-      <label className="font-xs">
+      <label className="font-xs col-5 mt-3">
         Nazwa
         <input {...register('batch_name')} className="form-control" />
       </label>
-      <label className="font-xs">
+      <label className="font-xs col-5 mt-3">
         Ilość w dostawie
         <input {...register('quantity_in_delivery')} className="form-control" />
       </label>
-      <label className="font-xs">
+      <label className="font-xs col-5 mt-3">
         Ilość w magazynie
         <input {...register('quantity_in_stock')} className="form-control" />
       </label>
-      <label className="font-xs">
+      <label className="font-xs col-5 mt-3">
         Cena zakupu
         <input {...register('purchase_price')} className="form-control" />
       </label>
-      <label className="font-xs">
+      <label className="font-xs col-5 mt-3">
         Cena sprzedaży
         <input {...register('selling_price')} className="form-control" />
       </label>
-      <label className="font-xs">
+      <label className="font-xs col-11 mt-3">
         Opis
-        <input {...register('description')} className="form-control" />
+        <textarea {...register('description')} className="form-control" />
         {errors.description && <span>{errors.description.message}</span>}
       </label>
-      <Button type="submit" className="w-100 mt-4 button-orange-first">
-        Dodaj
-      </Button>
       <Button
         type="button"
         onClick={() => reset({ id_pallet: 2323 })}
-        className="w-100 mt-4 button-orange-first"
+        className="col-11 mt-4 button-orange-first"
       >
         Dodaj
       </Button>

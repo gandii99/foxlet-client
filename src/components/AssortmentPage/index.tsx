@@ -17,8 +17,8 @@ const AssortmentPage = () => {
   const [activeField, setActiveField] = useState('pallets');
 
   return (
-    <div className="content-min-height d-flex justify-content-around align-items-start col-10 m-auto">
-      <aside className="asside-menu-account border border-shadow my-5 col-1">
+    <div className="content-min-height d-flex justify-content-center align-items-start col-10 m-auto">
+      <aside className="asside-menu-account border border-shadow my-5 mx-5 col-1">
         <NavLink
           to="pallets"
           className={({ isActive }) => clsx(isActive && 'orange-color')}
@@ -71,7 +71,7 @@ const AssortmentPage = () => {
           </div>
         </NavLink>
       </aside>
-      <div className="my-3 col-9">
+      <div className="my-3 col-9 px-5">
         <Outlet />
       </div>
     </div>

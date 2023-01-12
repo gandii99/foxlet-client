@@ -31,7 +31,10 @@ const ModalWrapper = ({
           }
         >
           <h2 className={''}>{title}</h2>
-          <button onClick={handleCloseModal}>
+          <button
+            onClick={handleCloseModal}
+            className="square-40 d-flex justify-content-center align-items-center button-orange-second text-dark border-dark"
+          >
             <FontAwesomeIcon icon={faClose} className="account-icon w-100" />
           </button>
         </div>

@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -7,6 +8,7 @@ import assortmentAPI from '../../../services/assortment';
 import { SupplierCardType } from '../SupplierView/types';
 import PalletCard from './PalletCard';
 import { FieldsType, PalletCardType } from './types';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const PalletView = () => {
   const { session } = useAuth();
@@ -33,7 +35,20 @@ const PalletView = () => {
 
   return (
     <div>
-      <h2>Twoje palety</h2>
+      <div className="d-flex flex-wrap justify-content-start align-items-center col-12 mb-4">
+        <h2 className="mb-0">Twoje palety</h2>
+        <Button
+          className="button-orange-first button-add-size mx-3 font-m "
+          type="submit"
+          // onClick={() => {
+          //   ;
+          //   console.log('swap kurwa', editActive);
+          // }}
+        >
+          <FontAwesomeIcon icon={faPlus} className="account-icon" />
+        </Button>
+      </div>
+
       {pallets.length === 0 ? (
         <span>Aktualnie nie posiadasz jeszcze żadnych palet...</span>
       ) : (
