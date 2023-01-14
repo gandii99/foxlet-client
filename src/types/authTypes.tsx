@@ -17,6 +17,7 @@ export interface SessionType {
     id: number;
     name: string;
     role: string;
+    avatar?: string;
   };
   token: string;
 }

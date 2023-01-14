@@ -1,16 +1,31 @@
 import React, { useState } from 'react';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPlus, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { BatchType, PalletCardType } from './types';
 import BatchCard from './BatchCard';
 import clsx from 'clsx';
+import { Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import assortmentAPI from '../../../services/assortment';
+import { onSuccess, onError } from '../../../lib/toastHelpers';
 
 const BatchProductCard = (props: BatchType) => {
+  const deleteHandler = () => {
+    const id_batches = props.id_batch;
+    if (id_batches && typeof Number(id_batches) === 'number') {
+      assortmentAPI.deleteBatches([id_batches], onSuccess, onError).then(() => {
+        if (props.setRefresh) {
+          props.setRefresh(!props.refresh);
+        }
+      });
+    }
+  };
+
   const [showMore, setShowMore] = useState(false);
   return (
     <div className="mx-2 my-2">
       <div
-        className={`batch-box border rounded-3 border-shadow ${clsx(
+        className={`position-relative batch-box border rounded-3 border-shadow ${clsx(
           (props.condition?.condition_name === 'nowy' && 'border-success') ||
             (props.condition?.condition_name === 'używany' &&
               'border-primary') ||
@@ -20,6 +35,30 @@ const BatchProductCard = (props: BatchType) => {
               'border-danger')
         )}`}
       >
+        <div className="position-absolute top-0 end-0 d-flex justify-content-end align-items-center px-1 py-1">
+          <Button
+            className="button-orange-first bg-danger square-30 mx-1"
+            onClick={() => {
+              console.log('click');
+              deleteHandler();
+            }}
+          >
+            <FontAwesomeIcon
+              className="font-xs"
+              icon={faTrashCan}
+            ></FontAwesomeIcon>
+          </Button>
+
+          <Link
+            className="button-orange-first square-30"
+            to={`${props.id_pallet}`}
+          >
+            <FontAwesomeIcon
+              icon={faEdit}
+              className="font-xs"
+            ></FontAwesomeIcon>
+          </Link>
+        </div>
         <img
           className="card-img-top "
           src="/images/ps4_pro.png"
@@ -27,10 +66,10 @@ const BatchProductCard = (props: BatchType) => {
         />
         <div className="px-2">
           <div className="d-flex justify-content-between ">
-            <span className="font-xxs">Magazyn: {props.quantity_in_stock}</span>
-            <span className="card-title font-xxs">
+            <span className="card-title font-xs">
               Dostawa: {props.quantity_in_delivery}
             </span>
+            <span className="font-xs">Magazyn: {props.quantity_in_stock}</span>
           </div>
           <div className="fw-bold font-xs d-flex justify-content-between align-items-center m-0 p-0">
             {props.batch_name}

@@ -1,10 +1,15 @@
 import React from 'react';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrashCan, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PalletCardType } from './types';
 import './index.css';
 import BatchCard from './BatchCard';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
+import assortmentAPI from '../../../services/assortment';
+import { toast } from 'react-toastify';
+import { APIError } from '../../../lib/api/types';
+import { onSuccess, onError } from '../../../lib/toastHelpers';
 
 function formatDate(date: string) {
   const d = new Date(date);
@@ -17,17 +22,50 @@ function formatDate(date: string) {
 
   return [year, month, day].join('-');
 }
+
 const emptyToText = (text: string) => (text && text.length > 0 ? text : 'Brak');
 const PalletCard = (props: PalletCardType) => {
+  const navigation = useNavigate();
+
+  const deleteHandler = () => {
+    const id_pallet = props.id_pallet;
+    if (id_pallet && typeof Number(id_pallet) === 'number') {
+      assortmentAPI.deletePallets([id_pallet], onSuccess, onError);
+    }
+  };
   console.log(props);
   return (
     <div className="palette-box my-2 px-3 py-3 border rounded-4 border-shadow mx-2">
       <div className="d-flex justify-content-start align-items-start flex-wrap ">
         <div className="col-6 mb-2">
           <span className="d-block font-11 lh-1 text-muted">Nazwa: </span>
-          <span className="d-block font-s fw-bold">
+          <span className="d-block font-s fw-bold text-nowrap">
             {emptyToText(props.pallet_name || '')}
           </span>
+        </div>
+        <div className="d-flex  justify-content-end align-items-center col-6 mb-2">
+          <Button
+            className="button-orange-first bg-danger square-30 mx-1"
+            onClick={() => {
+              console.log('click');
+              deleteHandler();
+            }}
+          >
+            <FontAwesomeIcon
+              className="font-xs"
+              icon={faTrashCan}
+            ></FontAwesomeIcon>
+          </Button>
+
+          <Link
+            className="button-orange-first square-30"
+            to={`${props.id_pallet}`}
+          >
+            <FontAwesomeIcon
+              icon={faEdit}
+              className="font-xs"
+            ></FontAwesomeIcon>
+          </Link>
         </div>
         <div className="col-6 mb-2">
           <span className="d-block font-11 lh-1 text-muted">Dostawca: </span>
@@ -57,9 +95,8 @@ const PalletCard = (props: PalletCardType) => {
       </div>
       <div className="d-flex justify-content-center align-items-center flex-wrap">
         {props.batch
-          ? props.batch.map(batch => {
-              console.log(batch);
-              console.log(batch.id_batch);
+          ? props.batch.map((batch, index) => {
+              if (index >= 3) return;
               return <BatchCard key={batch.id_batch} {...batch} />;
             })
           : null}
@@ -69,12 +106,12 @@ const PalletCard = (props: PalletCardType) => {
         </div>
       </div>
 
-      <Link
-        className="button-orange-first font-m m-a"
+      {/* <Link
+        className="button-orange-first font-m mt-1"
         to={`${props.id_pallet}`}
       >
         Zarządzaj
-      </Link>
+      </Link> */}
     </div>
   );
 };

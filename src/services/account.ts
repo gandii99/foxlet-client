@@ -22,6 +22,7 @@ interface UserType {
   password?: string;
   name?: string;
   role?: string;
+  avatar?: string;
 }
 
 interface EmployeeType {

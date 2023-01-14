@@ -7,6 +7,7 @@ import { useAuth } from '../../../hooks/use-auth';
 import { APIError } from '../../../lib/api/types';
 import assortmentAPI from '../../../services/assortment';
 import { SupplierCardType } from '../SupplierView/types';
+import { useCreatePalletsMutation } from '../../../hooks/mutation/assortment';
 // import { FieldsType } from './types';
 // import accountAPI from '../../../services/account';
 
@@ -47,15 +48,16 @@ type FieldsType = Record<typeof Fields[number]['id'], string>;
 
 const PalletForm = () => {
   const navigation = useNavigate();
-  const onSucess = () => {
-    navigation('/assortment/suppliers');
-    toast.success('Sprzedawca został dodany.', {});
-    console.log('git');
-  };
-  const onError = (error: APIError) => {
-    console.log('error', error);
-    toast.error('Dodanie sprzedawcy nie powiodło się!');
-  };
+  const { mutate: createPallet } = useCreatePalletsMutation();
+  // const onSucess = () => {
+  //   navigation('/assortment/pallets');
+  //   toast.success('Sprzedawca został dodany.', {});
+  //   console.log('git');
+  // };
+  // const onError = (error: APIError) => {
+  //   console.log('error', error);
+  //   toast.error('Dodanie sprzedawcy nie powiodło się!');
+  // };
   const { session } = useAuth();
   const [formsValues, setFormsValues] = useState<FieldsType>({
     pallet_name: '',
@@ -89,15 +91,21 @@ const PalletForm = () => {
 
   const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    assortmentAPI.createPallet(
-      {
-        ...formsValues,
-        id_supplier: Number(formsValues.id_supplier),
-        purchase_price: Number(formsValues.purchase_price),
-      },
-      onSucess,
-      onError
-    );
+
+    createPallet({
+      ...formsValues,
+      id_supplier: Number(formsValues.id_supplier),
+      purchase_price: Number(formsValues.purchase_price),
+    });
+    // assortmentAPI.createPallet(
+    // {
+    //   ...formsValues,
+    //   id_supplier: Number(formsValues.id_supplier),
+    //   purchase_price: Number(formsValues.purchase_price),
+    // }
+    //   // onSucess,
+    //   // onError
+    // );
   };
 
   return (

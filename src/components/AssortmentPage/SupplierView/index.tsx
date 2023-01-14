@@ -38,6 +38,7 @@ const SupplierForm = () => {
               key={supplier.NIP}
               supplier_name={supplier.supplier_name}
               NIP={supplier.NIP}
+              id_supplier={Number(supplier.id_supplier)}
             />
           ))}
         </div>

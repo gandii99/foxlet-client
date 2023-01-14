@@ -59,7 +59,7 @@ interface SupplierType {
   street: string;
 }
 
-interface CreatePalletType {
+export interface CreatePalletType {
   id_supplier: number;
   // id_employee: number;
   purchase_price: number;
@@ -104,26 +104,18 @@ const getMySuppliers = async () => {
   return result;
 };
 const createPallet = async (
-  formData: CreatePalletType,
-  onSucess?: VoidFunction,
-  onError?: (error: APIError) => void
+  formData: CreatePalletType
+  // onSucess?: VoidFunction,
+  // onError?: (error: APIError) => void
 ) => {
-  const result = api
-    .post(
-      '/pallets',
-      formData
-      // {
-      //   ...formData,
-      //   id_supplier: parseInt(formData.id_supplier),
-      // }
-    )
-    .then(respons => {
-      console.log(respons);
-      onSucess && onSucess();
-    })
-    .catch(error => {
-      onError && onError(error);
-    });
+  const result = api.post('/pallets', formData);
+  // .then(respons => {
+  //   console.log(respons);
+  //   onSucess && onSucess();
+  // })
+  // .catch(error => {
+  //   onError && onError(error);
+  // });
   return result;
 };
 
@@ -132,6 +124,7 @@ const createBatch = async (
   onSucess?: VoidFunction,
   onError?: (error: APIError) => void
 ) => {
+  console.log('createBatch');
   const result = api
     .post('/batches', formData)
     .then(respons => {
@@ -144,14 +137,50 @@ const createBatch = async (
   return result;
 };
 
-const getMyPallets = async () => {
-  const result = await api.get(`/pallets/my-pallets`);
+const getMyPallets = async (): Promise<PalletCardType[]> => {
+  const { data } = await api.get(`/pallets/my-pallets`);
+  return data;
+};
+
+const deletePallets = async (
+  id_pallets: number[],
+  onSucess?: (url: string, message: string) => void,
+  onError?: (error: APIError, url: string, message: string) => void
+) => {
+  const result = await api
+    .delete(`/pallets/` + id_pallets.join(','))
+    .then(respons => {
+      console.log(respons);
+      onSucess && onSucess('', 'Paleta została usunięta.');
+    })
+    .catch(error => {
+      onError && onError(error, '', 'Błąd podczas usuwania palety.');
+    });
+  return result;
+};
+const deleteBatches = async (
+  id_batches: number[],
+  onSucess?: (url: string, message: string) => void,
+  onError?: (error: APIError, url: string, message: string) => void
+) => {
+  console.log('usuwanko');
+  const result = await api
+    .delete(`/batches/` + id_batches.join(','))
+    .then(respons => {
+      console.log(respons);
+      onSucess && onSucess('batches', 'Partia została usunięta.');
+    })
+    .catch(error => {
+      onError && onError(error, 'batches', 'Błąd podczas usuwania partii.');
+    });
   return result;
 };
 
-const getSelectedPalettes = async (id_pallets: number[]) => {
-  const result = await api.get(`/pallets/` + id_pallets.join(','));
-  return result;
+const getSelectedPalettes = async (
+  id_pallets: number[]
+): Promise<PalletCardType[]> => {
+  const { data } = await api.get(`/pallets/` + id_pallets.join(','));
+  return data;
 };
 
 interface UpadtePalletType {
@@ -173,12 +202,17 @@ const assortmentAPI = {
   getAllSuppliers,
   getMySuppliers,
   getSelectedPalettes,
+
   createPallet,
+  deletePallets,
   getMyPallets,
   updatePallet,
+
   getAllProducts,
   getAllConditions,
+
   createBatch,
+  deleteBatches,
 };
 
 export default assortmentAPI;

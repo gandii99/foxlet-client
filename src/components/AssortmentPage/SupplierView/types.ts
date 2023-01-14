@@ -1,5 +1,5 @@
 export interface SupplierCardType {
-  id_supplier?: number;
+  id_supplier: number;
   first_name?: string;
   last_name?: string;
   supplier_name?: string;
@@ -15,6 +15,12 @@ export interface SupplierCardType {
 }
 
 const Fields = [
+  {
+    title: 'id',
+    id: 'id_supplier',
+    require: false,
+    class: '',
+  },
   {
     title: 'Imię',
     id: 'first_name',

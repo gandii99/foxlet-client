@@ -1,12 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
-import React, { useEffect, useState } from 'react';
+import React, { SetStateAction, useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useAuth } from '../../../hooks/use-auth';
-import api from '../../../lib/api';
 import accountAPI from '../../../services/account';
+import uploadImage from '../../../lib/cloudinary';
 
+import axios, { Axios } from 'axios';
 const UserSchema = z.object({
   user_name: z.string().min(1, { message: 'name is required' }).optional(),
   email: z
@@ -16,6 +17,7 @@ const UserSchema = z.object({
     .optional(),
   password: z.string().optional(),
   role: z.string().optional(),
+  avatar: z.string().optional(),
 });
 
 type typeUser = z.infer<typeof UserSchema>;
@@ -31,6 +33,9 @@ const UserForm = () => {
   } = useForm<typeUser>({
     resolver: zodResolver(UserSchema),
   });
+
+  const [selectedFile, setSelectedFile] = useState<File | undefined>();
+  const [image, setImage] = useState<string | null>(null);
 
   const { session } = useAuth();
 
@@ -52,7 +57,35 @@ const UserForm = () => {
     }
   }, []);
 
+  const setUploadProgress = (e: number) => {
+    console.log(e);
+  };
+
+  useEffect(() => {
+    if (!selectedFile) return;
+    const abortController = new AbortController();
+    const { signal } = abortController;
+
+    uploadImage(selectedFile, p => setUploadProgress(p), signal)
+      .then(image => {
+        console.log('image.url', image.url);
+        setImage(image.url);
+      })
+      .catch(e => {
+        if (!signal?.aborted) {
+          console.error(e);
+        }
+      });
+
+    return () => {
+      abortController.abort();
+    };
+  }, [selectedFile]);
+
   const onSubmit = (data: typeUser) => {
+    if (image) {
+      data = { ...data, avatar: image };
+    }
     accountAPI.updateMyUserProfileData(data);
   };
 
@@ -97,6 +130,20 @@ const UserForm = () => {
           </select>
           {errors.role && <span>{errors.role.message}</span>}
         </label>
+        <label className="col-5 font-xs">
+          Nazwa użytkownika
+          <input
+            // ref={fileInputRef}
+            className={'hidden'}
+            onChange={({ target }) => {
+              setSelectedFile(target.files?.[0]);
+            }}
+            type="file"
+            id={'file'}
+            accept="image/*"
+          />
+        </label>
+
         <Button type="submit" className="w-100 mt-4 button-orange-first">
           Dodaj
         </Button>

@@ -9,27 +9,30 @@ import { SupplierCardType } from '../SupplierView/types';
 import PalletCard from './PalletCard';
 import { FieldsType, PalletCardType } from './types';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useGetMyPalletsQuery } from '../../../hooks/query/assortment';
 
 const PalletView = () => {
   const { session } = useAuth();
-  const [pallets, setPallets] = useState<PalletCardType[]>([]);
+  const { data: myPallets, isSuccess } = useGetMyPalletsQuery();
 
-  useEffect(() => {
-    if (session?.user.id) {
-      const pallets = assortmentAPI
-        .getMyPallets()
-        .then(response => {
-          console.log(response.data);
-          setPallets(response.data);
-        })
-        .catch(err => {
-          console.log('error', err);
-        });
-      console.log(pallets);
-    }
-  }, []);
+  // const [pallets, setPallets] = useState<PalletCardType[]>([]);
 
-  if (!pallets) {
+  // useEffect(() => {
+  //   if (session?.user.id) {
+  //     const pallets = assortmentAPI
+  //       .getMyPallets()
+  //       .then(response => {
+  //         console.log(response.data);
+  //         setPallets(response.data);
+  //       })
+  //       .catch(err => {
+  //         console.log('error', err);
+  //       });
+  //     console.log(pallets);
+  //   }
+  // }, [refresh]);
+
+  if (!isSuccess) {
     return <div>Loading</div>;
   }
 
@@ -37,36 +40,25 @@ const PalletView = () => {
     <div>
       <div className="d-flex flex-wrap justify-content-start align-items-center col-12 mb-4">
         <h2 className="mb-0">Twoje palety</h2>
-        <Button
-          className="button-orange-first button-add-size mx-3 font-m "
+        <Link
+          to="/assortment/add-pallet"
           type="submit"
-          // onClick={() => {
-          //   ;
-          //   console.log('swap kurwa', editActive);
-          // }}
+          className="button-orange-first button-add-size mx-3 font-m "
         >
           <FontAwesomeIcon icon={faPlus} className="account-icon" />
-        </Button>
+        </Link>
       </div>
 
-      {pallets.length === 0 ? (
+      {myPallets.length === 0 ? (
         <span>Aktualnie nie posiadasz jeszcze żadnych palet...</span>
       ) : (
         <div className="d-flex flex-wrap justify-content-start">
-          {pallets.map(pallet => {
+          {myPallets.map(pallet => {
             console.log(pallet.id_pallet);
             return <PalletCard key={pallet.id_pallet} {...pallet} />;
           })}
         </div>
       )}
-
-      <Link
-        to="/assortment/add-pallet"
-        type="submit"
-        className="w-100 mt-4 button-orange-first py-1"
-      >
-        Dodaj palete
-      </Link>
     </div>
   );
 };
