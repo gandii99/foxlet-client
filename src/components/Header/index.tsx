@@ -27,11 +27,15 @@ const Header: React.FC = () => {
           <>
             <ButtonNavigate text="Konto" to="/account/user" />
             <ButtonNavigate text="Asortyment" to="/assortment/pallets" />
-            <button className="button-header" onClick={() => logout()}>
+            <button
+              className="button-header"
+              name="logout"
+              onClick={() => logout()}
+            >
               Wyloguj
             </button>
             <div className="d-flex justify-content-between align-itmes-center login-header">
-              <span>Witaj, {session.user.user_name}!</span>
+              <span id="user-name">Witaj, {session.user.user_name}!</span>
               <img
                 src={session?.user.avatar || 'images/blank-avatar.png'}
                 alt="avatar"

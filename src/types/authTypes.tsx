@@ -14,7 +14,7 @@ export interface CredentialsType {
 
 export interface SessionType {
   user: {
-    id: number;
+    id_user: number;
     user_name: string;
     role: string;
     avatar?: string;

@@ -45,11 +45,11 @@ const PalletCreate = ({ handleCloseModal }: PalletCreateProps) => {
   const [suppliers, setSuppliers] = useState<SupplierCardType[]>([]);
 
   useEffect(() => {
-    if (session?.user.id) {
+    if (session?.user.id_user) {
       const suppliers = assortmentAPI
         .getAllSuppliers()
         .then(response => {
-          console.log(response.data);
+          console.log('suppliers', response.data);
           setSuppliers(response.data);
         })
         .catch(err => {
@@ -57,7 +57,7 @@ const PalletCreate = ({ handleCloseModal }: PalletCreateProps) => {
         });
       console.log(suppliers);
     }
-  }, []);
+  }, [session?.user.id_user]);
 
   const onSubmit = (data: typePallet) => {
     createPallet(data);

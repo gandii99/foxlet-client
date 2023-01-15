@@ -83,7 +83,7 @@ const CompanyForm = () => {
   });
 
   useEffect(() => {
-    if (session?.user.id) {
+    if (session?.user.id_user) {
       if (myCompanyProfile) {
         console.log('istnieje', myCompanyProfile);
         setCurrentSchema(CompanyUpdateSchema);
@@ -94,7 +94,7 @@ const CompanyForm = () => {
         reset({});
       }
     }
-  }, [myCompanyProfile, reset, session?.user.id]);
+  }, [myCompanyProfile, reset, session?.user.id_user]);
 
   const onSubmit = (data: typeCompanyCreate | typeCompanyUpdate) => {
     if (!myCompanyProfile) {

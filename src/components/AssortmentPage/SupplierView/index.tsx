@@ -12,7 +12,7 @@ const SupplierForm = () => {
   const [formsValues, setFormsValues] = useState<FieldsType[]>([]);
 
   useEffect(() => {
-    if (session?.user.id) {
+    if (session?.user.id_user) {
       const userData = assortmentAPI
         .getMySuppliers()
         .then(response => {

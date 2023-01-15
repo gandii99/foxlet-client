@@ -101,7 +101,7 @@ const EmployeeForm = () => {
   const { session } = useAuth();
 
   useEffect(() => {
-    if (session?.user.id) {
+    if (session?.user.id_user) {
       if (myEmployeeProfile) {
         console.log('istnieje', myEmployeeProfile);
         setCurrentSchema(EmployeeUpdateSchema);
@@ -112,7 +112,7 @@ const EmployeeForm = () => {
         reset({});
       }
     }
-  }, [myEmployeeProfile, reset, session?.user.id]);
+  }, [myEmployeeProfile, reset, session?.user.id_user]);
 
   const onSubmit = (data: typeEmployeeCreate | typeUpdateEmployee) => {
     if (!myEmployeeProfile) {

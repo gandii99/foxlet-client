@@ -35,6 +35,7 @@ const LoginPage: React.FC = () => {
           <div className="w-100 mb-3">
             <input
               className="form-control font-xs"
+              name="email"
               placeholder="Email"
               value={email}
               onChange={e => setEmail(e.target.value)}
@@ -44,6 +45,7 @@ const LoginPage: React.FC = () => {
           <div className="w-100 ">
             <input
               className="form-control font-xs"
+              name="password"
               placeholder="Hasło"
               type="password"
               value={password}
@@ -55,7 +57,7 @@ const LoginPage: React.FC = () => {
             Nie pamiętasz hasła?
           </a>
           <Button type="submit" className="w-100 mt-4 button-orange-first">
-            Login
+            Zaloguj
           </Button>
         </form>
       </div>

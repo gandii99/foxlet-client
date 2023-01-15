@@ -59,7 +59,7 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
 
   console.log(errors);
   useEffect(() => {
-    if (session?.user.id) {
+    if (session?.user.id_user) {
       const products = assortmentAPI
         .getAllProducts()
         .then(response => {
