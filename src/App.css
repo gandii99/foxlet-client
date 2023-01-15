@@ -136,6 +136,13 @@ a {
   z-index: 999;
 }
 
+.palette-box {
+  flex-basis: 250px;
+}
+.batch-box {
+  width: 200px;
+}
+
 /* @media only screen and (max-width: 600px) {
   .font-xxs {
     font-size: 9px;

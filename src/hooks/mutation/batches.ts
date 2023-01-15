@@ -11,3 +11,14 @@ export const useCreateBatchMutation = (onSuccess?: () => void) => {
     },
   });
 };
+
+export const useDeleteBatchMutation = (onSuccess?: () => void) => {
+  const queryClient = useQueryClient();
+  return useMutation(assortmentAPI.deleteBatches, {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['my-pallets']);
+      await queryClient.invalidateQueries(['pallet']);
+      onSuccess && onSuccess();
+    },
+  });
+};

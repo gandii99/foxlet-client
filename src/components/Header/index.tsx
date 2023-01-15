@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ButtonGroup, Dropdown, DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
@@ -7,6 +7,11 @@ import './index.css';
 
 const Header: React.FC = () => {
   const { session, logout } = useAuth();
+
+  useEffect(() => {
+    console.log('refresh');
+    // setRefreshHeader(!refreshHeader);
+  }, [session]);
 
   return (
     <header className="header d-flex flex-wrap justify-content-between m-auto header-min-height border-bottom">
@@ -25,11 +30,12 @@ const Header: React.FC = () => {
             <button className="button-header" onClick={() => logout()}>
               Wyloguj
             </button>
-            {/* <ButtonNavigate onClick={() => logout()} text="Wyloguj" to="/" /> */}
             <div className="d-flex justify-content-between align-itmes-center login-header">
-              <span>Witaj, {session.user.name}!</span>
-              <img src={session?.user.avatar} alt="logo lis" />
-              {/* <img src={wied} alt="logo lis" /> */}
+              <span>Witaj, {session.user.user_name}!</span>
+              <img
+                src={session?.user.avatar || 'images/blank-avatar.png'}
+                alt="avatar"
+              />
             </div>
           </>
         ) : (

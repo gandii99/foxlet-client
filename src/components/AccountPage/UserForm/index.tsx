@@ -6,8 +6,11 @@ import { z } from 'zod';
 import { useAuth } from '../../../hooks/use-auth';
 import accountAPI from '../../../services/account';
 import uploadImage from '../../../lib/cloudinary';
+import InputText from '../../InputText';
+import { useGetMyUserProfileQuery } from '../../../hooks/query/account';
+import { onSuccess } from '../../../lib/toastHelpers';
+import { useUpdateMyUserProfileMutation } from '../../../hooks/mutation/account';
 
-import axios, { Axios } from 'axios';
 const UserSchema = z.object({
   user_name: z.string().min(1, { message: 'name is required' }).optional(),
   email: z
@@ -20,9 +23,19 @@ const UserSchema = z.object({
   avatar: z.string().optional(),
 });
 
-type typeUser = z.infer<typeof UserSchema>;
+export type typeUser = z.infer<typeof UserSchema>;
 
 const UserForm = () => {
+  const { data: myUserProfile, isSuccess: isGetMyUserProfileSucces } =
+    useGetMyUserProfileQuery();
+
+  const {
+    mutate: updateMyUserProfile,
+    isLoading: isUpdateMyUserProfileLoading,
+  } = useUpdateMyUserProfileMutation(() =>
+    onSuccess('Profil użytkownika został zaktualizowany')
+  );
+
   const {
     register,
     handleSubmit,
@@ -37,31 +50,14 @@ const UserForm = () => {
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
   const [image, setImage] = useState<string | null>(null);
 
-  const { session } = useAuth();
-
-  useEffect(() => {
-    if (session?.user.id) {
-      const userData = accountAPI
-        .getMyUser()
-        .then(response => {
-          console.log(response.data);
-          const defaultValues = {
-            ...response.data,
-          };
-          console.log('test', defaultValues);
-          reset({ ...defaultValues, password: '' });
-        })
-        .catch(err => {
-          console.log('error', err);
-        });
-    }
-  }, []);
-
   const setUploadProgress = (e: number) => {
     console.log(e);
   };
 
   useEffect(() => {
+    if (myUserProfile) {
+      reset({ ...myUserProfile, password: '' });
+    }
     if (!selectedFile) return;
     const abortController = new AbortController();
     const { signal } = abortController;
@@ -80,13 +76,13 @@ const UserForm = () => {
     return () => {
       abortController.abort();
     };
-  }, [selectedFile]);
+  }, [selectedFile, myUserProfile, reset]);
 
   const onSubmit = (data: typeUser) => {
     if (image) {
       data = { ...data, avatar: image };
     }
-    accountAPI.updateMyUserProfileData(data);
+    updateMyUserProfile(data);
   };
 
   return (
@@ -96,17 +92,28 @@ const UserForm = () => {
         className="d-flex flex-wrap justify-content-around"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <label className="col-5 font-xs">
-          Email
-          <input {...register('email')} className="form-control" />
-          {errors.email && <span>{errors.email.message}</span>}
-        </label>
-        <label className="col-5 font-xs">
-          Nazwa użytkownika
-          <input className="form-control" {...register('user_name')} />
-          {errors.user_name && <span>{errors.user_name.message}</span>}
-        </label>
-        <label className="col-5 font-xs">
+        <InputText
+          label="Email"
+          placeholder="jan.kowalski@gmail.com"
+          name="email"
+          register={register('email')}
+          classLabel="font-xs col-5 mt-3"
+          classInput="form-control"
+          classError="font-13 text-danger"
+          errors={errors}
+        />
+        <InputText
+          label="Nazwa użytkownika"
+          placeholder="JankoMuzykant"
+          name="user_name"
+          register={register('user_name')}
+          classLabel="font-xs col-5 mt-3"
+          classInput="form-control"
+          classError="font-13 text-danger"
+          errors={errors}
+        />
+
+        <label className="font-xs col-5">
           Hasło
           <input
             className="form-control"
@@ -130,11 +137,11 @@ const UserForm = () => {
           </select>
           {errors.role && <span>{errors.role.message}</span>}
         </label>
-        <label className="col-5 font-xs">
-          Nazwa użytkownika
+        <label className="col-11 font-xs">
+          Avatar
           <input
             // ref={fileInputRef}
-            className={'hidden'}
+            className={' form-control'}
             onChange={({ target }) => {
               setSelectedFile(target.files?.[0]);
             }}
@@ -144,7 +151,11 @@ const UserForm = () => {
           />
         </label>
 
-        <Button type="submit" className="w-100 mt-4 button-orange-first">
+        <Button
+          type="submit"
+          className="w-100 mt-4 button-orange-first"
+          disabled={isUpdateMyUserProfileLoading}
+        >
           Dodaj
         </Button>
       </form>

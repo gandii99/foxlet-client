@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../hooks/use-auth';
 import assortmentAPI from '../../../services/assortment';
-import { SupplierCardType } from '../SupplierView/types';
-import { BatchType, ConditionType, ProductType } from './types';
+import { ConditionType, ProductType } from './types';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
 import { onError, onSuccess } from '../../../lib/toastHelpers';
-import { useCreateBatchMutation } from '../../../hooks/mutation/pallet';
+import { useCreateBatchMutation } from '../../../hooks/mutation/batches';
+import InputText from '../../InputText';
+import InputNumber from '../../InputNumber';
 
 const BatchSchema = z.object({
   id_product: z.preprocess(val => val && Number(val), z.number()),
@@ -30,7 +30,7 @@ type typeBatch = z.infer<typeof BatchSchema>;
 
 type BatchAddProps = { id_pallet: number; handleCloseModal: () => void };
 
-const BatchAdd = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
+const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
   const {
     register,
     handleSubmit,
@@ -49,7 +49,7 @@ const BatchAdd = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
   const { mutate: createBatch, isLoading: isCreateBatchLoading } =
     useCreateBatchMutation(() => {
       handleCloseModal();
-      onSuccess();
+      onSuccess('Partia została utworzona');
     });
 
   const onSubmit = (data: typeBatch) => {
@@ -85,15 +85,17 @@ const BatchAdd = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
       className="d-flex flex-wrap justify-content-around"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <label className="font-s  col-11">
-        Nazwa partii
-        <input {...register('batch_name')} className="form-control" />
-        {errors.batch_name && (
-          <span className="font-13 text-danger">
-            {errors.batch_name.message}
-          </span>
-        )}
-      </label>
+      <InputText
+        label="Nazwa partii"
+        placeholder="PS4 pro"
+        name="batch_name"
+        register={register('batch_name')}
+        classLabel="font-xs col-11 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+
       <label className="font-xs col-5 mt-3">
         Produkt
         <select
@@ -131,42 +133,47 @@ const BatchAdd = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
         )}
       </label>
 
-      <label className="font-xs col-5 mt-3">
-        Ilość w dostawie
-        <input {...register('quantity_in_delivery')} className="form-control" />
-        {errors.quantity_in_delivery && (
-          <span className="font-13 text-danger">
-            {errors.quantity_in_delivery.message}
-          </span>
-        )}
-      </label>
-      <label className="font-xs col-5 mt-3">
-        Ilość w magazynie
-        <input {...register('quantity_in_stock')} className="form-control" />
-        {errors.quantity_in_stock && (
-          <span className="font-13 text-danger">
-            {errors.quantity_in_stock.message}
-          </span>
-        )}
-      </label>
-      <label className="font-xs col-5 mt-3">
-        Cena zakupu
-        <input {...register('purchase_price')} className="form-control" />
-        {errors.purchase_price && (
-          <span className="font-13 text-danger">
-            {errors.purchase_price.message}
-          </span>
-        )}
-      </label>
-      <label className="font-xs col-5 mt-3">
-        Cena sprzedaży
-        <input {...register('selling_price')} className="form-control" />
-        {errors.selling_price && (
-          <span className="font-13 text-danger">
-            {errors.selling_price.message}
-          </span>
-        )}
-      </label>
+      <InputNumber
+        label="Ilość w dostawie"
+        placeholder={5}
+        name="quantity_in_delivery"
+        register={register('quantity_in_delivery')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputNumber
+        label="Ilość w magazynie"
+        placeholder={5}
+        name="quantity_in_stock"
+        register={register('quantity_in_stock')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputNumber
+        label="Cena zakupu"
+        placeholder={249.99}
+        name="purchase_price"
+        register={register('purchase_price')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputNumber
+        label="Cena sprzedaży"
+        placeholder={249.99}
+        name="selling_price"
+        register={register('selling_price')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+
       <label className="font-xs col-11 mt-3">
         Opis
         <textarea {...register('description')} className="form-control" />
@@ -187,4 +194,4 @@ const BatchAdd = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
   );
 };
 
-export default BatchAdd;
+export default BatchCreate;

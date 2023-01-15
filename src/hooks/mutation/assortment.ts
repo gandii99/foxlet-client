@@ -10,3 +10,13 @@ export const useCreatePalletsMutation = (onSuccess?: () => void) => {
     },
   });
 };
+
+export const useDeletePalletsMutation = (onSuccess?: () => void) => {
+  const queryClient = useQueryClient();
+  return useMutation(assortmentAPI.deletePallets, {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['my-pallets']);
+      onSuccess && onSuccess();
+    },
+  });
+};

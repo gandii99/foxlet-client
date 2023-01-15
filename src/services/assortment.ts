@@ -158,6 +158,7 @@ const deletePallets = async (
     });
   return result;
 };
+
 const deleteBatches = async (
   id_batches: number[],
   onSucess?: (url: string, message: string) => void,

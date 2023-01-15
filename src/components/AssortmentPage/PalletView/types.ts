@@ -26,8 +26,6 @@ export interface BatchType {
   description?: string;
   product?: ProductType;
   condition?: ConditionType;
-  refresh?: boolean;
-  setRefresh?: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface PalletCardType {

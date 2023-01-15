@@ -17,8 +17,8 @@ header {
 }
 
 .login-header > img {
-  border: 2px solid black;
-  background: #000;
+  border: 2px solid #333;
+  background: transparent;
   height: 50px;
   width: 50px;
   border-radius: 50%;

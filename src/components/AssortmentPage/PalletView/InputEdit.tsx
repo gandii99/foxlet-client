@@ -1,10 +1,5 @@
-import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import assortmentAPI from '../../../services/assortment';
+import React from 'react';
 
 const InputEdit = (props: {
   id_pallet: number;

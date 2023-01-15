@@ -2,14 +2,12 @@ import React from 'react';
 import { faPlus, faTrashCan, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PalletCardType } from './types';
-import './index.css';
-import BatchCard from './BatchCard';
+import BatchCard from './BatchImageCard';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import assortmentAPI from '../../../services/assortment';
-import { toast } from 'react-toastify';
-import { APIError } from '../../../lib/api/types';
+
 import { onSuccess, onError } from '../../../lib/toastHelpers';
+import { useDeletePalletsMutation } from '../../../hooks/mutation/assortment';
 
 function formatDate(date: string) {
   const d = new Date(date);
@@ -26,14 +24,16 @@ function formatDate(date: string) {
 const emptyToText = (text: string) => (text && text.length > 0 ? text : 'Brak');
 const PalletCard = (props: PalletCardType) => {
   const navigation = useNavigate();
+  const { mutate: deletePallet, isLoading: isDeletePalletLoading } =
+    useDeletePalletsMutation(() => onSuccess('Paleta została usunięta'));
 
   const deleteHandler = () => {
     const id_pallet = props.id_pallet;
     if (id_pallet && typeof Number(id_pallet) === 'number') {
-      assortmentAPI.deletePallets([id_pallet], onSuccess, onError);
+      deletePallet([id_pallet]);
     }
   };
-  console.log(props);
+
   return (
     <div className="palette-box my-2 px-3 py-3 border rounded-4 border-shadow mx-2">
       <div className="d-flex justify-content-start align-items-start flex-wrap ">
@@ -50,6 +50,7 @@ const PalletCard = (props: PalletCardType) => {
               console.log('click');
               deleteHandler();
             }}
+            disabled={isDeletePalletLoading}
           >
             <FontAwesomeIcon
               className="font-xs"
@@ -105,13 +106,6 @@ const PalletCard = (props: PalletCardType) => {
           <FontAwesomeIcon icon={faPlus} className="account-icon w-100" />
         </div>
       </div>
-
-      {/* <Link
-        className="button-orange-first font-m mt-1"
-        to={`${props.id_pallet}`}
-      >
-        Zarządzaj
-      </Link> */}
     </div>
   );
 };

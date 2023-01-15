@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import authAPI from '../../services/auth';
 
 const RegisterPage = () => {
-  const [name, setName] = useState('');
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
@@ -16,7 +16,7 @@ const RegisterPage = () => {
         <form
           onSubmit={e => {
             e.preventDefault();
-            authAPI.register({ email, password, name, role });
+            authAPI.register({ email, password, user_name: userName, role });
           }}
         >
           <div className="w-100 mb-3">
@@ -24,8 +24,8 @@ const RegisterPage = () => {
               className="form-control font-xs"
               placeholder="Nazwa"
               type="text"
-              value={name}
-              onChange={e => setName(e.target.value)}
+              value={userName}
+              onChange={e => setUserName(e.target.value)}
               required
             ></input>
           </div>

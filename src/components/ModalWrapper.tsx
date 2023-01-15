@@ -39,7 +39,7 @@ const ModalWrapper = ({
           </button>
         </div>
         <hr />
-        <div className={'d-flex p-5'}>{children}</div>
+        <div className={'d-flex p-5 pt-0'}>{children}</div>
       </div>
     </>
   );

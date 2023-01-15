@@ -3,17 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { Link, useParams } from 'react-router-dom';
-import { useGetPalletQuery } from '../../../hooks/query/pallet';
+import { useParams } from 'react-router-dom';
+import { useGetPalletQuery } from '../../../hooks/query/batches';
 import { useAuth } from '../../../hooks/use-auth';
-import accountAPI from '../../../services/account';
-import assortmentAPI from '../../../services/assortment';
 import ModalWrapper from '../../ModalWrapper';
-import { SupplierCardType } from '../SupplierView/types';
-import BatchAdd from './BatchAdd';
-import BatchProductCard from './BatchProductCard';
+import BatchAdd from './BatchCreate';
+import BatchProductCard from './BatchCard';
 import InputEdit from './InputEdit';
-import { FieldsType, PalletCardType } from './types';
 
 interface PalletDetailsType {
   pallet_name: string;
@@ -24,9 +20,6 @@ interface PalletDetailsType {
 }
 
 const PalletDetails = () => {
-  const { session } = useAuth();
-
-  // const [pallet, setPallet] = useState<PalletCardType>({});
   const { id_pallet } = useParams();
 
   const { data: currentPallets, isSuccess } = useGetPalletQuery([

@@ -18,7 +18,7 @@ import SupplierForm from './components/AssortmentPage/SupplierView/SupplierForm'
 import SupplierView from './components/AssortmentPage/SupplierView';
 import PalletView from './components/AssortmentPage/PalletView';
 import ProductView from './components/AssortmentPage/ProductView';
-import PalletForm from './components/AssortmentPage/PalletView/PalletForm';
+import PalletForm from './components/AssortmentPage/PalletView/PalletCreate';
 import PalletDetails from './components/AssortmentPage/PalletView/PalletDetails';
 
 import dayjs from 'dayjs';
@@ -85,7 +85,7 @@ const App: React.FC = () => {
                   />
                   <Route path="products" element={<ProductView />} />
                   <Route path="suppliers" element={<SupplierView />} />
-                  <Route path="add-pallet" element={<PalletForm />} />
+                  {/* <Route path="add-pallet" element={<PalletForm />} /> */}
                   <Route path="add-supplier" element={<SupplierForm />} />
                   <Route index element={<PalletView />} />
                 </Route>

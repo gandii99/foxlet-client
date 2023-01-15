@@ -1,13 +1,12 @@
 import { toast } from 'react-toastify';
 import { APIError } from './api/types';
 
-const onSuccess = () => {
-  // navigation('/assortment/pallets/' + id_palletProps);
-  toast.success('Partia została dodana.', {});
+const onSuccess = (message: string) => {
+  toast.success(message, {});
 };
 
-const onError = (error: APIError) => {
-  toast.error('Dodanie partii nie powiodło się!');
+const onError = (error: APIError, message: string) => {
+  toast.error(message);
 };
 
 export { onSuccess, onError };

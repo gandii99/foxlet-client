@@ -3,7 +3,7 @@ import { APIError } from '../lib/api/types';
 export interface RegisterInputType {
   email: string;
   password: string;
-  name: string;
+  user_name: string;
   role: string;
 }
 
@@ -15,7 +15,7 @@ export interface CredentialsType {
 export interface SessionType {
   user: {
     id: number;
-    name: string;
+    user_name: string;
     role: string;
     avatar?: string;
   };

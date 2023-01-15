@@ -1,10 +1,12 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { typeUser } from '../components/AccountPage/UserForm';
 import { useAuth } from '../hooks/use-auth';
 import api from '../lib/api';
 import { getLocalStorage } from '../lib/localStorage';
 import { RegisterInputType, CredentialsType } from '../types/authTypes';
 
 interface CreateEmployee {
+  id_company?: number;
   first_name: string;
   last_name: string;
   PESEL: string;
@@ -18,14 +20,22 @@ interface CreateEmployee {
 }
 
 interface UserType {
+  email: string;
+  password: string;
+  user_name: string;
+  role: string;
+  avatar: string;
+}
+interface UpdateUserType {
   email?: string;
   password?: string;
-  name?: string;
+  user_name?: string;
   role?: string;
   avatar?: string;
 }
 
 interface EmployeeType {
+  id_company?: number;
   first_name?: string;
   last_name?: string;
   PESEL?: string;
@@ -81,7 +91,7 @@ const getSelectedUsers = async (ids: number[]) => {
   const result = await api.get(`/users/?id=${ids.join(',')}`);
   return result;
 };
-const createEmployee = async (formData: CreateEmployee) => {
+const createEmployeeProfile = async (formData: CreateEmployee) => {
   const result = await api.post('/employees', formData);
   return result;
 };
@@ -94,19 +104,19 @@ const getAllEmployees = async () => {
   const result = await api.get('/employees');
   return result;
 };
-const getMyUser = async () => {
-  const result = await api.get(`/users/my-user-profile`);
-  return result;
+const getMyUserProfile = async (): Promise<UserType> => {
+  const { data } = await api.get(`/users/my-user-profile`);
+  return data;
 };
-const getMyCompany = async () => {
-  const result = await api.get(`/companies/my-company-profile`);
-  return result;
+const getMyCompanyProfile = async (): Promise<CompanyType> => {
+  const { data } = await api.get(`/companies/my-company-profile`);
+  return data;
 };
-const getMyEmployeeProfile = async () => {
-  const result = await api.get(`/employees/my-employee-profile`);
-  return result;
+const getMyEmployeeProfile = async (): Promise<EmployeeType> => {
+  const { data } = await api.get(`/employees/my-employee-profile`);
+  return data;
 };
-const updateMyUserProfileData = async (body: UserType) => {
+const updateMyUserProfileData = async (body: UpdateUserType) => {
   const result = await api.patch(`/users/my-user-profile`, body);
   return result;
 };
@@ -123,12 +133,12 @@ const accountAPI = {
   // createUser,
   getAllUsers,
   getSelectedUsers,
-  createEmployee,
+  createEmployeeProfile,
   getAllEmployees,
   getMyEmployeeProfile,
   createCompany,
-  getMyCompany,
-  getMyUser,
+  getMyCompanyProfile,
+  getMyUserProfile,
   updateMyUserProfileData,
   updateMyEmployeeProfileData,
   updateMyCompanyProfileData,

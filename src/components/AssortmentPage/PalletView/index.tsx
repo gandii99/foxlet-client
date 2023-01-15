@@ -1,36 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../../hooks/use-auth';
-import accountAPI from '../../../services/account';
-import assortmentAPI from '../../../services/assortment';
-import { SupplierCardType } from '../SupplierView/types';
 import PalletCard from './PalletCard';
-import { FieldsType, PalletCardType } from './types';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useGetMyPalletsQuery } from '../../../hooks/query/assortment';
+import ModalWrapper from '../../ModalWrapper';
+import PalletCreate from './PalletCreate';
 
 const PalletView = () => {
-  const { session } = useAuth();
   const { data: myPallets, isSuccess } = useGetMyPalletsQuery();
+  const [modalActive, setModalActive] = useState(false);
 
-  // const [pallets, setPallets] = useState<PalletCardType[]>([]);
-
-  // useEffect(() => {
-  //   if (session?.user.id) {
-  //     const pallets = assortmentAPI
-  //       .getMyPallets()
-  //       .then(response => {
-  //         console.log(response.data);
-  //         setPallets(response.data);
-  //       })
-  //       .catch(err => {
-  //         console.log('error', err);
-  //       });
-  //     console.log(pallets);
-  //   }
-  // }, [refresh]);
+  const handleCloseModal = () => {
+    setModalActive(!modalActive);
+  };
 
   if (!isSuccess) {
     return <div>Loading</div>;
@@ -40,13 +23,12 @@ const PalletView = () => {
     <div>
       <div className="d-flex flex-wrap justify-content-start align-items-center col-12 mb-4">
         <h2 className="mb-0">Twoje palety</h2>
-        <Link
-          to="/assortment/add-pallet"
-          type="submit"
+        <Button
           className="button-orange-first button-add-size mx-3 font-m "
+          onClick={handleCloseModal}
         >
-          <FontAwesomeIcon icon={faPlus} className="account-icon" />
-        </Link>
+          <FontAwesomeIcon icon={faPlus} className=" account-icon" />
+        </Button>
       </div>
 
       {myPallets.length === 0 ? (
@@ -58,6 +40,15 @@ const PalletView = () => {
             return <PalletCard key={pallet.id_pallet} {...pallet} />;
           })}
         </div>
+      )}
+
+      {modalActive && (
+        <ModalWrapper
+          title={'Dodaj paletę'}
+          handleCloseModal={handleCloseModal}
+        >
+          <PalletCreate handleCloseModal={handleCloseModal} />
+        </ModalWrapper>
       )}
     </div>
   );

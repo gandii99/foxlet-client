@@ -5,10 +5,13 @@ import auth from '../services/auth';
 import { useNavigate } from 'react-router-dom';
 import { AuthContextType, SessionType } from '../types/authTypes';
 import { APIError } from '../lib/api/types';
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
 
 export const AuthContext = React.createContext<AuthContextType>(null!);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const queryClient2 = useQueryClient();
+
   const [session, setSession] = useState<SessionType | null>(null);
   const [isUserChecked, setIsUserChecked] = useState(false);
   const navigate = useNavigate();
@@ -44,6 +47,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     localStorage.removeItem('session');
+    queryClient2.removeQueries(['my-user-profile']);
+    queryClient2.removeQueries(['my-employee-profile']);
+    queryClient2.removeQueries(['my-company-profile']);
+    queryClient2.removeQueries(['my-pallets']);
+    queryClient2.removeQueries(['pallet']);
     setSession(null);
     navigate('/');
   };
