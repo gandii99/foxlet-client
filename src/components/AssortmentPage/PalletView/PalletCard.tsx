@@ -45,6 +45,7 @@ const PalletCard = (props: PalletCardType) => {
         </div>
         <div className="d-flex  justify-content-end align-items-center col-6 mb-2">
           <Button
+            name="delete-pallet"
             className="button-orange-first bg-danger square-30 mx-1"
             onClick={() => {
               console.log('click');

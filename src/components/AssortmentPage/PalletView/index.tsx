@@ -24,6 +24,7 @@ const PalletView = () => {
       <div className="d-flex flex-wrap justify-content-start align-items-center col-12 mb-4">
         <h2 className="mb-0">Twoje palety</h2>
         <Button
+          name="create-palet"
           className="button-orange-first button-add-size mx-3 font-m "
           onClick={handleCloseModal}
         >

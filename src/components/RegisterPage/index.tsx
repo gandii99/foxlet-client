@@ -21,6 +21,7 @@ const RegisterPage = () => {
         >
           <div className="w-100 mb-3">
             <input
+              name="user-name"
               className="form-control font-xs"
               placeholder="Nazwa"
               type="text"
@@ -31,6 +32,7 @@ const RegisterPage = () => {
           </div>
           <div className="w-100 mb-3">
             <input
+              name="email"
               className="form-control font-xs"
               placeholder="Email"
               value={email}
@@ -40,6 +42,7 @@ const RegisterPage = () => {
           </div>
           <div className="w-100 mb-3">
             <input
+              name="password"
               className="form-control font-xs"
               placeholder="Hasło"
               type="password"
@@ -50,6 +53,7 @@ const RegisterPage = () => {
           </div>
           <div className="w-100 mb-3">
             <select
+              name="role"
               className="form-control font-xs"
               required
               onChange={e => setRole(e.target.value)}

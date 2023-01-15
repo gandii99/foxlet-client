@@ -242,6 +242,7 @@ const EmployeeForm = () => {
           errors={errors}
         />
         <Button
+          name="update-employee"
           type="submit"
           className="w-100 mt-4 button-orange-first"
           disabled={
