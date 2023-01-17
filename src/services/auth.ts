@@ -11,9 +11,15 @@ const register = async (registerData: RegisterInputType) => {
   return data;
 };
 
+const refreshMyUserProfileData = async () => {
+  const { data } = await api.get('/users/my-user-profile');
+  return data;
+};
+
 const authAPI = {
   register,
   login,
+  refreshMyUserProfileData,
 };
 
 export default authAPI;

@@ -7,59 +7,88 @@ import { useParams } from 'react-router-dom';
 import { useGetPalletQuery } from '../../../hooks/query/batches';
 import { useAuth } from '../../../hooks/use-auth';
 import ModalWrapper from '../../ModalWrapper';
-import BatchAdd from './BatchCreate';
+import BatchCreate from './BatchCreate';
 import BatchProductCard from './BatchCard';
-import InputEdit from './InputEdit';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
+import { useForm } from 'react-hook-form';
+import assortmentAPI from '../../../services/assortment';
+import InputText from '../../InputText';
+import InputNumber from '../../InputNumber';
+import InputDate from '../../InputDate';
+import { SupplierCardType } from '../SupplierView/types';
+import { onSuccess } from '../../../lib/toastHelpers';
 
-interface PalletDetailsType {
-  pallet_name: string;
-  id_supplier: number;
-  purchase_price: number;
-  purchase_date: string;
-  delivery_date: string;
-}
+const PalletsSchema = z.object({
+  id_supplier: z.preprocess(val => val && Number(val), z.number()),
+  pallet_name: z.string().optional(),
+  purchase_price: z.preprocess(val => val && Number(val), z.number()),
+  purchase_date: z.string().min(1),
+  delivery_date: z.string().min(1),
+});
+
+export type typePallet = z.infer<typeof PalletsSchema>;
 
 const PalletDetails = () => {
   const { id_pallet } = useParams();
+  const { session } = useAuth();
 
   const { data: currentPallets, isSuccess } = useGetPalletQuery([
     Number(id_pallet),
   ]);
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    setValue,
+    formState: { errors },
+  } = useForm<typePallet>({
+    resolver: zodResolver(PalletsSchema),
+  });
+
   console.log(currentPallets);
 
   const [editActive, setEditActive] = useState(false);
   const [modalActive, setModalActive] = useState(false);
-  const [formsValues, setFormsValues] = useState<PalletDetailsType | null>(
-    null
-  );
+  const [suppliers, setSuppliers] = useState<SupplierCardType[]>([]);
 
   useEffect(() => {
     if (!isSuccess) return;
     const currentPallet = currentPallets[0];
+    console.log(currentPallet);
+    if (currentPallet) {
+      reset({
+        ...currentPallet,
+        id_supplier: currentPallet.supplier.id_supplier,
+        purchase_date: dayjs(new Date(currentPallet.purchase_date)).format(
+          'YYYY-MM-DD[T]HH:mm'
+        ),
+        delivery_date: dayjs(new Date(currentPallet.delivery_date)).format(
+          'YYYY-MM-DD[T]HH:mm'
+        ),
+      });
+    }
 
-    setFormsValues({
-      ...currentPallet,
-      id_supplier: currentPallet.supplier.id_supplier,
-      purchase_date: dayjs(new Date(currentPallet.purchase_date)).format(
-        'YYYY-MM-DD[T]HH:mm:ss'
-      ),
-      delivery_date: dayjs(new Date(currentPallet.delivery_date)).format(
-        'YYYY-MM-DD[T]HH:mm:ss'
-      ),
-    });
-  }, [isSuccess, currentPallets]);
+    if (session?.user.id_user) {
+      const suppliers = assortmentAPI
+        .getAllSuppliers()
+        .then(response => {
+          console.log('suppliers', response.data);
+          setSuppliers(response.data);
+        })
+        .catch(err => {
+          console.log('error', err);
+        });
+      console.log(suppliers);
+    }
+  }, [isSuccess, currentPallets, reset, session?.user.id_user]);
 
-  if (!isSuccess || !formsValues) {
+  if (!isSuccess) {
     return <>Loading</>;
   }
   const currentPallet = currentPallets[0];
-  const updateFormValues = (name: string, value: string | number) => {
-    setFormsValues({
-      ...formsValues,
-      [name]: value,
-    });
-  };
 
   const handleCloseModal = () => {
     setModalActive(!modalActive);
@@ -69,25 +98,17 @@ const PalletDetails = () => {
     return <>Błąd. Brak id palety!</>;
   }
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log('booom');
-
+  const onSubmit = async (data: typePallet) => {
     if (editActive) {
-      // const test = await assortmentAPI.updatePallet(
-      //   {
-      //     ...formsValues,
-      //     purchase_date: formsValues.purchase_date,
-      //   }
-      // );
+      console.log('onSubmit');
+      assortmentAPI.updatePallet(Number(id_pallet), data, onSuccess);
     }
     setEditActive(!editActive);
-    console.log(e);
   };
 
   return (
     <div>
-      <form className="my-4" onSubmit={e => onSubmit(e)}>
+      <form className="my-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="d-flex flex-wrap justify-content-start align-items-center col-12 mb-2">
           <h2 className="mb-0">Szczegóły</h2>
           <Button
@@ -100,59 +121,77 @@ const PalletDetails = () => {
             />
           </Button>
         </div>
-        <div className="d-flex flex-wrap">
-          <div className="d-flex col-6">
-            <InputEdit
-              editActive={editActive}
-              id_pallet={currentPallet.id_pallet}
-              title="Nazwa"
-              type="text"
-              key="pallet_name"
-              id="pallet_name"
-              // value={currentPallet.pallet_name || ''}
-              value={formsValues['pallet_name']}
-              onChangeHandler={updateFormValues}
-            />
-          </div>
-          <div className="d-flex col-6 justify-content-between">
-            <InputEdit
-              editActive={editActive}
-              id_pallet={currentPallet.id_pallet}
-              title="Cena zakupu"
-              type="number"
-              key="purchase_price"
-              id="purchase_price"
-              // value={pallet?.purchase_price || 0}
-              value={formsValues['purchase_price']}
-              onChangeHandler={updateFormValues}
-            />
-          </div>
-          <div className="d-flex col-6">
-            <InputEdit
-              editActive={editActive}
-              id_pallet={currentPallet.id_pallet}
-              title="Data zakupu"
-              type="datetime-local"
-              key="purchase_date"
-              id="purchase_date"
-              // value={pallet?.purchase_date?.split('.')[0] || '0'}
-              value={formsValues['purchase_date']}
-              onChangeHandler={updateFormValues}
-            />
-          </div>
-          <div className="d-flex col-6">
-            <InputEdit
-              editActive={editActive}
-              id_pallet={currentPallet.id_pallet}
-              title="Data dostawy"
-              type="datetime-local"
-              key="delivery_date"
-              id="delivery_date"
-              // value={pallet?.delivery_date?.split('.')[0] || '0'}
-              value={formsValues['delivery_date']}
-              onChangeHandler={updateFormValues}
-            />
-          </div>
+        <div className="d-flex flex-wrap justify-content-between">
+          <InputText
+            label="Nazwa"
+            placeholder="Konsole retro"
+            name="pallet_name"
+            register={register('pallet_name')}
+            classLabel="font-xs col-4 mt-3"
+            classInput="form-control"
+            classError="font-13 text-danger"
+            errors={errors}
+            disabled={!editActive}
+          />
+          <InputNumber
+            label="Cena"
+            placeholder={45}
+            name="purchase_price"
+            register={register('purchase_price')}
+            classLabel="font-xs col-4 mt-3 px-4"
+            classInput="form-control"
+            classError="font-13 text-danger"
+            errors={errors}
+            disabled={!editActive}
+          />
+
+          <label className="font-xs col-4 mt-3">
+            Dostawca
+            <select
+              className="form-control"
+              {...register('id_supplier')}
+              disabled={!editActive}
+            >
+              <option value="">Wybierz</option>
+              {suppliers.map(supplier => (
+                <option
+                  key={supplier.id_supplier}
+                  value={Number(supplier.id_supplier)}
+                >
+                  {supplier.supplier_name}
+                </option>
+              ))}
+            </select>
+            {errors.id_supplier && (
+              <span className="font-13 text-danger">
+                {errors.id_supplier.message}
+              </span>
+            )}
+          </label>
+
+          <InputDate
+            label="Data zakupu"
+            placeholder={new Date().toISOString().split('.')[0]}
+            name="purchase_date"
+            register={register('purchase_date')}
+            classLabel="font-xs col-5 mt-3 "
+            classInput="form-control"
+            classError="font-13 text-danger"
+            errors={errors}
+            disabled={!editActive}
+          />
+
+          <InputDate
+            label="Data dostawy"
+            placeholder={new Date().toISOString().split('.')[0]}
+            name="delivery_date"
+            register={register('delivery_date')}
+            classLabel="font-xs col-5 mt-3"
+            classInput="form-control"
+            classError="font-13 text-danger"
+            errors={errors}
+            disabled={!editActive}
+          />
         </div>
       </form>
 
@@ -176,7 +215,7 @@ const PalletDetails = () => {
           title={'Dodaj partię'}
           handleCloseModal={handleCloseModal}
         >
-          <BatchAdd
+          <BatchCreate
             id_pallet={Number(id_pallet)}
             handleCloseModal={handleCloseModal}
           />

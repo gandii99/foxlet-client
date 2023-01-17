@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { faPlus, faTrashCan, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PalletCardType } from './types';
@@ -8,6 +8,8 @@ import { Button } from 'react-bootstrap';
 
 import { onSuccess, onError } from '../../../lib/toastHelpers';
 import { useDeletePalletsMutation } from '../../../hooks/mutation/assortment';
+import ModalWrapper from '../../ModalWrapper';
+import BatchCreate from './BatchCreate';
 
 function formatDate(date: string) {
   const d = new Date(date);
@@ -23,7 +25,7 @@ function formatDate(date: string) {
 
 const emptyToText = (text: string) => (text && text.length > 0 ? text : 'Brak');
 const PalletCard = (props: PalletCardType) => {
-  const navigation = useNavigate();
+  const [modalActive, setModalActive] = useState(false);
   const { mutate: deletePallet, isLoading: isDeletePalletLoading } =
     useDeletePalletsMutation(() => onSuccess('Paleta została usunięta'));
 
@@ -32,6 +34,10 @@ const PalletCard = (props: PalletCardType) => {
     if (id_pallet && typeof Number(id_pallet) === 'number') {
       deletePallet([id_pallet]);
     }
+  };
+
+  const handleCloseModal = () => {
+    setModalActive(!modalActive);
   };
 
   return (
@@ -79,7 +85,7 @@ const PalletCard = (props: PalletCardType) => {
           </span>
         </div>
         <div className="col-6 mb-2">
-          <span className="d-block font-11 lh-1 text-muted">Dostawa:</span>{' '}
+          <span className="d-block font-11 lh-1 text-muted">Dostawa:</span>
           <span className="d-block font-s fw-bold ">
             {formatDate(props?.delivery_date || '')}
           </span>
@@ -103,10 +109,25 @@ const PalletCard = (props: PalletCardType) => {
             })
           : null}
 
-        <div className="products-box border rounded-1 border-shadow my-1 mx-1 d-flex justify-content-center align-items-center">
+        <div
+          role="button"
+          className="products-box border rounded-1 border-shadow my-1 mx-1 d-flex justify-content-center align-items-center "
+          onClick={handleCloseModal}
+        >
           <FontAwesomeIcon icon={faPlus} className="account-icon w-100" />
         </div>
       </div>
+      {modalActive && (
+        <ModalWrapper
+          title={'Dodaj partię'}
+          handleCloseModal={handleCloseModal}
+        >
+          <BatchCreate
+            id_pallet={Number(props.id_pallet)}
+            handleCloseModal={handleCloseModal}
+          />
+        </ModalWrapper>
+      )}
     </div>
   );
 };

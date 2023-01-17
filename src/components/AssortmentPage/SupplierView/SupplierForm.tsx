@@ -1,161 +1,194 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-// import { useAuth } from '../../../hooks/use-auth';
 import { useAuth } from '../../../hooks/use-auth';
-import { APIError } from '../../../lib/api/types';
-import assortmentAPI from '../../../services/assortment';
-// import accountAPI from '../../../services/account';
+import accountAPI from '../../../services/account';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
+import { useForm } from 'react-hook-form';
+import { onSuccess } from '../../../lib/toastHelpers';
+import InputText from '../../InputText';
+import InputNumber from '../../InputNumber';
+import { useCreateSupplierMutation } from '../../../hooks/mutation/assortment';
 
-const Fields = [
-  {
-    title: 'Imię',
-    id: 'first_name',
-    require: true,
-    class: '',
-  },
-  {
-    title: 'Nazwisko',
-    id: 'last_name',
-    require: true,
-    class: '',
-  },
-  {
-    title: 'Nazwa dostawcy',
-    id: 'supplier_name',
-    require: false,
-    class: '',
-  },
-  {
-    title: 'NIP',
-    id: 'NIP',
-    require: false,
-    class: '',
-  },
-  {
-    title: 'REGON',
-    id: 'REGON',
-    require: false,
-    class: '',
-  },
+const SupplierCreateSchema = z.object({
+  first_name: z.string().min(1),
+  last_name: z.string().min(1),
+  supplier_name: z.string().optional(),
+  NIP: z.string().optional(),
+  REGON: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+  country: z.string().min(1),
+  province: z.string().min(1),
+  postal_code: z.string().min(1),
+  city: z.string().min(1),
+  street: z.string().min(1),
+});
 
-  {
-    title: 'Telefon',
-    id: 'phone',
-    require: false,
-    class: '',
-  },
+type typeSupplierCreate = z.infer<typeof SupplierCreateSchema>;
+type SupplierCreateProps = { handleCloseModal: () => void };
 
-  {
-    title: 'Adres e-mail',
-    id: 'email',
-    require: false,
-    class: '',
-  },
-
-  {
-    title: 'Kraj',
-    id: 'country',
-    require: true,
-    class: '',
-  },
-
-  {
-    title: 'Województwo',
-    id: 'province',
-    require: true,
-    class: '',
-  },
-
-  {
-    title: 'Kod pocztowy',
-    id: 'postal_code',
-    require: true,
-    class: '',
-  },
-  {
-    title: 'Miasto',
-    id: 'city',
-    require: true,
-    class: '',
-  },
-  {
-    title: 'Ulica',
-    id: 'street',
-    require: true,
-    class: '',
-  },
-] as const;
-
-type FieldsType = Record<typeof Fields[number]['id'], string>;
-
-const SupplierForm = () => {
-  const navigation = useNavigate();
-  const onSucess = () => {
-    navigation('/assortment/suppliers');
-    toast.success('Sprzedawca został dodany.', {});
-    console.log('git');
-  };
-  const onError = (error: APIError) => {
-    console.log('error', error);
-    toast.error('Dodanie sprzedawcy nie powiodło się!');
-  };
+const SupplierForm = ({ handleCloseModal }: SupplierCreateProps) => {
   const { session } = useAuth();
-  const [formsValues, setFormsValues] = useState<FieldsType>({
-    first_name: '',
-    last_name: '',
-    supplier_name: '',
-    NIP: '',
-    REGON: '',
-    phone: '',
-    email: '',
-    country: '',
-    province: '',
-    postal_code: '',
-    city: '',
-    street: '',
+
+  const { mutate: createSupplier, isLoading: isCreateSupplierLoading } =
+    useCreateSupplierMutation(() => {
+      handleCloseModal();
+      onSuccess('Dostawca został utworzony');
+    });
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    setValue,
+    formState: { errors },
+  } = useForm<typeSupplierCreate>({
+    resolver: zodResolver(SupplierCreateSchema),
   });
 
-  const updateFormValues = (name: string, value: string) => {
-    setFormsValues({ ...formsValues, [name]: value });
+  const onSubmit = (data: typeSupplierCreate) => {
+    createSupplier(data);
   };
 
-  const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    assortmentAPI.createSupplier(formsValues, onSucess, onError);
-  };
+  // if (!isGetMySupplierProfileSuccess) {
+  //   return <div>Loading</div>;
+  // }
 
   return (
-    <div>
-      <h2>Dodaj dostawcę</h2>
-
-      <form
-        className="d-flex flex-wrap justify-content-around"
-        onSubmit={async e => formHandler(e)}
+    <form
+      className="d-flex flex-wrap justify-content-around"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <InputText
+        label="Nazwa"
+        placeholder="Foxlet"
+        name="supplier_name"
+        register={register('supplier_name')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputNumber
+        label="NIP"
+        placeholder={6734562398}
+        name="NIP"
+        register={register('NIP')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputNumber
+        label="REGON"
+        placeholder={6734562398}
+        name="REGON"
+        register={register('REGON')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputText
+        label="Imię"
+        placeholder="Jan"
+        name="first_name"
+        register={register('first_name')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputText
+        label="Nazwisko"
+        placeholder="Kowalski"
+        name="last_name"
+        register={register('last_name')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputText
+        label="Email"
+        placeholder="jan.kowalski@gmail.com"
+        name="email"
+        register={register('email')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputNumber
+        label="Numer telefonu"
+        placeholder={536097236}
+        name="phone"
+        register={register('phone')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputText
+        label="Kraj"
+        placeholder="Polska"
+        name="country"
+        register={register('country')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputText
+        label="Województwo"
+        placeholder="jan.kowalski@gmail.com"
+        name="province"
+        register={register('province')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputText
+        label="Kod pocztowy"
+        placeholder="jan.kowalski@gmail.com"
+        name="postal_code"
+        register={register('postal_code')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputText
+        label="Miasto"
+        placeholder="Sandomierz"
+        name="city"
+        register={register('city')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <InputText
+        label="Ulica"
+        placeholder="Ogrodowa 5"
+        name="street"
+        register={register('street')}
+        classLabel="font-xs col-5 mt-3"
+        classInput="form-control"
+        classError="font-13 text-danger"
+        errors={errors}
+      />
+      <Button
+        type="submit"
+        className="w-100 mt-4 button-orange-first"
+        disabled={isCreateSupplierLoading}
       >
-        {Fields.map(field => {
-          return (
-            <div className="col-xl-6 px-2" key={field.id}>
-              <label htmlFor={field.id} className="font-xs">
-                {field.title}
-              </label>
-              <input
-                id={field.id}
-                className="form-control font-xs"
-                placeholder={field.title}
-                value={formsValues[field.id]}
-                onChange={e => updateFormValues(field.id, e.target.value)}
-                required={field.require}
-              />
-            </div>
-          );
-        })}
-        <Button type="submit" className="w-100 mt-4 button-orange-first">
-          Dodaj
-        </Button>
-      </form>
-    </div>
+        Dodaj dostawcę
+      </Button>
+    </form>
   );
 };
 

@@ -12,7 +12,7 @@ api.interceptors.request.use(
     config.headers = config.headers || {};
 
     // Pobierz token z pamięci podręcznej
-    const token = getLocalStorage('session')?.token;
+    const token = getLocalStorage('token')?.token;
 
     // Dodaj token do nagłówka Authorization tylko dla żądań do określonego URL
     console.log('config.url', config.url);

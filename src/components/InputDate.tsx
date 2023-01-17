@@ -9,6 +9,7 @@ interface Props {
   register?: any;
   errors?: any;
   name?: string;
+  disabled?: boolean;
 }
 
 const InputDate: React.FC<Props> = ({
@@ -19,11 +20,17 @@ const InputDate: React.FC<Props> = ({
   register = {},
   errors = {},
   name = '',
+  disabled = false,
 }) => {
   return (
     <label className={classLabel}>
       {label}
-      <input {...register} type="datetime-local" className={classInput} />
+      <input
+        {...register}
+        type="datetime-local"
+        className={classInput}
+        disabled={disabled}
+      />
       {errors[name] && (
         <span className="font-13 text-danger">{errors[name].message}</span>
       )}

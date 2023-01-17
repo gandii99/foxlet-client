@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ButtonGroup, Dropdown, DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useGetMyUserProfileQuery } from '../../hooks/query/account';
 import { useAuth } from '../../hooks/use-auth';
 import ButtonNavigate from '../Button';
 import './index.css';
@@ -11,7 +12,7 @@ const Header: React.FC = () => {
   useEffect(() => {
     console.log('refresh');
     // setRefreshHeader(!refreshHeader);
-  }, [session]);
+  }, []);
 
   return (
     <header className="header d-flex flex-wrap justify-content-between m-auto header-min-height border-bottom">

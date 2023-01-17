@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getLocalStorage } from '../lib/localStorage';
 import { CredentialsType } from '../types/authTypes';
 import auth from '../services/auth';
@@ -6,37 +6,69 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContextType, SessionType } from '../types/authTypes';
 import { APIError } from '../lib/api/types';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
+import api from '../lib/api';
 
 export const AuthContext = React.createContext<AuthContextType>(null!);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const queryClient2 = useQueryClient();
+  const QueryClient = useQueryClient();
 
   const [session, setSession] = useState<SessionType | null>(null);
   const [isUserChecked, setIsUserChecked] = useState(false);
   const navigate = useNavigate();
   console.log(session);
 
+  const logout = useCallback(async () => {
+    localStorage.removeItem('token');
+    QueryClient.removeQueries(['my-employee-profile']);
+    QueryClient.removeQueries(['my-company-profile']);
+    QueryClient.removeQueries(['my-pallets']);
+    QueryClient.removeQueries(['pallet']);
+    setSession(null);
+    navigate('/');
+  }, [navigate, QueryClient]);
+
+  const refreshMyUserProfileData = useCallback(async () => {
+    console.log('refreshMyUserProfileData');
+    try {
+      const myUserProfile = await auth.refreshMyUserProfileData();
+      console.log(myUserProfile);
+      if (myUserProfile) {
+        const sessionBody = {
+          user: {
+            id_user: myUserProfile.id_user,
+            user_name: myUserProfile.user_name,
+            role: myUserProfile.role,
+            avatar: myUserProfile.avatar,
+          },
+        };
+        setSession(sessionBody);
+      }
+    } catch (e) {
+      console.log(e);
+      logout();
+    }
+  }, [logout]);
+
   useEffect(() => {
-    const loggedUser = getLocalStorage('session');
-    if (loggedUser) {
-      setSession(loggedUser);
+    const token = getLocalStorage('token');
+    if (token) {
+      // setSession(loggedUser);
+      refreshMyUserProfileData();
     }
     setIsUserChecked(true);
-  }, []);
+  }, [refreshMyUserProfileData]);
 
   const login = async (
     credentials: CredentialsType,
     onSucess?: VoidFunction,
     onError?: (error: APIError) => void
   ) => {
-    console.log('login');
-
     auth
       .login(credentials)
       .then(respons => {
         console.log(respons);
-        localStorage.setItem('session', JSON.stringify(respons));
+        localStorage.setItem('token', JSON.stringify(respons));
         setSession(respons);
         onSucess && onSucess();
       })
@@ -45,18 +77,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
   };
 
-  const logout = async () => {
-    localStorage.removeItem('session');
-    queryClient2.removeQueries(['my-user-profile']);
-    queryClient2.removeQueries(['my-employee-profile']);
-    queryClient2.removeQueries(['my-company-profile']);
-    queryClient2.removeQueries(['my-pallets']);
-    queryClient2.removeQueries(['pallet']);
-    setSession(null);
-    navigate('/');
+  const value = {
+    session,
+    login,
+    logout,
+    refreshMyUserProfileData,
+    isUserChecked,
   };
-
-  const value = { session, login, logout, isUserChecked };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

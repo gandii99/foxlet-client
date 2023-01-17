@@ -86,7 +86,7 @@ const App: React.FC = () => {
                   <Route path="products" element={<ProductView />} />
                   <Route path="suppliers" element={<SupplierView />} />
                   {/* <Route path="add-pallet" element={<PalletForm />} /> */}
-                  <Route path="add-supplier" element={<SupplierForm />} />
+                  {/* <Route path="add-supplier" element={<SupplierForm />} /> */}
                   <Route index element={<PalletView />} />
                 </Route>
 

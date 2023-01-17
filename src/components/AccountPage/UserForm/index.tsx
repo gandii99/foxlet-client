@@ -4,7 +4,6 @@ import { Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useAuth } from '../../../hooks/use-auth';
-import accountAPI from '../../../services/account';
 import uploadImage from '../../../lib/cloudinary';
 import InputText from '../../InputText';
 import { useGetMyUserProfileQuery } from '../../../hooks/query/account';
@@ -26,15 +25,17 @@ const UserSchema = z.object({
 export type typeUser = z.infer<typeof UserSchema>;
 
 const UserForm = () => {
+  const { session, refreshMyUserProfileData } = useAuth();
   const { data: myUserProfile, isSuccess: isGetMyUserProfileSucces } =
     useGetMyUserProfileQuery();
 
   const {
     mutate: updateMyUserProfile,
     isLoading: isUpdateMyUserProfileLoading,
-  } = useUpdateMyUserProfileMutation(() =>
-    onSuccess('Profil użytkownika został zaktualizowany')
-  );
+  } = useUpdateMyUserProfileMutation(() => {
+    refreshMyUserProfileData();
+    onSuccess('Profil użytkownika został zaktualizowany');
+  });
 
   const {
     register,
@@ -55,9 +56,13 @@ const UserForm = () => {
   };
 
   useEffect(() => {
+    console.log('useEffect');
     if (myUserProfile) {
       reset({ ...myUserProfile, password: '' });
     }
+  }, [myUserProfile, reset]);
+
+  useEffect(() => {
     if (!selectedFile) return;
     const abortController = new AbortController();
     const { signal } = abortController;
@@ -76,13 +81,13 @@ const UserForm = () => {
     return () => {
       abortController.abort();
     };
-  }, [selectedFile, myUserProfile, reset]);
+  }, [selectedFile]);
 
-  const onSubmit = (data: typeUser) => {
+  const onSubmit = async (data: typeUser) => {
     if (image) {
       data = { ...data, avatar: image };
     }
-    updateMyUserProfile(data);
+    await updateMyUserProfile(data);
   };
 
   return (

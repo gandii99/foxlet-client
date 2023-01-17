@@ -9,6 +9,7 @@ interface Props {
   register?: any;
   errors?: any;
   name?: string;
+  disabled?: boolean;
 }
 
 const InputText: React.FC<Props> = ({
@@ -19,6 +20,7 @@ const InputText: React.FC<Props> = ({
   register = {},
   errors = {},
   name = '',
+  disabled = false,
 }) => {
   return (
     <label className={classLabel}>
@@ -28,6 +30,7 @@ const InputText: React.FC<Props> = ({
         type="text"
         className={classInput}
         placeholder={placeholder}
+        disabled={disabled}
       />
       {errors[name] && (
         <span className="font-13 text-danger">{errors[name].message}</span>

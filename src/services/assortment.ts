@@ -47,11 +47,11 @@ interface EmployeeType {
 interface SupplierType {
   first_name: string;
   last_name: string;
-  supplier_name: string;
-  NIP: string;
-  REGON: string;
-  phone: string;
-  email: string;
+  supplier_name?: string;
+  NIP?: string;
+  REGON?: string;
+  phone?: string;
+  email?: string;
   country: string;
   province: string;
   postal_code: string;
@@ -192,9 +192,22 @@ interface UpadtePalletType {
   delivery_date?: string;
 }
 
-const updatePallet = async (id_pallets: number, formData: UpadtePalletType) => {
+const updatePallet = async (
+  id_pallets: number,
+  formData: UpadtePalletType,
+  onSucess?: (message: string) => void,
+  onError?: (error: APIError, message: string) => void
+) => {
   console.log(formData);
-  const result = await api.patch(`/pallets/` + id_pallets, formData);
+  const result = api
+    .patch(`/pallets/` + id_pallets, formData)
+    .then(respons => {
+      onSucess && onSucess('Paleta została zaktualizowana!');
+    })
+    .catch(error => {
+      onError && onError(error, 'Błąd podczas aktualizowania palety!');
+    });
+
   return result;
 };
 

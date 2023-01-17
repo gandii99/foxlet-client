@@ -19,7 +19,7 @@ export interface SessionType {
     role: string;
     avatar?: string;
   };
-  token: string;
+  // token: string;
 }
 
 export interface AuthContextType {
@@ -30,5 +30,6 @@ export interface AuthContextType {
     onError?: (error: APIError) => void
   ) => void;
   logout: () => void;
+  refreshMyUserProfileData: () => void;
   isUserChecked: boolean;
 }

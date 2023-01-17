@@ -11,6 +11,16 @@ export const useCreatePalletsMutation = (onSuccess?: () => void) => {
   });
 };
 
+export const useCreateSupplierMutation = (onSuccess?: () => void) => {
+  const queryClient = useQueryClient();
+  return useMutation(assortmentAPI.createSupplier, {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['my-suppliers']);
+      onSuccess && onSuccess();
+    },
+  });
+};
+
 export const useDeletePalletsMutation = (onSuccess?: () => void) => {
   const queryClient = useQueryClient();
   return useMutation(assortmentAPI.deletePallets, {
