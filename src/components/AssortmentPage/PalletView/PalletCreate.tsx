@@ -46,7 +46,7 @@ const PalletCreate = ({ handleCloseModal }: PalletCreateProps) => {
 
   useEffect(() => {
     if (session?.user.id_user) {
-      const suppliers = assortmentAPI
+      assortmentAPI
         .getAllSuppliers()
         .then(response => {
           console.log('suppliers', response.data);
@@ -55,7 +55,6 @@ const PalletCreate = ({ handleCloseModal }: PalletCreateProps) => {
         .catch(err => {
           console.log('error', err);
         });
-      console.log(suppliers);
     }
   }, [session?.user.id_user]);
 

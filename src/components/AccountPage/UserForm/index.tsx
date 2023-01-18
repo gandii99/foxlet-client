@@ -19,7 +19,11 @@ const UserSchema = z.object({
     .optional(),
   password: z.string().optional(),
   role: z.string().optional(),
-  avatar: z.string().optional(),
+  avatar: z.preprocess(
+    val =>
+      (val && typeof val === 'string' && val.length > 1 && val) || undefined,
+    z.string().min(1, { message: 'password is required' }).optional()
+  ),
 });
 
 export type typeUser = z.infer<typeof UserSchema>;
@@ -33,8 +37,8 @@ const UserForm = () => {
     mutate: updateMyUserProfile,
     isLoading: isUpdateMyUserProfileLoading,
   } = useUpdateMyUserProfileMutation(() => {
-    refreshMyUserProfileData();
     onSuccess('Profil użytkownika został zaktualizowany');
+    refreshMyUserProfileData();
   });
 
   const {
@@ -83,12 +87,16 @@ const UserForm = () => {
     };
   }, [selectedFile]);
 
-  const onSubmit = async (data: typeUser) => {
+  const onSubmit = (data: typeUser) => {
     if (image) {
       data = { ...data, avatar: image };
     }
-    await updateMyUserProfile(data);
+    updateMyUserProfile(data);
   };
+  console.log(errors);
+  if (!isGetMyUserProfileSucces) {
+    return <div>Loading</div>;
+  }
 
   return (
     <div>
@@ -161,7 +169,7 @@ const UserForm = () => {
           className="w-100 mt-4 button-orange-first"
           disabled={isUpdateMyUserProfileLoading}
         >
-          Dodaj
+          Aktualizuj
         </Button>
       </form>
     </div>

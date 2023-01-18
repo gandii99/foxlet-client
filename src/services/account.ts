@@ -61,6 +61,7 @@ interface CompanyType {
   postal_code?: string;
   city?: string;
   street?: string;
+  employee?: EmployeeType[];
 }
 
 interface CreateCompany {
@@ -104,6 +105,12 @@ const getAllEmployees = async () => {
   const result = await api.get('/employees');
   return result;
 };
+
+const getAllCompanies = async () => {
+  const { data } = await api.get('/companies');
+  return data;
+};
+
 const getMyUserProfile = async (): Promise<UserType> => {
   const { data } = await api.get(`/users/my-user-profile`);
   return data;
@@ -117,6 +124,7 @@ const getMyEmployeeProfile = async (): Promise<EmployeeType> => {
   return data;
 };
 const updateMyUserProfileData = async (body: UpdateUserType) => {
+  console.log('updateMyUserProfileData');
   const result = await api.patch(`/users/my-user-profile`, body);
   return result;
 };
@@ -142,6 +150,7 @@ const accountAPI = {
   updateMyUserProfileData,
   updateMyEmployeeProfileData,
   updateMyCompanyProfileData,
+  getAllCompanies,
 };
 
 export default accountAPI;

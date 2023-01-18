@@ -143,7 +143,7 @@ const SupplierForm = ({ handleCloseModal }: SupplierCreateProps) => {
       />
       <InputText
         label="Województwo"
-        placeholder="jan.kowalski@gmail.com"
+        placeholder="Małopolska"
         name="province"
         register={register('province')}
         classLabel="font-xs col-5 mt-3"
@@ -153,7 +153,7 @@ const SupplierForm = ({ handleCloseModal }: SupplierCreateProps) => {
       />
       <InputText
         label="Kod pocztowy"
-        placeholder="jan.kowalski@gmail.com"
+        placeholder="30-100"
         name="postal_code"
         register={register('postal_code')}
         classLabel="font-xs col-5 mt-3"

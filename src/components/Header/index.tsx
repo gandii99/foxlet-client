@@ -8,11 +8,13 @@ import './index.css';
 
 const Header: React.FC = () => {
   const { session, logout } = useAuth();
+  const { data: myUserProfile, isSuccess: isGetMyUserProfileSucces } =
+    useGetMyUserProfileQuery();
 
   useEffect(() => {
     console.log('refresh');
     // setRefreshHeader(!refreshHeader);
-  }, []);
+  }, [myUserProfile]);
 
   return (
     <header className="header d-flex flex-wrap justify-content-between m-auto header-min-height border-bottom">

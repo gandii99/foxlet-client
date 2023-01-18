@@ -12,14 +12,13 @@ api.interceptors.request.use(
     config.headers = config.headers || {};
 
     // Pobierz token z pamięci podręcznej
-    const token = getLocalStorage('token')?.token;
+    const token = getLocalStorage('token');
 
     // Dodaj token do nagłówka Authorization tylko dla żądań do określonego URL
     console.log('config.url', config.url);
     if (token && config.url !== '/auth') {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
-
     return config;
   }
 );

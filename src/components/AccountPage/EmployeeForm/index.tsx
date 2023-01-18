@@ -52,11 +52,7 @@ const EmployeeUpdateSchema = z.object({
       .max(12, { message: 'Phone number is too long' })
       .nullable()
   ),
-  email: z
-    .string()
-    .min(1, { message: 'email is required' })
-    .email({ message: 'provide valid email address' })
-    .optional(),
+  email: z.string().email().min(5),
   country: z.string().optional(),
   province: z.string().optional(),
   postal_code: z.string().optional(),
@@ -84,7 +80,7 @@ const EmployeeForm = () => {
     mutate: updateMyEmployeeProfile,
     isLoading: isUpdateMyEmployeeProfileLoading,
   } = useUpdateMyEmployeeProfileMutation(() =>
-    onSuccess('Profil firmy został zaktualizowany')
+    onSuccess('Profil pracownika został zaktualizowany')
   );
 
   const {

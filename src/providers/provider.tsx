@@ -68,8 +68,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       .login(credentials)
       .then(respons => {
         console.log(respons);
-        localStorage.setItem('token', JSON.stringify(respons));
-        setSession(respons);
+        localStorage.setItem('token', JSON.stringify(respons?.token));
+        setSession({ user: respons?.user });
         onSucess && onSucess();
       })
       .catch(error => {
