@@ -11,7 +11,6 @@ import AssortmentPage from './components/AssortmentPage';
 import './App.css';
 import AccountPage from './components/AccountPage';
 import UserForm from './components/AccountPage/UserForm';
-import CompanyForm from './components/AccountPage/CompanyForm';
 import EmployeeForm from './components/AccountPage/EmployeeForm';
 import GuardSession from './components/GuardSession';
 import SupplierForm from './components/AssortmentPage/SupplierView/SupplierForm';
@@ -25,6 +24,9 @@ import dayjs from 'dayjs';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import CompanyView from './components/AccountPage/CompanyForm';
+import ClientView from './components/AssortmentPage/ClientsView';
+import OrderView from './components/AssortmentPage/OrderView';
 
 require('dayjs/locale/pl');
 dayjs.locale('pl');
@@ -67,7 +69,7 @@ const App: React.FC = () => {
                 >
                   <Route path="user" element={<UserForm />} />
                   <Route path="employee" element={<EmployeeForm />} />
-                  <Route path="company" element={<CompanyForm />} />
+                  <Route path="company" element={<CompanyView />} />
                   <Route index element={<UserForm />} />
                 </Route>
                 <Route
@@ -85,6 +87,8 @@ const App: React.FC = () => {
                   />
                   <Route path="products" element={<ProductView />} />
                   <Route path="suppliers" element={<SupplierView />} />
+                  <Route path="clients" element={<ClientView />} />
+                  <Route path="orders" element={<OrderView />} />
                   {/* <Route path="add-pallet" element={<PalletForm />} /> */}
                   {/* <Route path="add-supplier" element={<SupplierForm />} /> */}
                   <Route index element={<PalletView />} />

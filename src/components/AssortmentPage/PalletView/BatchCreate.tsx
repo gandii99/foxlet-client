@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useAuth } from '../../../hooks/use-auth';
-import assortmentAPI from '../../../services/assortment';
+import assortmentAPI, {
+  CategoryType,
+  CreateBatchType,
+} from '../../../services/assortment';
 import { ConditionType, ProductType } from './types';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -21,9 +24,16 @@ const BatchSchema = z.object({
   purchase_price: z.preprocess(val => val && Number(val), z.number()),
   selling_price: z.preprocess(val => val && Number(val), z.number()),
   description: z
-    .string()
-    .min(10, { message: 'Wprowadź co najmniej 10 znaków' })
-    .optional(),
+    .union([
+      z.string().min(10, { message: 'Wprowadź co najmniej 10 znaków' }),
+      z.string().length(0),
+    ])
+    .optional()
+    .transform(e => (e === '' ? undefined : e)),
+  // description: z
+  //   .string()
+  //   .min(10, { message: 'Wprowadź co najmniej 10 znaków' })
+  //   .optional(),
 });
 
 type typeBatch = z.infer<typeof BatchSchema>;
@@ -45,6 +55,7 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
 
   const { session } = useAuth();
   const [products, setProducts] = useState<ProductType[]>([]);
+  const [catagories, setCategories] = useState<CategoryType[]>([]);
   const [conditions, setConditions] = useState<ConditionType[]>([]);
   const { mutate: createBatch, isLoading: isCreateBatchLoading } =
     useCreateBatchMutation(() => {
@@ -52,7 +63,7 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
       onSuccess('Partia została utworzona');
     });
 
-  const onSubmit = (data: typeBatch) => {
+  const onSubmit = (data: CreateBatchType) => {
     console.log('onSubmit');
     createBatch({ ...data, id_pallet: id_pallet });
   };
@@ -60,7 +71,15 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
   console.log(errors);
   useEffect(() => {
     if (session?.user.id_user) {
-      const products = assortmentAPI
+      assortmentAPI
+        .getAllCategories()
+        .then(response => {
+          setCategories(response);
+        })
+        .catch(err => {
+          console.log('error', err);
+        });
+      assortmentAPI
         .getAllProducts()
         .then(response => {
           setProducts(response.data);
@@ -69,7 +88,7 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
           console.log('error', err);
         });
 
-      const conditions = assortmentAPI
+      assortmentAPI
         .getAllConditions()
         .then(response => {
           setConditions(response.data);
@@ -79,6 +98,17 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
         });
     }
   }, []);
+
+  const getUniqueCategory = (productsList: ProductType[]) => {
+    const uniqueCategory = productsList
+      .map(product => product.id_category)
+      .filter(
+        (item, index) =>
+          products.map(product => product.id_category).indexOf(item) === index
+      );
+    console.log('getUniqueCategory', uniqueCategory);
+    return uniqueCategory;
+  };
 
   return (
     <form
@@ -104,11 +134,25 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
           {...register('id_product')}
         >
           <option value="sdaasda">Wybierz</option>
-          {products.map(product => (
-            <option key={product.id_product} value={product.id_product}>
-              {product.product_name}
-            </option>
-          ))}
+          {/* <> */}
+          {products.length > 0 &&
+            getUniqueCategory(products).map(categoryId => (
+              <optgroup
+                label={
+                  catagories.filter(
+                    category => category.id_category === categoryId
+                  )[0].category_name
+                }
+                key={categoryId}
+              >
+                {products.map(product => (
+                  <option key={product.id_product} value={product.id_product}>
+                    {product.product_name}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          {/* </> */}
         </select>
         {errors.id_product && (
           <span className="font-13 text-danger">

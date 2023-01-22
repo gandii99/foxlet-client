@@ -8,6 +8,11 @@ import {
   faBuilding,
   faDolly,
   faPallet,
+  faPeopleCarry,
+  faPeopleGroup,
+  faPerson,
+  faShoppingBag,
+  faShoppingBasket,
 } from '@fortawesome/free-solid-svg-icons';
 import { NavLink } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
@@ -68,6 +73,44 @@ const AssortmentPage = () => {
               className="account-icon w-100"
             />
             <span className="font-s">Dostawcy</span>
+          </div>
+        </NavLink>
+        <NavLink
+          to="clients"
+          className={({ isActive }) => clsx(isActive && 'orange-color')}
+          end={true}
+        >
+          <div
+            role="button"
+            className={`d-flex justify-content-center align-items-center flex-wrap py-2 ${
+              'clients' === activeField && 'orange-color'
+            }`}
+            id="clients"
+          >
+            <FontAwesomeIcon
+              icon={faPeopleGroup}
+              className="account-icon w-100"
+            />
+            <span className="font-s">Klienci</span>
+          </div>
+        </NavLink>
+        <NavLink
+          to="orders"
+          className={({ isActive }) => clsx(isActive && 'orange-color')}
+          end={true}
+        >
+          <div
+            role="button"
+            className={`d-flex justify-content-center align-items-center flex-wrap py-2 ${
+              'orders' === activeField && 'orange-color'
+            }`}
+            id="orders"
+          >
+            <FontAwesomeIcon
+              icon={faShoppingBasket}
+              className="account-icon w-100"
+            />
+            <span className="font-s">Zamówienia</span>
           </div>
         </NavLink>
       </aside>

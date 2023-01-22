@@ -20,8 +20,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = useCallback(async () => {
     localStorage.removeItem('token');
+    QueryClient.removeQueries(['my-user-profile']);
     QueryClient.removeQueries(['my-employee-profile']);
-    QueryClient.removeQueries(['my-company-profile']);
+    QueryClient.removeQueries(['my-company']);
     QueryClient.removeQueries(['my-pallets']);
     QueryClient.removeQueries(['pallet']);
     setSession(null);

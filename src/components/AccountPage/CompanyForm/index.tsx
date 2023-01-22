@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useAuth } from '../../../hooks/use-auth';
-import accountAPI from '../../../services/account';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
+import accountAPI, { CompanyType } from '../../../services/account';
+import { z, object } from 'zod';
 import { useForm } from 'react-hook-form';
-import {
-  useGetMyCompanyProfileQuery,
-  useGetMyEmployeeProfileQuery,
-} from '../../../hooks/query/account';
-import {
-  useCreateMyCompanyProfileMutation,
-  useUpdateMyCompanyProfileMutation,
-} from '../../../hooks/mutation/account';
-import { onSuccess } from '../../../lib/toastHelpers';
+
+import { onError, onSuccess } from '../../../lib/toastHelpers';
 import InputText from '../../InputText';
 import InputNumber from '../../InputNumber';
 import api from '../../../lib/api';
@@ -26,23 +18,20 @@ import {
   faTrash,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-
-const CompanyCreateSchema = z.object({
-  first_name: z.string(),
-  last_name: z.string(),
-  company_name: z.string().min(1),
-  NIP: z.string(),
-  REGON: z.string(),
-  phone: z.string(),
-  email: z.string(),
-  country: z.string(),
-  province: z.string(),
-  postal_code: z.string(),
-  city: z.string(),
-  street: z.string(),
-});
-
-type typeCompanyCreate = z.infer<typeof CompanyCreateSchema>;
+import { APIError } from '../../../lib/api/types';
+import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
+import {
+  useGetMyCompanyQuery,
+  useGetMyEmployeeProfileQuery,
+} from '../../../hooks/query/account';
+import {
+  useCreateMyCompanyMutation,
+  useDeleteMyCompanyMutation,
+  useSwitchMyCompanyMutation,
+  useUpdateMyCompanyMutation,
+} from '../../../hooks/mutation/account';
+import ModalWrapper from '../../ModalWrapper';
+import CompanyCreate from './CompanyCreate';
 
 const CompanyUpdateSchema = z.object({
   first_name: z.string().optional(),
@@ -61,47 +50,41 @@ const CompanyUpdateSchema = z.object({
 
 type typeCompanyUpdate = z.infer<typeof CompanyUpdateSchema>;
 
-interface CompanyType {
-  id_company: number;
-  first_name: string;
-  last_name: string;
-  company_name: string;
-  NIP: string;
-  REGON: string;
-  phone: string;
-  email: string;
-  country: string;
-  province: string;
-  postal_code: string;
-  city: string;
-  street: string;
-}
-
-const CompanyForm = () => {
+const CompanyView = () => {
   const { session } = useAuth();
-  const [companyFormActive, setCompanyFormActive] = useState<boolean>(false);
+  const [selectedCompany, setSelectedCompany] = useState<number | null>(null);
+  const [showCompanyForm, setShowCompanyForm] = useState<boolean>(false);
   const [companySwitchActive, setCompanySwitchActive] = useState<boolean>(true);
   const [companies, setCompanies] = useState<CompanyType[]>([]);
-  const [currentSchema, setCurrentSchema] = useState<
-    typeof CompanyCreateSchema | typeof CompanyUpdateSchema
-  >(CompanyCreateSchema);
 
-  const { data: myCompanyProfile, isSuccess: isGetMyCompanyProfileSuccess } =
-    useGetMyCompanyProfileQuery();
+  const [modalActive, setModalActive] = useState(false);
 
-  const {
-    mutate: createMyCompanyProfile,
-    isLoading: isCreateMyCompanyProfileLoading,
-  } = useCreateMyCompanyProfileMutation(() =>
-    onSuccess('Profil firmy został utworzony')
-  );
+  const handleCloseModal = () => {
+    setModalActive(!modalActive);
+  };
 
-  const {
-    mutate: updateMyCompanyProfile,
-    isLoading: isUpdateMyCompanyProfileLoading,
-  } = useUpdateMyCompanyProfileMutation(() =>
-    onSuccess('Profil firmy został zaktualizowany')
-  );
+  const { data: myCompany, isSuccess: isGetMyCompanySuccess } =
+    useGetMyCompanyQuery();
+
+  const { mutate: createMyCompany, isLoading: isCreateMyCompanyLoading } =
+    useCreateMyCompanyMutation(() =>
+      onSuccess('Profil firmy został utworzony')
+    );
+
+  const { mutate: updateMyCompany, isLoading: isUpdateMyCompanyLoading } =
+    useUpdateMyCompanyMutation(() =>
+      onSuccess('Profil firmy został zaktualizowany')
+    );
+  const { mutate: switchMyCompany, isLoading: isSwitchMyCompanyLoading } =
+    useSwitchMyCompanyMutation(() => {
+      onSuccess('Firma została zmieniona');
+      setCompanySwitchActive(!companySwitchActive);
+    });
+
+  const { mutate: deleteMyCompany, isLoading: isDeleteMyCompanyLoading } =
+    useDeleteMyCompanyMutation(() =>
+      onSuccess('Profilu firmy został usunięty')
+    );
 
   const {
     register,
@@ -110,25 +93,24 @@ const CompanyForm = () => {
     setError,
     setValue,
     formState: { errors },
-  } = useForm<typeCompanyCreate | typeCompanyUpdate>({
-    resolver: zodResolver(currentSchema),
+  } = useForm<typeCompanyUpdate>({
+    resolver: zodResolver(CompanyUpdateSchema),
   });
 
   useEffect(() => {
     if (session?.user.id_user) {
-      if (myCompanyProfile) {
-        console.log('istnieje', myCompanyProfile);
-        setCompanyFormActive(true);
-        setCurrentSchema(CompanyUpdateSchema);
-        reset(myCompanyProfile);
+      if (myCompany) {
+        console.log('istnieje', myCompany);
+        setSelectedCompany(Number(myCompany.id_company));
+        setShowCompanyForm(true);
+        reset(myCompany);
       } else {
-        setCompanyFormActive(false);
-        console.log('nie istnieje', myCompanyProfile);
-        setCurrentSchema(CompanyCreateSchema);
+        setShowCompanyForm(false);
+        console.log('nie istnieje', myCompany);
         reset({});
       }
     }
-  }, [myCompanyProfile, reset, session?.user.id_user]);
+  }, [myCompany, reset, session?.user.id_user]);
 
   useEffect(() => {
     if (session?.user.id_user) {
@@ -137,51 +119,71 @@ const CompanyForm = () => {
           setCompanies(response);
         }
       });
-      if (!myCompanyProfile) {
-        setCompanyFormActive(false);
-      }
     }
-  }, [myCompanyProfile, session?.user.id_user]);
+  }, [session?.user.id_user]);
 
-  const onSubmit = (data: typeCompanyCreate | typeCompanyUpdate) => {
-    if (!myCompanyProfile) {
-      createMyCompanyProfile(data as typeCompanyCreate);
-    }
-    if (myCompanyProfile) {
-      updateMyCompanyProfile(data);
+  const onSubmit = (data: typeCompanyUpdate) => {
+    if (myCompany) {
+      updateMyCompany(data);
     }
   };
 
-  if (!isGetMyCompanyProfileSuccess) {
+  const switchCompanyHandler = () => {
+    console.log('switchCompanyHandler', selectedCompany);
+    switchMyCompany(selectedCompany);
+  };
+
+  const deleteCompanyHandler = () => {
+    deleteMyCompany();
+  };
+  {
+    console.log(errors);
+  }
+  if (!isGetMyCompanySuccess) {
     return <div>Loading</div>;
   }
-  console.log(myCompanyProfile);
+  console.log(myCompany, session);
 
   return (
     <div>
       <div className="d-flex justify-content-start align-items-center">
         <h2>Firma</h2>
-        {myCompanyProfile && (
-          <div className="d-flex justify-content-start align-items-center mx-4">
-            <label className="d-inline-block font-xs ">
-              <select className="form-control" disabled={companySwitchActive}>
-                <option key={0} value="" selected>
-                  Brak
+
+        <Button
+          className=" button-orange-first button-add-size mx-3 font-m "
+          onClick={() => handleCloseModal()}
+        >
+          <FontAwesomeIcon icon={faPlus} className=" account-icon" />
+        </Button>
+        <div className="d-flex justify-content-start align-items-center mx-4">
+          <label className="d-inline-block font-xs ">
+            <select
+              className="form-control"
+              disabled={companySwitchActive}
+              onChange={e => {
+                setSelectedCompany(
+                  e.target.value === '' ? null : Number(e.target.value)
+                );
+                // switchMyCompany(
+                //   e.target.value === '' ? null : Number(e.target.value)
+                // );
+              }}
+              value={selectedCompany || ''}
+            >
+              <option value="">Brak</option>
+              {companies.map(company => (
+                <option
+                  key={company.id_company}
+                  value={company.id_company}
+                  // selected={myCompany.id_company === company.id_company}
+                >
+                  {company.company_name}
                 </option>
-                {companies.map(company => (
-                  <option
-                    key={company.id_company}
-                    value={company.id_company}
-                    selected={
-                      myCompanyProfile.employee?.[0].id_company ===
-                      company.id_company
-                    }
-                  >
-                    {company.company_name}
-                  </option>
-                ))}
-              </select>
-            </label>
+              ))}
+            </select>
+          </label>
+
+          <div className="d-flex justify-content-start align-items-center mx-4">
             {companySwitchActive ? (
               <Button
                 className="button-orange-first button-add-size font-m "
@@ -193,58 +195,43 @@ const CompanyForm = () => {
               <>
                 <Button
                   className="button-orange-first button-add-size font-m "
-                  onClick={() => setCompanySwitchActive(!companySwitchActive)}
+                  onClick={() => {
+                    switchCompanyHandler();
+                  }}
+                  disabled={isSwitchMyCompanyLoading}
                 >
                   <FontAwesomeIcon icon={faCheck} className=" account-icon" />
                 </Button>
                 <Button
                   className="button-orange-first button-add-size font-m "
-                  onClick={() => setCompanySwitchActive(!companySwitchActive)}
+                  onClick={() => {
+                    setCompanySwitchActive(!companySwitchActive);
+                    setSelectedCompany(
+                      (myCompany && Number(myCompany.id_company)) || null
+                    );
+                  }}
                 >
                   <FontAwesomeIcon icon={faXmark} className=" account-icon" />
                 </Button>
-                <Button
-                  className="button-orange-first button-add-size font-m "
-                  onClick={() => setCompanySwitchActive(!companySwitchActive)}
-                >
-                  <FontAwesomeIcon icon={faTrash} className=" account-icon" />
-                </Button>
+                {myCompany && myCompany?.id_owner == session?.user.id_user && (
+                  <Button
+                    className="button-orange-first button-add-size font-m "
+                    onClick={() => {
+                      setCompanySwitchActive(!companySwitchActive);
+                      deleteCompanyHandler();
+                    }}
+                    disabled={isDeleteMyCompanyLoading}
+                  >
+                    <FontAwesomeIcon icon={faTrash} className=" account-icon" />
+                  </Button>
+                )}
               </>
             )}
           </div>
-        )}
+        </div>
       </div>
 
-      {!myCompanyProfile && (
-        <div className="d-flex justify-content-between align-items-center">
-          <div className="d-flex justify-content-between align-items-center">
-            <span>Mam własną firmę</span>
-            <Button
-              className=" button-orange-first button-add-size mx-3 font-m "
-              onClick={() => setCompanyFormActive(!companyFormActive)}
-            >
-              <FontAwesomeIcon icon={faPlus} className=" account-icon" />
-            </Button>
-          </div>
-          <div className="d-flex justify-content-between align-items-center">
-            <span>Pracuję w firmię: </span>
-            <label className="d-inline-block font-xs mx-4">
-              <select className="form-control">
-                <option key={0} value="" selected>
-                  Brak
-                </option>
-                {companies.map(company => (
-                  <option key={company.id_company} value={company.id_company}>
-                    {company.company_name}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-        </div>
-      )}
-
-      {(myCompanyProfile || companyFormActive) && (
+      {(myCompany || showCompanyForm) && (
         <form
           className="d-flex flex-wrap justify-content-around"
           onSubmit={handleSubmit(onSubmit)}
@@ -258,6 +245,7 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
           <InputNumber
             label="NIP"
@@ -268,6 +256,7 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
           <InputNumber
             label="REGON"
@@ -278,6 +267,7 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
           <InputText
             label="Imię"
@@ -288,6 +278,7 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
           <InputText
             label="Nazwisko"
@@ -298,6 +289,7 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
           <InputText
             label="Email"
@@ -308,6 +300,7 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
           <InputNumber
             label="Numer telefonu"
@@ -318,6 +311,7 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
           <InputText
             label="Kraj"
@@ -328,6 +322,7 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
           <InputText
             label="Województwo"
@@ -338,6 +333,7 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
           <InputText
             label="Kod pocztowy"
@@ -348,6 +344,7 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
           <InputText
             label="Miasto"
@@ -358,6 +355,7 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
           <InputText
             label="Ulica"
@@ -368,20 +366,27 @@ const CompanyForm = () => {
             classInput="form-control"
             classError="font-13 text-danger"
             errors={errors}
+            disabled={myCompany?.id_owner != session?.user.id_user}
           />
-          <Button
-            type="submit"
-            className="w-100 mt-4 button-orange-first"
-            disabled={
-              isCreateMyCompanyProfileLoading || isUpdateMyCompanyProfileLoading
-            }
-          >
-            {myCompanyProfile ? 'Aktualizuj' : 'Utwórz konto firmy'}
-          </Button>
+          {myCompany?.id_owner === session?.user.id_user && (
+            <Button
+              type="submit"
+              className="w-100 mt-4 button-orange-first"
+              disabled={isCreateMyCompanyLoading || isUpdateMyCompanyLoading}
+            >
+              {myCompany ? 'Aktualizuj' : 'Utwórz konto firmy'}
+            </Button>
+          )}
         </form>
+      )}
+
+      {modalActive && (
+        <ModalWrapper title={'Dodaj firmę'} handleCloseModal={handleCloseModal}>
+          <CompanyCreate handleCloseModal={handleCloseModal} />
+        </ModalWrapper>
       )}
     </div>
   );
 };
 
-export default CompanyForm;
+export default CompanyView;

@@ -2,18 +2,16 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../../../hooks/use-auth';
-import accountAPI from '../../../services/account';
 import assortmentAPI from '../../../services/assortment';
 import ModalWrapper from '../../ModalWrapper';
 import SupplierCard from './SupplierCard';
 import SupplierForm from './SupplierForm';
-import { FieldsType } from './types';
+import { SupplierCardType } from './types';
 
 const SupplierView = () => {
   const { session } = useAuth();
-  const [formsValues, setFormsValues] = useState<FieldsType[]>([]);
+  const [suppliers, setSuppliers] = useState<SupplierCardType[]>([]);
   const [modalActive, setModalActive] = useState(false);
 
   const handleCloseModal = () => {
@@ -26,7 +24,7 @@ const SupplierView = () => {
         .getMySuppliers()
         .then(response => {
           console.log(response.data);
-          setFormsValues(response.data);
+          setSuppliers(response.data);
         })
         .catch(err => {
           console.log('error', err);
@@ -47,11 +45,11 @@ const SupplierView = () => {
           <FontAwesomeIcon icon={faPlus} className=" account-icon" />
         </Button>
       </div>
-      {(formsValues.length <= 0 && (
+      {(suppliers.length <= 0 && (
         <span>Aktualnie nie dodałeś jeszcze żadnego sprzedawcy...</span>
       )) || (
         <div className="d-flex">
-          {formsValues.map(supplier => (
+          {suppliers.map(supplier => (
             <SupplierCard
               key={supplier.NIP}
               supplier_name={supplier.supplier_name}

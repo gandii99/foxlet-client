@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { typeUser } from '../components/AccountPage/UserForm';
 import { useAuth } from '../hooks/use-auth';
 import api from '../lib/api';
+import { APIError } from '../lib/api/types';
 import { getLocalStorage } from '../lib/localStorage';
 import { RegisterInputType, CredentialsType } from '../types/authTypes';
 
@@ -36,6 +37,7 @@ interface UpdateUserType {
 
 interface EmployeeType {
   id_company?: number;
+  id_owner?: boolean;
   first_name?: string;
   last_name?: string;
   PESEL?: string;
@@ -48,7 +50,9 @@ interface EmployeeType {
   street?: string;
 }
 
-interface CompanyType {
+export interface CompanyType {
+  id_company?: number;
+  id_owner?: number;
   first_name?: string;
   last_name?: string;
   company_name?: string;
@@ -85,25 +89,25 @@ interface CreateCompany {
 // };
 
 const getAllUsers = async () => {
-  const result = await api.get('/users');
-  return result;
+  const { data } = await api.get('/users');
+  return data;
 };
 const getSelectedUsers = async (ids: number[]) => {
-  const result = await api.get(`/users/?id=${ids.join(',')}`);
-  return result;
+  const { data } = await api.get(`/users/?id=${ids.join(',')}`);
+  return data;
 };
 const createEmployeeProfile = async (formData: CreateEmployee) => {
-  const result = await api.post('/employees', formData);
-  return result;
+  const { data } = await api.post('/employees', formData);
+  return data;
 };
 const createCompany = async (formData: CreateCompany) => {
-  const result = await api.post('/companies', formData);
-  return result;
+  const { data } = await api.post('/companies', formData);
+  return data;
 };
 
 const getAllEmployees = async () => {
-  const result = await api.get('/employees');
-  return result;
+  const { data } = await api.get('/employees');
+  return data;
 };
 
 const getAllCompanies = async () => {
@@ -115,8 +119,8 @@ const getMyUserProfile = async (): Promise<UserType> => {
   const { data } = await api.get(`/users/my-user-profile`);
   return data;
 };
-const getMyCompanyProfile = async (): Promise<CompanyType> => {
-  const { data } = await api.get(`/companies/my-company-profile`);
+const getMyCompany = async (): Promise<CompanyType> => {
+  const { data } = await api.get(`/companies/my-company`);
   return data;
 };
 const getMyEmployeeProfile = async (): Promise<EmployeeType> => {
@@ -125,16 +129,29 @@ const getMyEmployeeProfile = async (): Promise<EmployeeType> => {
 };
 const updateMyUserProfileData = async (body: UpdateUserType) => {
   console.log('updateMyUserProfileData');
-  const result = await api.patch(`/users/my-user-profile`, body);
-  return result;
+  const { data } = await api.patch(`/users/my-user-profile`, body);
+  return data;
 };
 const updateMyEmployeeProfileData = async (body: EmployeeType) => {
-  const result = await api.patch(`/employees/my-employee-profile`, body);
-  return result;
+  const { data } = await api.patch(`/employees/my-employee-profile`, body);
+  return data;
 };
-const updateMyCompanyProfileData = async (body: CompanyType) => {
-  const result = await api.patch(`/companies/my-company-profile`, body);
-  return result;
+
+const updateMyCompany = async (body: CompanyType) => {
+  const { data } = await api.patch(`/companies/my-company`, body);
+  return data;
+};
+
+const deleteMyCompany = async () => {
+  const { data } = await api.delete(`/companies/my-company`);
+  return data;
+};
+
+const switchMyCompany = async (newCompanyId: number | null) => {
+  const { data } = await api.patch(`/companies/switch-company`, {
+    id_company: newCompanyId,
+  });
+  return data;
 };
 
 const accountAPI = {
@@ -145,11 +162,13 @@ const accountAPI = {
   getAllEmployees,
   getMyEmployeeProfile,
   createCompany,
-  getMyCompanyProfile,
+  getMyCompany,
   getMyUserProfile,
   updateMyUserProfileData,
   updateMyEmployeeProfileData,
-  updateMyCompanyProfileData,
+  updateMyCompany,
+  deleteMyCompany,
+  switchMyCompany,
   getAllCompanies,
 };
 

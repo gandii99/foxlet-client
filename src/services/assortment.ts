@@ -1,7 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import { string } from 'zod';
+import { ClientType } from '../components/AssortmentPage/ClientsView';
 import {
   BatchType,
   PalletCardType,
+  ProductType,
 } from '../components/AssortmentPage/PalletView/types';
 import { useAuth } from '../hooks/use-auth';
 import api from '../lib/api';
@@ -22,6 +25,22 @@ interface CreateEmployee {
   postal_code: string;
   city: string;
   street: string;
+}
+interface CreateClient {
+  id_user?: number;
+  id_employee?: number;
+  first_name?: string;
+  last_name?: string;
+  client_name?: string;
+  NIP?: string;
+  REGON?: string;
+  phone?: string;
+  email?: string;
+  country?: string;
+  province?: string;
+  postal_code?: string;
+  city?: string;
+  street?: string;
 }
 
 interface UserType {
@@ -59,12 +78,61 @@ interface SupplierType {
   street: string;
 }
 
+export interface CategoryType {
+  id_category: number;
+  category_name: string;
+  description: string;
+}
+export interface CreateCategoryType {
+  id_category: number;
+  category_name: string;
+  description: string;
+}
+
 export interface CreatePalletType {
   id_supplier: number;
   // id_employee: number;
   purchase_price: number;
   purchase_date: string;
   delivery_date: string;
+}
+
+export interface OrderStatusType {
+  id_order_status: number;
+  id_status: number;
+  id_order: number;
+  id_employee: number;
+  timestamp: string;
+  comments: string;
+}
+export interface BatchOrderType {
+  id_supplier: number;
+  // id_employee: number;
+  purchase_price: number;
+  purchase_date: string;
+  delivery_date: string;
+}
+
+export interface CreateBatchType {
+  id_product: number;
+  id_condition: number;
+  id_pallet?: number;
+  batch_name?: string;
+  quantity_in_delivery: number;
+  quantity_in_stock: number;
+  purchase_price?: number;
+  selling_price: number;
+  description?: string;
+}
+
+export interface OrderType {
+  id_order: number;
+  order_date: string;
+  order_price: number;
+  comments: string;
+  batch_order: BatchOrderType;
+  order_status: OrderStatusType;
+  client: ClientType;
 }
 
 const createSupplier = async (
@@ -94,6 +162,15 @@ const getAllProducts = async () => {
   return result;
 };
 
+const getMyProducts = async (): Promise<ProductType[]> => {
+  const { data } = await api.get('/products/my-products');
+  return data;
+};
+const getMyBatches = async (): Promise<BatchType[]> => {
+  const { data } = await api.get('/batches/my-batches');
+  return data;
+};
+
 const getAllConditions = async () => {
   const result = await api.get('/conditions');
   return result;
@@ -109,18 +186,28 @@ const createPallet = async (
   // onError?: (error: APIError) => void
 ) => {
   const result = api.post('/pallets', formData);
-  // .then(respons => {
-  //   console.log(respons);
-  //   onSucess && onSucess();
-  // })
-  // .catch(error => {
-  //   onError && onError(error);
-  // });
   return result;
 };
 
+const createClient = async (
+  formData: CreateClient
+  // onSucess?: VoidFunction,
+  // onError?: (error: APIError) => void
+) => {
+  const result = api.post('/clients', formData);
+  return result;
+};
+
+const getMyClients = async (): Promise<ClientType[]> =>
+  // onSucess?: VoidFunction,
+  // onError?: (error: APIError) => void
+  {
+    const { data } = await api.get('/clients/my-client');
+    return data;
+  };
+
 const createBatch = async (
-  formData: BatchType,
+  formData: CreateBatchType,
   onSucess?: VoidFunction,
   onError?: (error: APIError) => void
 ) => {
@@ -139,6 +226,28 @@ const createBatch = async (
 
 const getMyPallets = async (): Promise<PalletCardType[]> => {
   const { data } = await api.get(`/pallets/my-pallets`);
+  return data;
+};
+
+const createCategory = async (
+  formData: CreateCategoryType,
+  onSucess?: VoidFunction,
+  onError?: (error: APIError) => void
+) => {
+  const result = api
+    .post('/categories', formData)
+    .then(respons => {
+      console.log(respons);
+      onSucess && onSucess();
+    })
+    .catch(error => {
+      onError && onError(error);
+    });
+  return result;
+};
+
+const getAllCategories = async (): Promise<CategoryType[]> => {
+  const { data } = await api.get(`/categories`);
   return data;
 };
 
@@ -223,10 +332,18 @@ const assortmentAPI = {
   updatePallet,
 
   getAllProducts,
+  getMyProducts,
   getAllConditions,
 
   createBatch,
+  getMyBatches,
   deleteBatches,
+
+  createClient,
+  getMyClients,
+
+  createCategory,
+  getAllCategories,
 };
 
 export default assortmentAPI;

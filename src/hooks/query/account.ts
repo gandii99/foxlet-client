@@ -9,6 +9,6 @@ export const useGetMyEmployeeProfileQuery = () => {
   return useQuery(['my-employee-profile'], accountAPI.getMyEmployeeProfile);
 };
 
-export const useGetMyCompanyProfileQuery = () => {
-  return useQuery(['my-company-profile'], accountAPI.getMyCompanyProfile);
+export const useGetMyCompanyQuery = () => {
+  return useQuery(['my-company'], accountAPI.getMyCompany);
 };
