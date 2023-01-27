@@ -118,7 +118,7 @@ const AssortmentPage = () => {
             </div>
           </NavLink>
         </aside>
-        <aside className="d-flex flex-wrap justify-content-around align-items-start asside-shopcart border border-shadow">
+        {/* <aside className="d-flex flex-wrap justify-content-around align-items-start asside-shopcart border border-shadow">
           <div className="d-flex justify-content-between col-12 orange-background">
             Header
             <Button
@@ -148,7 +148,7 @@ const AssortmentPage = () => {
               ></FontAwesomeIcon>
             </Button>
           </div>
-        </aside>
+        </aside> */}
       </div>
       <div className="my-3 col-10 px-5">
         <Outlet />

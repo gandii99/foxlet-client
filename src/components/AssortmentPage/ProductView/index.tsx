@@ -31,8 +31,8 @@ interface modifiedCategory {
 export interface ProductToCart {
   id_batch: number;
   quantity_in_order: number;
-  quantity_in_stock: number;
   price: number;
+  quantity_in_stock: number;
 }
 
 const ProductView = () => {
