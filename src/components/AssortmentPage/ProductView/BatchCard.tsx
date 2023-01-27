@@ -24,7 +24,7 @@ interface BatchProps {
   condition: ConditionType;
   pallet: PalletType;
   currentCountOrder: number;
-  changeCountProduct: (batch: ProductToCart, count: number) => void;
+  changeCountProduct: (batch: ProductToCart, quantity_in_order: number) => void;
 }
 const BatchCard = ({
   id_batch,
@@ -42,28 +42,36 @@ const BatchCard = ({
   changeCountProduct,
 }: BatchProps) => {
   return (
-    <div className="my-2 px-2 py-3 border rounded-4 border-shadow col-3 mx-1">
-      <Button
-        name="delete-pallet"
-        className="button-orange-first bg-se square-30 mx-1"
-        onClick={() => {
-          changeCountProduct(
-            {
-              id_batch: id_batch,
-              count: 1,
-              quantity_in_stock: quantity_in_stock,
-              price: selling_price,
-            },
-            1
-          );
-        }}
-        disabled={currentCountOrder >= quantity_in_stock}
-      >
-        <FontAwesomeIcon
-          className="font-xs"
-          icon={faCartShopping}
-        ></FontAwesomeIcon>
-      </Button>
+    <div className="my-2 p-2 border rounded-4 border-shadow col-3 mx-1">
+      <div className="position-relative d-flex justify-content-center align-items-center">
+        <img
+          className="card-img-top p-1 image-batch"
+          src={product.image || '/images/no-image.svg'}
+          alt={product.product_name}
+        />
+        <Button
+          name="delete-pallet"
+          className="position-absolute top-0 end-0 button-orange-first square-30"
+          onClick={() => {
+            changeCountProduct(
+              {
+                id_batch: id_batch,
+                quantity_in_order: 1,
+                quantity_in_stock: quantity_in_stock,
+                price: selling_price,
+              },
+              1
+            );
+          }}
+          disabled={currentCountOrder >= quantity_in_stock}
+        >
+          <FontAwesomeIcon
+            className="font-xs"
+            icon={faCartShopping}
+          ></FontAwesomeIcon>
+        </Button>
+      </div>
+
       <div>Partia: {batch_name}</div>
 
       <div className="d-flex justify-content-between flex-wrap aling-items-center">

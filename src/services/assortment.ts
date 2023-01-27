@@ -106,11 +106,16 @@ export interface OrderStatusType {
   comments: string;
 }
 export interface BatchOrderType {
-  id_supplier: number;
+  // id_supplier: number;
+  id_batch: number;
+  quantity_in_order: number;
+  batch: BatchType;
   // id_employee: number;
-  purchase_price: number;
-  purchase_date: string;
-  delivery_date: string;
+  // batch_name: string;
+  // purchase_price: number;
+  // purchase_date: string;
+  // delivery_date: string;
+  // product: ProductType;
 }
 
 export interface CreateBatchType {
@@ -130,9 +135,23 @@ export interface OrderType {
   order_date: string;
   order_price: number;
   comments: string;
-  batch_order: BatchOrderType;
-  order_status: OrderStatusType;
+  batch_order: BatchOrderType[];
+  order_status: OrderStatusType[];
   client: ClientType;
+}
+
+export interface BatchOrderTypeCreate {
+  id_batch: number;
+  // id_order: number;
+  quantity_in_order: number;
+}
+
+export interface CreateOrderType {
+  id_client: number;
+  order_date: string;
+  order_price: number;
+  comments: string;
+  batches: BatchOrderTypeCreate[];
 }
 
 const createSupplier = async (
@@ -320,6 +339,46 @@ const updatePallet = async (
   return result;
 };
 
+const createOrder = async (
+  formData: CreateOrderType,
+  onSucess?: VoidFunction,
+  onError?: (error: APIError) => void
+) => {
+  const result = api
+    .post('/orders', formData)
+    .then(respons => {
+      console.log(respons);
+      onSucess && onSucess();
+    })
+    .catch(error => {
+      onError && onError(error);
+    });
+  return result;
+};
+
+const getMyOrders = async (): Promise<OrderType[]> => {
+  const { data } = await api.get(`/orders/my-orders`);
+  return data;
+};
+
+const deleteOrder = async (
+  id_order: number,
+  onSucess?: VoidFunction,
+  onError?: (error: APIError) => void
+) => {
+  console.log('usuwanko');
+  const result = await api
+    .delete(`/orders/` + id_order)
+    .then(respons => {
+      console.log(respons);
+      onSucess && onSucess();
+    })
+    .catch(error => {
+      onError && onError(error);
+    });
+  return result;
+};
+
 const assortmentAPI = {
   createSupplier,
   getAllSuppliers,
@@ -344,6 +403,10 @@ const assortmentAPI = {
 
   createCategory,
   getAllCategories,
+
+  createOrder,
+  getMyOrders,
+  deleteOrder,
 };
 
 export default assortmentAPI;

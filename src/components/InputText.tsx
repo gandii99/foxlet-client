@@ -8,6 +8,7 @@ interface Props {
   classError?: string;
   register?: any;
   errors?: any;
+  type?: string;
   name?: string;
   disabled?: boolean;
 }
@@ -19,6 +20,7 @@ const InputText: React.FC<Props> = ({
   classInput = '',
   register = {},
   errors = {},
+  type = '',
   name = '',
   disabled = false,
 }) => {
@@ -27,7 +29,7 @@ const InputText: React.FC<Props> = ({
       {label}
       <input
         {...register}
-        type="text"
+        type={type || 'text'}
         className={classInput}
         placeholder={placeholder}
         disabled={disabled}

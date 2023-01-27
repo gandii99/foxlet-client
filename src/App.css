@@ -143,6 +143,24 @@ a {
   width: 200px;
 }
 
+.image-batch {
+  height: 200px;
+  fill-opacity: cover;
+  width: auto;
+}
+
+.image-pallet-batch {
+  height: 150px;
+  fill-opacity: cover;
+  width: auto;
+}
+
+.image-pallet-batch-small {
+  height: 40px;
+  fill-opacity: cover;
+  width: auto;
+}
+
 /* @media only screen and (max-width: 600px) {
   .font-xxs {
     font-size: 9px;

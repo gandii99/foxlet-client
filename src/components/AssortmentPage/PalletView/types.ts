@@ -5,6 +5,7 @@ import { SupplierCardType } from '../SupplierView/types';
 export interface ProductType {
   id_product: number;
   id_category: number;
+  image: string;
   product_name: string;
   EAN: string;
   ASIN: string;

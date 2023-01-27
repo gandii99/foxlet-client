@@ -5,6 +5,8 @@ import {
   faBoxesPacking,
   faBriefcase,
   faBuilding,
+  faCancel,
+  faCheck,
   faDolly,
   faMinus,
   faPallet,
@@ -18,6 +20,7 @@ import assortmentAPI, { CategoryType } from '../../../services/assortment';
 import { BatchType, ProductType } from '../PalletView/types';
 import ProductCard from './ProductCard';
 import BatchCard from './BatchCard';
+import { onError, onSuccess } from '../../../lib/toastHelpers';
 
 interface modifiedCategory {
   id_category: number;
@@ -27,7 +30,7 @@ interface modifiedCategory {
 
 export interface ProductToCart {
   id_batch: number;
-  count: number;
+  quantity_in_order: number;
   quantity_in_stock: number;
   price: number;
 }
@@ -39,7 +42,10 @@ const ProductView = () => {
   const [currentOrder, setCurrentOrder] = useState<ProductToCart[]>([]);
   const [currentPriceOrder, setCurrentPriceOrder] = useState<number>(0);
 
-  const changeCountProduct = (batchAddCart: ProductToCart, count: number) => {
+  const changeCountProduct = (
+    batchAddCart: ProductToCart,
+    quantity_in_order: number
+  ) => {
     const findBatch = currentOrder.find(
       batch => batch.id_batch === batchAddCart.id_batch
     );
@@ -48,15 +54,19 @@ const ProductView = () => {
         .map(batch => {
           if (
             batch.id_batch === batchAddCart.id_batch &&
-            !(batch.count + count < 0) &&
-            !(batch.count + count > batch.quantity_in_stock)
+            !(batch.quantity_in_order + quantity_in_order < 0) &&
+            !(
+              batch.quantity_in_order + quantity_in_order >
+              batch.quantity_in_stock
+            )
           ) {
-            batch.count = batch.count + count;
+            batch.quantity_in_order =
+              batch.quantity_in_order + quantity_in_order;
             // batch.price = batch.price + batchAddCart.price;
           }
           return batch;
         })
-        .filter(batch => batch.count > 0);
+        .filter(batch => batch.quantity_in_order > 0);
       setCurrentOrder(currentOrderAfter);
     } else {
       setCurrentOrder([...currentOrder, batchAddCart]);
@@ -65,7 +75,9 @@ const ProductView = () => {
 
   useEffect(() => {
     let sum = 0;
-    currentOrder.forEach(batch => (sum += batch.price * batch.count));
+    currentOrder.forEach(
+      batch => (sum += batch.price * batch.quantity_in_order)
+    );
     setCurrentPriceOrder(sum);
   }, [currentOrder]);
 
@@ -98,16 +110,66 @@ const ProductView = () => {
       });
   }, []);
   console.log(myBatches);
+
+  const confirmOrder = async () => {
+    const ordersBatches = currentOrder.map(order => {
+      return {
+        id_batch: order.id_batch,
+        quantity_in_order: order.quantity_in_order,
+      };
+    });
+
+    const createdOrder = await assortmentAPI.createOrder(
+      {
+        id_client: 1,
+        order_date: new Date().toISOString(),
+        order_price: currentPriceOrder,
+        comments: '',
+        batches: ordersBatches,
+      },
+      () => onSuccess('Zamówienie zostało złożone!'),
+      e => onError(e, 'Problem podczas składania zamówienia')
+    );
+
+    console.log(createdOrder);
+  };
+  const cancelOrder = () => {
+    setCurrentOrder([]);
+    setCurrentPriceOrder(0);
+  };
+
   return (
     <div>
       <h2>Twoje partie produktów</h2>
 
       {currentOrder.length > 0 && (
         <div className="d-flex justify-content-start flex-wrap border">
-          <div className="d-flex col-12 justify-content-between">
-            <h4>Aktualne zamówienie</h4>
-            <div>Suma: {currentPriceOrder}</div>
+          <div className="d-flex flex-wrap col-12 justify-content-between align-items-center orange-background">
+            <span className="text-white font-l">Aktualne zamówienie</span>
+            <div className="d-flex">
+              <Button
+                name="delete-pallet"
+                className="button-orange-first bg-danger square-30 mx-1"
+                onClick={() => cancelOrder()}
+              >
+                <FontAwesomeIcon
+                  className="font-xs"
+                  icon={faCancel}
+                ></FontAwesomeIcon>
+              </Button>
+              <Button
+                name="confirm-order"
+                className="button-orange-first bg-success square-30 mx-1"
+                onClick={() => confirmOrder()}
+              >
+                <FontAwesomeIcon
+                  className="font-xs"
+                  icon={faCheck}
+                ></FontAwesomeIcon>
+              </Button>
+            </div>
           </div>
+
           {currentOrder.map(batch => (
             <div
               className="d-flex flex-wrap justify-content-start align-items-center col-4 border"
@@ -124,14 +186,14 @@ const ProductView = () => {
                     changeCountProduct(
                       {
                         id_batch: batch.id_batch,
-                        count: -1,
+                        quantity_in_order: -1,
                         price: batch.price,
                         quantity_in_stock: batch.quantity_in_stock,
                       },
                       -1
                     );
                   }}
-                  disabled={batch.count - 1 < 0}
+                  disabled={batch.quantity_in_order - 1 < 0}
                 >
                   <FontAwesomeIcon
                     className="font-xs"
@@ -146,14 +208,16 @@ const ProductView = () => {
                     changeCountProduct(
                       {
                         id_batch: batch.id_batch,
-                        count: 1,
+                        quantity_in_order: 1,
                         price: batch.price,
                         quantity_in_stock: batch.quantity_in_stock,
                       },
                       1
                     );
                   }}
-                  disabled={batch.count + 1 > batch.quantity_in_stock}
+                  disabled={
+                    batch.quantity_in_order + 1 > batch.quantity_in_stock
+                  }
                 >
                   <FontAwesomeIcon
                     className="font-xs"
@@ -162,9 +226,10 @@ const ProductView = () => {
                 </Button>
               </div>
 
-              <div className="col-5">Sztuk: {batch.count}</div>
+              <div className="col-5">Sztuk: {batch.quantity_in_order}</div>
             </div>
           ))}
+          <div>Suma: {currentPriceOrder}</div>
         </div>
       )}
       {/* <span>Aktualnie nie dodałeś jeszcze żadnego sprzedawcy...</span> */}
@@ -178,7 +243,7 @@ const ProductView = () => {
               currentOrder.find(
                 currentOrderBatch =>
                   currentOrderBatch.id_batch === batch.id_batch
-              )?.count || 0
+              )?.quantity_in_order || 0
             }
           />
         ))}
@@ -188,8 +253,6 @@ const ProductView = () => {
         {allProducts.map(product => (
           <ProductCard key={product.id_product} {...product} />
         ))}
-        {/* <ProductCard /> */}
-        {/* <SupplierCard /> */}
       </div>
 
       <Button type="submit" className="w-100 mt-4 button-orange-first">

@@ -40,3 +40,13 @@ export const useDeletePalletsMutation = (onSuccess?: () => void) => {
     },
   });
 };
+
+export const useDeleteOrderMutation = (onSuccess?: () => void) => {
+  const queryClient = useQueryClient();
+  return useMutation(assortmentAPI.deleteOrder, {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['my-orders']);
+      onSuccess && onSuccess();
+    },
+  });
+};

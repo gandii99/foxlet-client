@@ -12,77 +12,31 @@ import { NavLink } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import clsx from 'clsx';
 import { Button } from 'react-bootstrap';
-import assortmentAPI, { CategoryType } from '../../../services/assortment';
-import { ProductType } from '../PalletView/types';
-import ProductCard from './OrderCard';
-
-interface modifiedCategory {
-  id_category: number;
-  category_name: string;
-  category_description: string;
-}
+import assortmentAPI, {
+  CategoryType,
+  OrderType,
+} from '../../../services/assortment';
+import OrderCard from './OrderCard';
+import { useGetMyOrdersQuery } from '../../../hooks/query/assortment';
 
 const OrderView = () => {
-  const [products, setProducts] = useState<ProductType[]>([]);
-  const [categories, setCategories] = useState<CategoryType[]>([]);
+  // const [orders, setOrders] = useState<OrderType[]>([]);
 
-  useEffect(() => {
-    assortmentAPI
-      .getAllProducts()
-      .then(response => {
-        setProducts(response.data);
-      })
-      .catch(err => {
-        console.log('error', err);
-      });
-    assortmentAPI
-      .getAllCategories()
-      .then(response => {
-        setCategories(response);
-      })
-      .catch(err => {
-        console.log('error', err);
-      });
-  }, []);
+  const { data: myOrders, isSuccess: isGetMyOrdersSuccess } =
+    useGetMyOrdersQuery();
 
-  const getCategories = (id_category: number): modifiedCategory => {
-    const categoryInfo = categories.find(
-      category => category.id_category === id_category
-    );
-    console.log('getCategories', categoryInfo);
-
-    return categoryInfo
-      ? {
-          id_category: categoryInfo.id_category,
-          category_name: categoryInfo.category_name,
-          category_description: categoryInfo.description,
-        }
-      : {
-          id_category: 0,
-          category_name: '',
-          category_description: '',
-        };
-  };
+  if (!isGetMyOrdersSuccess) {
+    return <div>Loading</div>;
+  }
 
   return (
     <div>
       <h2>Twoje zamówienia</h2>
-      {/* <span>Aktualnie nie dodałeś jeszcze żadnego sprzedawcy...</span> */}
       <div className="d-flex flex-wrap justify-content-start">
-        {products.map(product => (
-          <ProductCard
-            key={product.id_product}
-            {...product}
-            {...getCategories(product.id_category)}
-          />
+        {myOrders.map(order => (
+          <OrderCard key={order.id_order} {...order} />
         ))}
-        {/* <ProductCard /> */}
-        {/* <SupplierCard /> */}
       </div>
-
-      <Button type="submit" className="w-100 mt-4 button-orange-first">
-        Dodaj sprzedawce
-      </Button>
     </div>
   );
 };

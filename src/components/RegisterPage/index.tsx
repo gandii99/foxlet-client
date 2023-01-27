@@ -1,73 +1,101 @@
+import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+import { onError, onSuccess } from '../../lib/toastHelpers';
 import authAPI from '../../services/auth';
+import InputText from '../InputText';
+
+const CreateAccont = z.object({
+  user_name: z.string().min(1, { message: 'name is required' }),
+  email: z
+    .string()
+    .min(1, { message: 'Email jest wymagany' })
+    .email({ message: 'Podano nieprawidłowy email' }),
+  password: z.string().min(1, { message: 'Hasło jest wymagane' }),
+  role: z.string().min(1, { message: 'Wybierz role' }),
+});
+
+type registerSchema = z.infer<typeof CreateAccont>;
 
 const RegisterPage = () => {
-  const [userName, setUserName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
+  const navigation = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<registerSchema>({
+    resolver: zodResolver(CreateAccont),
+  });
+
+  const onSubmit = (data: registerSchema) => {
+    authAPI.register(
+      data,
+      () =>
+        onSuccess('Rejestracja zakończona powodzeniem.', '/login', navigation),
+      e => onError(e, 'Rejestracja nie powiodła się')
+    );
+  };
 
   return (
     <div className="content-min-height d-flex justify-content-around align-items-start flex-wrap col-lg-12 col-xl-8 m-auto py-5">
       <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5 px-4 border rounded-4 py-4 content-fit-height border-shadow my-4">
-        <h3 className="pb-4">Zaloguj się</h3>
+        <h3 className="pb-4">Zarejestruj się</h3>
         <form
-          onSubmit={e => {
-            e.preventDefault();
-            authAPI.register({ email, password, user_name: userName, role });
-          }}
+          className="d-flex flex-wrap justify-content-around"
+          onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="w-100 mb-3">
-            <input
-              name="user-name"
-              className="form-control font-xs"
-              placeholder="Nazwa"
-              type="text"
-              value={userName}
-              onChange={e => setUserName(e.target.value)}
-              required
-            ></input>
-          </div>
-          <div className="w-100 mb-3">
-            <input
-              name="email"
-              className="form-control font-xs"
-              placeholder="Email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-            ></input>
-          </div>
-          <div className="w-100 mb-3">
-            <input
-              name="password"
-              className="form-control font-xs"
-              placeholder="Hasło"
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-            ></input>
-          </div>
-          <div className="w-100 mb-3">
-            <select
-              name="role"
-              className="form-control font-xs"
-              required
-              onChange={e => setRole(e.target.value)}
-            >
-              <option value="" disabled selected>
-                Rola
-              </option>
+          <InputText
+            label="Nazwa"
+            placeholder="Jacek"
+            name="user_name"
+            register={register('user_name')}
+            classLabel="font-xs col-11 mt-3"
+            classInput="form-control"
+            classError="font-13 text-danger"
+            errors={errors}
+          />
+          <InputText
+            label="Email"
+            placeholder="jacek@gmail.com"
+            name="email"
+            register={register('email')}
+            classLabel="font-xs col-11 mt-3"
+            classInput="form-control"
+            classError="font-13 text-danger"
+            errors={errors}
+          />
+          <InputText
+            label="Hasło"
+            name="password"
+            type="password"
+            register={register('password')}
+            classLabel="font-xs col-11 mt-3"
+            classInput="form-control"
+            classError="font-13 text-danger"
+            errors={errors}
+          />
+          <label className="font-xs col-11 mt-3">
+            Dostawca
+            <select {...register('role')} className="form-control">
+              <option value="">Wybierz</option>
               <option value="employee">Pracownik</option>
-              <option value="customer">Klient</option>
+              <option value="client" disabled>
+                Klient
+              </option>
             </select>
-          </div>
-
-          <Button type="submit" className="w-100 mt-4 button-orange-first">
-            Zarejestruj się
+            {errors.role && (
+              <span className="font-13 text-danger">{errors.role.message}</span>
+            )}
+          </label>
+          <Button
+            type="submit"
+            // disabled={isCreatePalletLoading}
+            className="col-11 mt-4 button-orange-first"
+          >
+            Dodaj
           </Button>
         </form>
       </div>

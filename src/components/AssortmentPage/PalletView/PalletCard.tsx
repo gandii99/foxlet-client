@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { faPlus, faTrashCan, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PalletCardType } from './types';
-import BatchCard from './BatchImageCard';
+import BatchImageCard from './BatchImageCard';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 
@@ -105,7 +105,14 @@ const PalletCard = (props: PalletCardType) => {
         {props.batch
           ? props.batch.map((batch, index) => {
               if (index >= 3) return;
-              return <BatchCard key={batch.id_batch} {...batch} />;
+              return (
+                <BatchImageCard
+                  key={batch.id_batch}
+                  batch_name={batch.batch_name}
+                  image={batch.product.image}
+                  product_name={batch.product.product_name}
+                />
+              );
             })
           : null}
 

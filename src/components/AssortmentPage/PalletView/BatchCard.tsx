@@ -33,36 +33,39 @@ const BatchCard = (props: BatchType) => {
               'border-danger')
         )}`}
       >
-        <div className="position-absolute top-0 end-0 d-flex justify-content-end align-items-center px-1 py-1">
-          <Button
-            className="button-orange-first bg-danger square-30 mx-1"
-            onClick={() => {
-              console.log('click');
-              deleteHandler();
-            }}
-            disabled={isDeleteBatchLoading}
-          >
-            <FontAwesomeIcon
-              className="font-xs"
-              icon={faTrashCan}
-            ></FontAwesomeIcon>
-          </Button>
+        <div className="d-flex justify-content-center align-items-center">
+          <img
+            className="card-img-top p-2 image-pallet-batch"
+            src={props.product.image || '/images/no-image.svg'}
+            alt="Card image cap"
+          />
+          <div className="position-absolute top-0 end-0 d-flex justify-content-end align-items-center px-1 py-1">
+            <Button
+              className="button-orange-first bg-danger square-30 mx-1"
+              onClick={() => {
+                console.log('click');
+                deleteHandler();
+              }}
+              disabled={isDeleteBatchLoading}
+            >
+              <FontAwesomeIcon
+                className="font-xs"
+                icon={faTrashCan}
+              ></FontAwesomeIcon>
+            </Button>
 
-          <Link
-            className="button-orange-first square-30"
-            to={`${props.id_pallet}`}
-          >
-            <FontAwesomeIcon
-              icon={faEdit}
-              className="font-xs"
-            ></FontAwesomeIcon>
-          </Link>
+            <Link
+              className="button-orange-first square-30"
+              to={`${props.id_pallet}`}
+            >
+              <FontAwesomeIcon
+                icon={faEdit}
+                className="font-xs"
+              ></FontAwesomeIcon>
+            </Link>
+          </div>
         </div>
-        <img
-          className="card-img-top "
-          src="/images/ps4_pro.png"
-          alt="Card image cap"
-        />
+
         <div className="px-2">
           <div className="d-flex justify-content-between ">
             <span className="card-title font-xs">

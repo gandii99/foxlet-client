@@ -12,3 +12,7 @@ export const useGetMySuppliersQuery = () => {
 export const useGetMyClientsQuery = () => {
   return useQuery(['my-clients'], assortmentAPI.getMyClients);
 };
+
+export const useGetMyOrdersQuery = () => {
+  return useQuery(['my-orders'], assortmentAPI.getMyOrders);
+};

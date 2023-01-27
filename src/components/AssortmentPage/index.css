@@ -5,3 +5,8 @@
 .asside-menu-account {
   width: 100px;
 }
+
+.asside-shopcart {
+  width: 100%;
+  min-height: 300px;
+}

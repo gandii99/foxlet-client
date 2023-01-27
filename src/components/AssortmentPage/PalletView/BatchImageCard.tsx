@@ -1,16 +1,26 @@
 import React from 'react';
 import { BatchType } from './types';
 
-const BatchImageCard = (props: BatchType) => {
+interface BatchImageCardPropsType {
+  product_name: string;
+  batch_name: string;
+  image: string;
+}
+
+const BatchImageCard = ({
+  product_name,
+  batch_name,
+  image,
+}: BatchImageCardPropsType) => {
   return (
     <div
       className="d-flex justify-content-center align-items-center products-box border rounded-1 border-shadow my-1 mx-1 font-xs"
-      title={props.batch_name}
+      title={batch_name}
     >
       <img
-        className="card-img-top "
-        src="/images/ps4_pro.png"
-        alt="Card image cap"
+        className="image-pallet-batch-small p-1 "
+        src={image || '/images/no-image.svg'}
+        alt={product_name}
       />
     </div>
   );

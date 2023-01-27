@@ -1,58 +1,72 @@
+import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { z } from 'zod';
 import { useAuth } from '../../hooks/use-auth';
 import { APIError } from '../../lib/api/types';
+import { onError, onSuccess } from '../../lib/toastHelpers';
+import authAPI from '../../services/auth';
+import InputText from '../InputText';
 import './index.css';
 
-const LoginPage: React.FC = () => {
-  const navigation = useNavigate();
-  const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const CreateLogin = z.object({
+  email: z
+    .string()
+    .min(1, { message: 'email is required' })
+    .email({ message: 'provide valid email address' }),
+  password: z.string().min(1, { message: 'password is required' }),
+});
 
-  const onSucess = () => {
-    navigation('/');
-    toast.success('Zostałeś zalogowany.', {});
-    console.log('git');
-  };
-  const onError = (error: APIError) => {
-    console.log('error', error);
-    toast.error('Logowanie nie powiodło się!');
+type loginSchema = z.infer<typeof CreateLogin>;
+
+const LoginPage: React.FC = () => {
+  const { login } = useAuth();
+  const navigation = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<loginSchema>({
+    resolver: zodResolver(CreateLogin),
+  });
+
+  const onSubmit = (data: loginSchema) => {
+    login(
+      data,
+      () => onSuccess('Rejestracja zakończona powodzeniem', '/', navigation),
+      e => onError(e, 'Rejestracja nie powiodła się')
+    );
+    console.log('loged');
   };
 
   return (
     <div className="content-min-height d-flex justify-content-around align-items-start flex-wrap col-lg-12 col-xl-8 m-auto py-5">
       <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5 px-4 border rounded-4 py-4 border-shadow my-4">
         <h3 className="pb-4">Zaloguj się</h3>
-        <form
-          onSubmit={async e => {
-            e.preventDefault();
-            login({ email, password }, onSucess, onError);
-          }}
-        >
-          <div className="w-100 mb-3">
-            <input
-              className="form-control font-xs"
-              name="email"
-              placeholder="Email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="w-100 ">
-            <input
-              className="form-control font-xs"
-              name="password"
-              placeholder="Hasło"
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-            ></input>
-          </div>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <InputText
+            label="Email"
+            placeholder="jacek@gmail.com"
+            name="email"
+            register={register('email')}
+            classLabel="font-xs col-11 mt-3"
+            classInput="form-control"
+            classError="font-13 text-danger"
+            errors={errors}
+          />
+          <InputText
+            label="Hasło"
+            name="password"
+            type="password"
+            register={register('password')}
+            classLabel="font-xs col-11 mt-3"
+            classInput="form-control"
+            classError="font-13 text-danger"
+            errors={errors}
+          />
           <a className="font-s" href="/przypomnienie-hasla">
             Nie pamiętasz hasła?
           </a>
