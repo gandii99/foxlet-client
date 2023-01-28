@@ -82,7 +82,7 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
       assortmentAPI
         .getAllProducts()
         .then(response => {
-          setProducts(response.data);
+          setProducts(response);
         })
         .catch(err => {
           console.log('error', err);
@@ -110,6 +110,7 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
     return uniqueCategory;
   };
 
+  console.log('catagories', catagories);
   return (
     <form
       className="d-flex flex-wrap justify-content-around"
@@ -145,11 +146,17 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
                 }
                 key={categoryId}
               >
-                {products.map(product => (
-                  <option key={product.id_product} value={product.id_product}>
-                    {product.product_name}
-                  </option>
-                ))}
+                {products.map(
+                  product =>
+                    product.id_category === categoryId && (
+                      <option
+                        key={product.id_product}
+                        value={product.id_product}
+                      >
+                        {product.product_name}
+                      </option>
+                    )
+                )}
               </optgroup>
             ))}
           {/* </> */}

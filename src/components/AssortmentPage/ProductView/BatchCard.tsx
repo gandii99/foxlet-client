@@ -1,5 +1,6 @@
 import { faCartShopping, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { ProductToCart } from '.';
@@ -41,11 +42,16 @@ const BatchCard = ({
   currentCountOrder,
   changeCountProduct,
 }: BatchProps) => {
+  const [showMore, setShowMore] = useState(false);
   return (
-    <div className="my-2 p-2 border rounded-4 border-shadow col-3 mx-1">
-      <div className="position-relative d-flex justify-content-center align-items-center">
+    <div
+      className={`my-2 p-2 border rounded-4 border-shadow col-3 mx-1 ${clsx(
+        condition.id_condition && `color-condition-${condition.id_condition}`
+      )}`}
+    >
+      <div className="position-relative d-flex justify-content-center align-items-center image-batch-product-container">
         <img
-          className="card-img-top p-1 image-batch"
+          className="p-1 image-batch-product"
           src={product.image || '/images/no-image.svg'}
           alt={product.product_name}
         />
@@ -89,7 +95,18 @@ const BatchCard = ({
       </div>
 
       <div className="d-flex flex-wrap h-auto">
-        <span className="font-xs">{description}</span>
+        <p className="font-xs mb-0 ">
+          {showMore
+            ? description
+            : `${description && description.substring(0, 38)}... `}
+          <span
+            className="font-xs border rounded-3 px-1"
+            role="button"
+            onClick={() => setShowMore(!showMore)}
+          >
+            {showMore ? 'Ukryj' : 'Więcej'}
+          </span>
+        </p>
       </div>
     </div>
   );

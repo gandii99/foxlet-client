@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './index.css';
+import './../../App.css';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -15,6 +15,7 @@ import {
   faPerson,
   faShoppingBag,
   faShoppingBasket,
+  faTruckMoving,
 } from '@fortawesome/free-solid-svg-icons';
 import { NavLink } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
@@ -27,7 +28,7 @@ const AssortmentPage = () => {
   return (
     <div className="content-min-height d-flex justify-content-center align-items-start col-10 m-auto">
       <div className="col-2">
-        <aside className="asside-menu-account border border-shadow my-5 mx-5 col-1">
+        <aside className="asside-menu-account border border-shadow my-5 mx-5">
           <NavLink
             to="pallets"
             className={({ isActive }) => clsx(isActive && 'orange-color')}
@@ -45,19 +46,22 @@ const AssortmentPage = () => {
             </div>
           </NavLink>
           <NavLink
-            to="products"
+            to="stock"
             className={({ isActive }) => clsx(isActive && 'orange-color')}
             end={true}
           >
             <div
               role="button"
               className={`d-flex justify-content-center align-items-center flex-wrap py-2 ${
-                'products' === activeField && 'orange-color'
+                'stock' === activeField && 'orange-color'
               }`}
-              id="products"
+              id="stock"
             >
-              <FontAwesomeIcon icon={faDolly} className="account-icon w-100" />
-              <span className="font-s">Produkty</span>
+              <FontAwesomeIcon
+                icon={faBoxesPacking}
+                className="account-icon w-100"
+              />
+              <span className="font-s">Magazyn</span>
             </div>
           </NavLink>
           <NavLink
@@ -73,7 +77,7 @@ const AssortmentPage = () => {
               id="suppliers"
             >
               <FontAwesomeIcon
-                icon={faBoxesPacking}
+                icon={faTruckMoving}
                 className="account-icon w-100"
               />
               <span className="font-s">Dostawcy</span>
@@ -117,38 +121,23 @@ const AssortmentPage = () => {
               <span className="font-s">Zamówienia</span>
             </div>
           </NavLink>
+          <NavLink
+            to="products"
+            className={({ isActive }) => clsx(isActive && 'orange-color')}
+            end={true}
+          >
+            <div
+              role="button"
+              className={`d-flex justify-content-center align-items-center flex-wrap py-2 ${
+                'products' === activeField && 'orange-color'
+              }`}
+              id="products"
+            >
+              <FontAwesomeIcon icon={faDolly} className="account-icon w-100" />
+              <span className="font-s">Produkty</span>
+            </div>
+          </NavLink>
         </aside>
-        {/* <aside className="d-flex flex-wrap justify-content-around align-items-start asside-shopcart border border-shadow">
-          <div className="d-flex justify-content-between col-12 orange-background">
-            Header
-            <Button
-              name="delete-pallet"
-              className="button-orange-first bg-danger square-30 mx-1"
-              // onClick={() => {
-              // }}
-            >
-              <FontAwesomeIcon
-                className="font-xs"
-                icon={faCancel}
-              ></FontAwesomeIcon>
-            </Button>
-          </div>
-          <div className="col-12">Koszyk</div>
-          <div className="col-12">
-            <div>Suma</div>
-            <Button
-              name="delete-pallet"
-              className="button-orange-first square-30 mx-1"
-              // onClick={() => {
-              // }}
-            >
-              <FontAwesomeIcon
-                className="font-xs"
-                icon={faCheck}
-              ></FontAwesomeIcon>
-            </Button>
-          </div>
-        </aside> */}
       </div>
       <div className="my-3 col-10 px-5">
         <Outlet />

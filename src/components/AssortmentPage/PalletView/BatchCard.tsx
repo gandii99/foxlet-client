@@ -24,13 +24,8 @@ const BatchCard = (props: BatchType) => {
     <div className="mx-2 my-2">
       <div
         className={`position-relative batch-box border rounded-3 border-shadow ${clsx(
-          (props.condition?.condition_name === 'nowy' && 'border-success') ||
-            (props.condition?.condition_name === 'używany' &&
-              'border-primary') ||
-            (props.condition?.condition_name === 'uszkodzony' &&
-              'border-danger') ||
-            (props.condition?.condition_name === 'uszkodzony' &&
-              'border-danger')
+          props.condition.id_condition &&
+            `color-condition-${props.condition.id_condition}`
         )}`}
       >
         <div className="d-flex justify-content-center align-items-center">

@@ -42,21 +42,6 @@ const ClientView = () => {
   const { data: myClients, isSuccess: isGetMyClientsSuccess } =
     useGetMyClientsQuery();
 
-  // useEffect(() => {
-  //   if (session?.user.id_user) {
-  //     const userData = assortmentAPI
-  //       .getMySuppliers()
-  //       .then(response => {
-  //         console.log(response.data);
-  //         setClients(response.data);
-  //       })
-  //       .catch(err => {
-  //         console.log('error', err);
-  //       });
-  //     console.log(userData);
-  //   }
-  // }, []);
-
   if (!isGetMyClientsSuccess) {
     return <div>Loading</div>;
   }
@@ -67,7 +52,7 @@ const ClientView = () => {
   return (
     <div>
       <div className="d-flex flex-wrap justify-content-start align-items-center col-12 mb-4">
-        <h2>Twoi klienci</h2>
+        <h2>Klienci</h2>
         <Button
           name="create-palet"
           className="button-orange-first button-add-size mx-3 font-m "

@@ -16,6 +16,7 @@ import GuardSession from './components/GuardSession';
 import SupplierForm from './components/AssortmentPage/SupplierView/SupplierForm';
 import SupplierView from './components/AssortmentPage/SupplierView';
 import PalletView from './components/AssortmentPage/PalletView';
+import StockView from './components/AssortmentPage/StockView';
 import ProductView from './components/AssortmentPage/ProductView';
 import PalletForm from './components/AssortmentPage/PalletView/PalletCreate';
 import PalletDetails from './components/AssortmentPage/PalletView/PalletDetails';
@@ -85,6 +86,7 @@ const App: React.FC = () => {
                     path="pallets/:id_pallet"
                     element={<PalletDetails />}
                   />
+                  <Route path="stock" element={<StockView />} />
                   <Route path="products" element={<ProductView />} />
                   <Route path="suppliers" element={<SupplierView />} />
                   <Route path="clients" element={<ClientView />} />

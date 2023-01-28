@@ -67,9 +67,11 @@ const LoginPage: React.FC = () => {
             classError="font-13 text-danger"
             errors={errors}
           />
-          <a className="font-s" href="/przypomnienie-hasla">
-            Nie pamiętasz hasła?
-          </a>
+          <div className="col-12">
+            <a className="font-s" href="/przypomnienie-hasla">
+              Nie pamiętasz hasła?
+            </a>
+          </div>
           <Button type="submit" className="w-100 mt-4 button-orange-first">
             Zaloguj
           </Button>

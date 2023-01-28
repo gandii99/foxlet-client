@@ -176,9 +176,9 @@ const getAllSuppliers = async () => {
   return result;
 };
 
-const getAllProducts = async () => {
-  const result = await api.get('/products');
-  return result;
+const getAllProducts = async (): Promise<ProductType[]> => {
+  const { data } = await api.get('/products');
+  return data;
 };
 
 const getMyProducts = async (): Promise<ProductType[]> => {

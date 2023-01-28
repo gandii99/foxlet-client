@@ -60,9 +60,10 @@ a {
   align-items: center;
   color: #ff9101;
   background: white;
-  border: 2px solid #ff9101;
+  border: 1px solid #ff9101;
   text-decoration: none;
   border-radius: 10px;
+  transition: 0.1s linear;
 }
 
 .button-orange-second:hover {
@@ -71,7 +72,7 @@ a {
   align-items: center;
   color: white;
   background: #ff9101;
-  border: 2px solid white;
+  border: 1px solid white;
   text-decoration: none;
   border-radius: 10px;
 }
@@ -142,23 +143,87 @@ a {
 .batch-box {
   width: 200px;
 }
-
-.image-batch {
+.image-batch-product-container {
   height: 200px;
-  fill-opacity: cover;
-  width: auto;
+}
+.image-batch-product {
+  max-height: 100%;
+  max-width: 100%;
+  /* object-fit: contain; */
+}
+
+.image-batch-batch-container {
+  height: 200px;
 }
 
 .image-pallet-batch {
-  height: 150px;
-  fill-opacity: cover;
-  width: auto;
+  /* height: 150px;
+  object-fit: cover;
+  width: auto; */
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.image-batch-batch-small-container {
+  height: 45px;
+  width: 45px;
 }
 
 .image-pallet-batch-small {
+  /* height: 40px; */
+  /* height: auto;
+  object-fit: cover;
+  width: 100%; */
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.image-product-order {
+  width: 60px;
+  height: 60px;
+}
+
+.pallet-min-width {
+  min-width: 260px;
+  /* max-width: 300px; */
+}
+
+.color-condition-1 {
+  border-color: #38b000 !important;
+}
+.color-condition-2 {
+  border-color: #38b000 !important;
+}
+.color-condition-3 {
+  border-color: #ffa200 !important;
+}
+.color-condition-4 {
+  border-color: #ffa200 !important;
+}
+.color-condition-5 {
+  border-color: #ba181b !important;
+}
+.color-condition-6 {
+  border-color: #ba181b !important;
+}
+.color-condition-7 {
+  border-color: #c7f9cc !important;
+}
+.color-condition-8 {
+  border-color: #a6c48a !important;
+}
+
+.products-box {
+  width: 40px;
   height: 40px;
-  fill-opacity: cover;
-  width: auto;
+}
+.asside-menu-account {
+  width: 100px;
+}
+
+.asside-shopcart {
+  width: 100%;
+  min-height: 300px;
 }
 
 /* @media only screen and (max-width: 600px) {

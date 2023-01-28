@@ -31,7 +31,7 @@ const OrderView = () => {
 
   return (
     <div>
-      <h2>Twoje zamówienia</h2>
+      <h2>Zamówienia</h2>
       <div className="d-flex flex-wrap justify-content-start">
         {myOrders.map(order => (
           <OrderCard key={order.id_order} {...order} />
