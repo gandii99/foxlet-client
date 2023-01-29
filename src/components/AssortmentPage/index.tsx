@@ -129,7 +129,7 @@ const AssortmentPage = () => {
         </NavLink>
       </aside>
 
-      <div className="my-3 col-12 col-md-10 px-sm-2 px-md-3 px-lg-4">
+      <div className="my-3 col-12 col-md-10 ">
         <Outlet />
       </div>
     </div>

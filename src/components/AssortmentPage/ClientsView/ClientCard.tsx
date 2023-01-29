@@ -34,7 +34,7 @@ const ClientCard = ({
   };
 
   return (
-    <div className="d-flex justify-content-between col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4 px-1 px-lg-2">
+    <div className="d-flex justify-content-between col-12 col-sm-10 col-md-6 col-lg-4 col-xl-3 px-1 px-lg-2">
       <div className="position-relative my-2 p-3 border rounded-4 border-shadow col-12">
         <div className="position-absolute top-0 end-0 d-flex justify-content-end align-items-center px-1 py-1">
           <Button

@@ -78,19 +78,6 @@ const RegisterPage = () => {
             classError="font-13 text-danger"
             errors={errors}
           />
-          {/* <label className="font-xs col-11 mt-3">
-            Rola
-            <select {...register('role')} className="form-control">
-              <option value="">Wybierz</option>
-              <option value="employee">Pracownik</option>
-              <option value="client" disabled>
-                Klient
-              </option>
-            </select>
-            {errors.role && (
-              <span className="font-13 text-danger">{errors.role.message}</span>
-            )}
-          </label> */}
           <Button
             type="submit"
             // disabled={isCreatePalletLoading}

@@ -27,7 +27,7 @@ const DescriptionMore: React.FC<Props> = ({
           {isReadMore ? text.slice(0, 80) : text}
           <span
             onClick={toggleReadMore}
-            className="font-xs border rounded-3 px-1"
+            className="font-16 border rounded-3 px-1 mx-1"
             role="button"
           >
             {isReadMore ? 'Więcej' : 'Ukryj'}

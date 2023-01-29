@@ -70,62 +70,73 @@ const OrderCard = ({
   };
 
   return (
-    // <div className="d-flex justify-content-between col-12 col-xl-6">
     <div className="d-flex justify-content-between col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4 px-1 px-lg-2">
       <div className="my-2 p-3 border rounded-4 border-shadow col-12">
         <div className="d-flex flex-wrap col-12 mb-2 position-relative">
-          {/* <div className="d-flex justify-content-around align-items-center flex-wrap "> */}
-
-          <div className="lh-1 col-12 col-md-9 col-lg-6 px-1">
-            <span className="font-14 text-muted">Klient:</span>
-            <div className="font-18 mt-1">{client.client_name}</div>
+          <div className="d-flex justify-content-center col-12">
+            Cena:&nbsp;<span className="fw-bold">{order_price.toFixed(2)}</span>
+            &nbsp;zł
           </div>
-          {(client.first_name || client.last_name) && (
+          {(client.first_name || client.last_name || client.client_name) && (
             <div className="lh-1 col-12 col-md-9 col-lg-6 px-1">
-              <span className="font-14 text-muted">Właściciel:</span>
-              <div className="font-18 mt-1">
+              <span className="font-14 text-muted">Klient:</span>
+
+              <div className="font-16 mt-1">
                 {client.first_name} {client.last_name}
               </div>
-            </div>
-          )}
-
-          {(client.phone || client.email) && (
-            <div className="my-2 lh-1 col-12 col-md-9 col-lg-6 px-1">
-              <span className="font-14 text-muted">Kontakt:</span>
-              <div className="font-18 text-wrap mt-1">{client.phone}</div>
-              <div className="font-18 text-wrap text-break ">
+              <div className="font-16 mt-1">{client.client_name}</div>
+              <div className="font-16 text-wrap mt-1">{client.phone}</div>
+              <div className="font-16 text-wrap text-break ">
                 {client.email}
               </div>
             </div>
           )}
-          {(client.postal_code || client.city) && (
-            <div className="my-2 lh-1 col-12 col-md-9 col-lg-6 px-1">
-              <span className="font-14 text-muted">Adres:</span>
+          {/* {(client.first_name || client.last_name) && (
+            <div className="lh-1 col-12 col-md-9 col-lg-6 px-1">
+              <span className="font-14 text-muted">Klient:</span>
               <div className="font-18 mt-1">
-                {client.postal_code} {client.city}
-              </div>
-              <div className="font-18">
-                {client.street}, {client.country}
+                {client.first_name} {client.last_name}
               </div>
             </div>
-          )}
+          )} */}
+
+          {/* {(client.phone || client.email) && (
+            <div className="my-2 lh-1 col-12 col-md-9 col-lg-6 px-1">
+              <span className="font-14 text-muted">Kontakt:</span>
+              <div className="font-18 text-wrap mt-1">{client.phone}</div>
+              <div className="font-16 text-wrap text-break ">
+                {client.email}
+              </div>
+            </div>
+          )} */}
 
           {(client.REGON || client.NIP) && (
-            <div className="lh-1 col-12 col-md-9 col-lg-6 px-1">
+            <div className="lh-1 col-12 col-md-9 col-lg-6 px-1 my-2">
               <span className="font-14 text-muted">
                 {client.REGON ? 'REGON' : 'NIP'}
               </span>
               <div className="font-18 mt-1">{client.REGON || client.NIP}</div>
             </div>
           )}
+          {(client.postal_code || client.city) && (
+            <div className="my-2 lh-1 col-12 col-md-9 col-lg-6 px-1">
+              <span className="font-14 text-muted">Adres:</span>
+              <div className="font-16 mt-1">
+                {client.postal_code} {client.city}
+              </div>
+              <div className="font-16">
+                {client.street}, {client.country}
+              </div>
+            </div>
+          )}
 
-          <div className="lh-1 col-12 col-md-9 col-lg-6 px-1">
+          <div className="lh-1 col-12 col-md-9 col-lg-6 px-1 my-2">
             {/* <span className="font-14 text-muted">{REGON ? 'REGON' : 'NIP'}</span> */}
             <div className="font-14">
               <label className="text-muted font-14">
                 Status
                 <select
-                  className="form-control font-18 mt-1"
+                  className="form-control font-18"
                   value={currentStatus}
                   onChange={e => {
                     setCurrentStatus(Number(e.target.value));

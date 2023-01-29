@@ -7,6 +7,7 @@ import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { onSuccess } from '../../../lib/toastHelpers';
 import { useDeleteBatchMutation } from '../../../hooks/mutation/batches';
+import DescriptionMore from '../../DescriptionMore';
 
 const BatchCard = (props: BatchType) => {
   const { mutate: deleteBatches, isLoading: isDeleteBatchLoading } =
@@ -19,16 +20,15 @@ const BatchCard = (props: BatchType) => {
     }
   };
 
-  const [showMore, setShowMore] = useState(false);
   return (
-    <div className="mx-2 my-2">
+    <div className="d-flex justify-content-between col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3 px-1 px-lg-2">
       <div
-        className={`position-relative batch-box border rounded-3 border-shadow ${clsx(
+        className={`my-2 p-3 border rounded-4 border-shadow col-12 ${clsx(
           props.condition.id_condition &&
             `color-condition-${props.condition.id_condition}`
         )}`}
       >
-        <div className="d-flex justify-content-center align-items-center">
+        <div className="position-relative d-flex justify-content-center align-items-center">
           <img
             className="card-img-top p-2 image-pallet-batch"
             src={props.product.image || '/images/no-image.svg'}
@@ -48,16 +48,6 @@ const BatchCard = (props: BatchType) => {
                 icon={faTrashCan}
               ></FontAwesomeIcon>
             </Button>
-
-            <Link
-              className="button-orange-first square-30"
-              to={`${props.id_pallet}`}
-            >
-              <FontAwesomeIcon
-                icon={faEdit}
-                className="font-xs"
-              ></FontAwesomeIcon>
-            </Link>
           </div>
         </div>
 
@@ -85,20 +75,10 @@ const BatchCard = (props: BatchType) => {
             {props.condition?.condition_name}
           </div>
 
-          <p className="font-xs mb-0 ">
-            {showMore
-              ? props.description
-              : `${
-                  props.description && props.description.substring(0, 38)
-                }... `}
-            <span
-              className="font-xs  border rounded-3 px-1"
-              role="button"
-              onClick={() => setShowMore(!showMore)}
-            >
-              {showMore ? 'Ukryj' : 'Więcej'}
-            </span>
-          </p>
+          <DescriptionMore
+            text={props.description}
+            classSpan="font-14 text-justify"
+          />
 
           <div className="d-flex justify-content-center">
             <p className="card-text">

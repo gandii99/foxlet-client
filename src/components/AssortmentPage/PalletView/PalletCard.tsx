@@ -40,9 +40,9 @@ const PalletCard = (props: PalletCardType) => {
     setModalActive(!modalActive);
   };
   // palette-box
+
   return (
-    <div className="d-flex justify-content-between col-sm-10 col-md-6 col-xl-4 px-1 px-sm-2 m-auto">
-      {/* <div className="my-2 px-3 py-3 border rounded-4 border-shadow mx-2 pallet-min-width"> */}
+    <div className="d-flex justify-content-between align-self-stretch col-12 col-sm-10 col-md-6 col-xl-4 px-1 px-sm-2">
       <div className="my-2 px-3 py-3 border rounded-4 border-shadow col-12 ">
         <div className="d-flex justify-content-start align-items-start flex-wrap ">
           <div className="col-6 mb-2">
@@ -51,7 +51,7 @@ const PalletCard = (props: PalletCardType) => {
               {emptyToText(props.pallet_name || '')}
             </span>
           </div>
-          <div className="d-flex  justify-content-end align-items-center col-6 mb-2">
+          <div className="d-flex  justify-content-end align-items-center  col-6 mb-2">
             <Button
               name="delete-pallet"
               className="button-orange-first bg-danger square-30 mx-1"
@@ -108,7 +108,7 @@ const PalletCard = (props: PalletCardType) => {
         <div className="d-flex justify-content-center align-items-center flex-wrap">
           {props.batch
             ? props.batch.map((batch, index) => {
-                if (index >= 3) return;
+                if (index >= 4) return;
                 return (
                   <BatchImageCard
                     key={batch.id_batch}

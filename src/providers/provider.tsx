@@ -25,6 +25,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     QueryClient.removeQueries(['my-company']);
     QueryClient.removeQueries(['my-pallets']);
     QueryClient.removeQueries(['pallet']);
+    QueryClient.removeQueries(['my-suppliers']);
+    QueryClient.removeQueries(['my-clients']);
+    QueryClient.removeQueries(['my-orders']);
+    QueryClient.removeQueries(['my-batches']);
+    QueryClient.removeQueries(['my-batches-sold']);
+    QueryClient.removeQueries(['all-products']);
+    QueryClient.removeQueries(['my-products']);
+
     setSession(null);
     navigate('/');
   }, [navigate, QueryClient]);

@@ -194,10 +194,11 @@ const PalletDetails = () => {
             <FontAwesomeIcon icon={faPlus} className=" account-icon" />
           </Button>
         </div>
-
-        {currentPallet?.batch?.map((batch, index) => (
-          <BatchProductCard key={index} {...batch} />
-        ))}
+        <div className="d-flex flex-wrap justify-content-start col-12">
+          {currentPallet?.batch?.map((batch, index) => (
+            <BatchProductCard key={index} {...batch} />
+          ))}
+        </div>
       </div>
       {modalActive && (
         <ModalWrapper

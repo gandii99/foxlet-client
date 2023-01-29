@@ -41,7 +41,7 @@ const OrderView = () => {
       <h2 className="col-12 px-3 d-flex justify-content-center justify-content-md-start">
         Zamówienia
       </h2>
-      <div className="d-flex flex-wrap justify-content-center col-12">
+      <div className="d-flex flex-wrap justify-content-center justify-content-lg-start col-12">
         {myOrders.map(order => (
           <OrderCard key={order.id_order} {...order} statuses={statuses} />
         ))}

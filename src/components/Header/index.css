@@ -1,13 +1,12 @@
 header {
   /* background-color: black; */
   min-height: 10vh;
-  padding: 10px 15px;
 }
 
 .login-header {
-  margin-left: 70px;
-  letter-spacing: 2px;
-  font-weight: bold;
+  /* margin-left: 70px; */
+  letter-spacing: 1px;
+  /* font-weight: bold; */
 }
 
 .login-header > span {

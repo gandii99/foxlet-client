@@ -59,7 +59,7 @@ const ClientView = () => {
           <FontAwesomeIcon icon={faPlus} className=" account-icon" />
         </Button>
       </div>
-      <div className="d-flex flex-wrap justify-content-center justify-content-md-start col-12">
+      <div className="d-flex flex-wrap justify-content-start">
         {(!myClients || myClients.length) <= 0 ? (
           <span>Aktualnie nie dodałeś jeszcze żadnych klientów...</span>
         ) : (
