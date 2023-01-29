@@ -1,9 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { getLocalStorage } from '../localStorage';
-const baseURL = 'http://localhost:5000';
+// const baseURL = 'http://localhost:5000';
+// const baseURL = 'https://foxlet-server.onrender.com';
 
 const api = axios.create({
-  baseURL: `${baseURL}/api`,
+  baseURL: `${process.env.REACT_APP_BASE_URL}/api`,
 });
 
 api.interceptors.request.use(

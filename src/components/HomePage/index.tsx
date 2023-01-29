@@ -29,7 +29,7 @@ const HomePage: React.FC<IHomePageProps> = () => {
           <div className="d-flex col-xl-6 justify-content-center align-items-center my-3">
             <img
               className="home-image rounded-3"
-              src="/images/working_student.jpg"
+              src="/images/orange_boxes.jpg"
               alt="pracownik przenoszący pomarańczowe pudła"
             />
           </div>
