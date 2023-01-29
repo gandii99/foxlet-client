@@ -77,64 +77,27 @@ a {
   border-radius: 10px;
 }
 
+.asside-menu-account > div {
+  width: 100px;
+  height: 100px;
+}
+
+.asside-menu-account div {
+  border-top: 1px solid #ced4da;
+}
+
+.account-icon {
+  font-size: 30px;
+}
+
+.max-block-size {
+  display: block;
+  width: 100%;
+}
+
 .button-add-size {
   width: 46px;
   height: 46px;
-}
-
-.font-10 {
-  font-size: 10px;
-}
-.font-11 {
-  font-size: 11px;
-}
-.font-12 {
-  font-size: 12px;
-}
-.font-13 {
-  font-size: 13px;
-}
-
-.font-xs {
-  font-size: 14px;
-}
-
-.font-s {
-  font-size: 16px;
-}
-
-.font-m {
-  font-size: 20px;
-}
-
-.font-l {
-  font-size: 26px;
-}
-.font-xl {
-  font-size: 36px;
-}
-.font-xxl {
-  font-size: 44px;
-}
-.font-xxxl {
-  font-size: 64px;
-}
-
-.square-30 {
-  width: 30px;
-  height: 30px;
-}
-.square-40 {
-  width: 40px;
-  height: 40px;
-}
-.square-54 {
-  width: 54px;
-  height: 54px;
-}
-
-.z-index {
-  z-index: 999;
 }
 
 .palette-box {
@@ -165,8 +128,8 @@ a {
 }
 
 .image-batch-batch-small-container {
-  height: 45px;
-  width: 45px;
+  height: 54px;
+  width: 54px;
 }
 
 .image-pallet-batch-small {
@@ -184,7 +147,7 @@ a {
 }
 
 .pallet-min-width {
-  min-width: 260px;
+  min-width: 270px;
   /* max-width: 300px; */
 }
 
@@ -217,8 +180,12 @@ a {
   width: 40px;
   height: 40px;
 }
-.asside-menu-account {
-  width: 100px;
+.asside-menu-account > a > div:nth-child(1) {
+  min-width: 60px;
+  min-height: 80px;
+}
+.asside-menu-account > a {
+  flex-grow: 1;
 }
 
 .asside-shopcart {
@@ -252,3 +219,75 @@ a {
     font-size: 54px !important;
   }
 } */
+
+.font-10 {
+  font-size: 10px;
+}
+.font-11 {
+  font-size: 11px;
+}
+.font-12 {
+  font-size: 12px;
+}
+.font-13 {
+  font-size: 13px;
+}
+.font-14 {
+  font-size: 14px;
+}
+.font-15 {
+  font-size: 15px;
+}
+.font-16 {
+  font-size: 16px;
+}
+.font-17 {
+  font-size: 17px;
+}
+.font-18 {
+  font-size: 18px;
+}
+.font-19 {
+  font-size: 19px;
+}
+.font-20 {
+  font-size: 20px;
+}
+
+.font-l {
+  font-size: 26px;
+}
+.font-xl {
+  font-size: 36px;
+}
+.font-xxl {
+  font-size: 44px;
+}
+.font-xxxl {
+  font-size: 64px;
+}
+
+.square-30 {
+  width: 30px;
+  height: 30px;
+}
+.square-40 {
+  width: 40px;
+  height: 40px;
+}
+.square-54 {
+  width: 54px;
+  height: 54px;
+}
+.square-164 {
+  width: 124px;
+  height: 124px;
+}
+
+.z-index {
+  z-index: 999;
+}
+
+.text-justify {
+  text-align: justify;
+}

@@ -15,26 +15,35 @@ import { Button } from 'react-bootstrap';
 import assortmentAPI, {
   CategoryType,
   OrderType,
+  StatusType,
 } from '../../../services/assortment';
 import OrderCard from './OrderCard';
 import { useGetMyOrdersQuery } from '../../../hooks/query/assortment';
 
 const OrderView = () => {
-  // const [orders, setOrders] = useState<OrderType[]>([]);
+  const [statuses, setStatuses] = useState<StatusType[]>([]);
 
   const { data: myOrders, isSuccess: isGetMyOrdersSuccess } =
     useGetMyOrdersQuery();
+
+  useEffect(() => {
+    assortmentAPI.getAllStatuses().then(response => {
+      setStatuses(response);
+    });
+  }, []);
 
   if (!isGetMyOrdersSuccess) {
     return <div>Loading</div>;
   }
 
   return (
-    <div>
-      <h2>Zamówienia</h2>
-      <div className="d-flex flex-wrap justify-content-start">
+    <div className="">
+      <h2 className="col-12 px-3 d-flex justify-content-center justify-content-md-start">
+        Zamówienia
+      </h2>
+      <div className="d-flex flex-wrap justify-content-center col-12">
         {myOrders.map(order => (
-          <OrderCard key={order.id_order} {...order} />
+          <OrderCard key={order.id_order} {...order} statuses={statuses} />
         ))}
       </div>
     </div>

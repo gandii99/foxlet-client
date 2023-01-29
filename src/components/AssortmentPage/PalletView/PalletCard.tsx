@@ -41,13 +41,13 @@ const PalletCard = (props: PalletCardType) => {
   };
   // palette-box
   return (
-    <div className="p-1 col-lg-6 col-xl-3 pallet-min-width flex-grow-1 ">
+    <div className="d-flex justify-content-between col-sm-10 col-md-6 col-xl-4 px-1 px-sm-2 m-auto">
       {/* <div className="my-2 px-3 py-3 border rounded-4 border-shadow mx-2 pallet-min-width"> */}
-      <div className="my-2 px-3 py-3 border rounded-4 border-shadow ">
+      <div className="my-2 px-3 py-3 border rounded-4 border-shadow col-12 ">
         <div className="d-flex justify-content-start align-items-start flex-wrap ">
           <div className="col-6 mb-2">
             <span className="d-block font-11 lh-1 text-muted">Nazwa: </span>
-            <span className="d-block font-s fw-bold text-nowrap">
+            <span className="d-block font-16 fw-bold text-nowrap">
               {emptyToText(props.pallet_name || '')}
             </span>
           </div>
@@ -77,30 +77,30 @@ const PalletCard = (props: PalletCardType) => {
               ></FontAwesomeIcon>
             </Link>
           </div>
+          <div className="col-6 mb-2 ">
+            <span className="d-block font-11 lh-1 text-muted">Zakup:</span>
+            <span className="d-block font-16 fw-bold">
+              {formatDate(props?.purchase_date || '')}
+            </span>
+          </div>
+          <div className="col-6 mb-2">
+            <span className="d-block font-11 lh-1 text-muted">Dostawa:</span>
+            <span className="d-block font-16 fw-bold ">
+              {formatDate(props?.delivery_date || '')}
+            </span>
+          </div>
           <div className="col-6 mb-2">
             <span className="d-block font-11 lh-1 text-muted">Dostawca: </span>
             <span
-              className="d-block font-s fw-bold text-nowrap overflow-hidden"
+              className="d-block font-16 fw-bold text-nowrap overflow-hidden"
               title={props?.supplier?.supplier_name}
             >
               {emptyToText(props?.supplier?.supplier_name || '')}
             </span>
           </div>
-          <div className="col-6 mb-2">
-            <span className="d-block font-11 lh-1 text-muted">Dostawa:</span>
-            <span className="d-block font-s fw-bold ">
-              {formatDate(props?.delivery_date || '')}
-            </span>
-          </div>
-          <div className="col-6 mb-2 ">
-            <span className="d-block font-11 lh-1 text-muted">Zakup:</span>
-            <span className="d-block font-s fw-bold">
-              {formatDate(props?.purchase_date || '')}
-            </span>
-          </div>
           <div className="col-6">
             <span className="d-block font-11 lh-1 text-muted">Cena:</span>
-            <span className="d-block font-s fw-bold">
+            <span className="d-block font-16 fw-bold">
               {props.purchase_price}
             </span>
           </div>

@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
-import './index.css';
+import './../../App.css';
 import {} from '@fortawesome/free-regular-svg-icons';
 import {
   faBoxesPacking,

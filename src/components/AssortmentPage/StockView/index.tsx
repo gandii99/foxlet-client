@@ -21,6 +21,11 @@ import { BatchType, ProductType } from '../PalletView/types';
 import ProductCard from './ProductCard';
 import BatchCard from './BatchCard';
 import { onError, onSuccess } from '../../../lib/toastHelpers';
+import {
+  useGetMyBatchesQuery,
+  useGetMyBatchesSoldQuery,
+  useGetMyClientsQuery,
+} from '../../../hooks/query/assortment';
 
 export interface ProductToCart {
   id_batch: number;
@@ -32,10 +37,15 @@ export interface ProductToCart {
 
 const StockView = () => {
   const navigate = useNavigate();
-  const [myProducts, setMyProducts] = useState<ProductType[]>([]);
-  const [myBatches, setMyBatches] = useState<BatchType[]>([]);
   const [currentOrder, setCurrentOrder] = useState<ProductToCart[]>([]);
   const [currentPriceOrder, setCurrentPriceOrder] = useState<number>(0);
+  const [selectedClient, setSelectedClient] = useState<number | string>('');
+  const { data: myClients, isSuccess: isGetMyClientsSucces } =
+    useGetMyClientsQuery();
+  const { data: myBatches, isSuccess: isGetMyBatchesSucces } =
+    useGetMyBatchesQuery();
+  const { data: myBatchesSold, isSuccess: isGetMyBatchesSoldSucces } =
+    useGetMyBatchesSoldQuery();
 
   const changeCountProduct = (
     batchAddCart: ProductToCart,
@@ -76,27 +86,6 @@ const StockView = () => {
     setCurrentPriceOrder(sum);
   }, [currentOrder]);
 
-  useEffect(() => {
-    assortmentAPI
-      .getMyBatches()
-      .then(response => {
-        setMyBatches(response);
-      })
-      .catch(err => {
-        console.log('error', err);
-      });
-
-    assortmentAPI
-      .getMyProducts()
-      .then(response => {
-        setMyProducts(response);
-      })
-      .catch(err => {
-        console.log('error', err);
-      });
-  }, []);
-  console.log(myBatches);
-
   const confirmOrder = async () => {
     const ordersBatches = currentOrder.map(order => {
       return {
@@ -104,25 +93,26 @@ const StockView = () => {
         quantity_in_order: order.quantity_in_order,
       };
     });
+    if (selectedClient != '') {
+      const createdOrder = await assortmentAPI
+        .createOrder(
+          {
+            id_client: Number(selectedClient),
+            order_date: new Date().toISOString(),
+            order_price: currentPriceOrder,
+            comments: '',
+            batches: ordersBatches,
+          },
+          () => onSuccess('Zamówienie zostało złożone!'),
+          e => onError(e, 'Problem podczas składania zamówienia')
+        )
+        .then(() => {
+          cancelOrder();
+          navigate('/assortment/orders');
+        });
 
-    const createdOrder = await assortmentAPI
-      .createOrder(
-        {
-          id_client: 1,
-          order_date: new Date().toISOString(),
-          order_price: currentPriceOrder,
-          comments: '',
-          batches: ordersBatches,
-        },
-        () => onSuccess('Zamówienie zostało złożone!'),
-        e => onError(e, 'Problem podczas składania zamówienia')
-      )
-      .then(() => {
-        cancelOrder();
-        navigate('/assortment/orders');
-      });
-
-    console.log(createdOrder);
+      console.log(createdOrder);
+    }
   };
   const cancelOrder = () => {
     setCurrentOrder([]);
@@ -131,132 +121,190 @@ const StockView = () => {
 
   return (
     <div>
-      <h2>Magazyn</h2>
+      <div>
+        <h2 className="px-sm-2 d-flex justify-content-center justify-content-md-start">
+          Magazyn
+        </h2>
 
-      {currentOrder.length > 0 && (
-        <div className="d-flex justify-content-start flex-wrap border border-shadow rounded">
-          <div className="d-flex flex-wrap col-12 justify-content-between align-items-center orange-background rounded-top">
-            <span className="text-white font-l px-4 py-2">
-              Aktualne zamówienie
-            </span>
-            <div className="text-white font-l">
-              Cena: {currentPriceOrder} zł
-            </div>
-            <div className="d-flex">
-              <Button
-                name="delete-pallet"
-                className="button-orange-first bg-danger square-30 mx-1"
-                onClick={() => cancelOrder()}
-              >
-                <FontAwesomeIcon
-                  className="font-xs"
-                  icon={faCancel}
-                ></FontAwesomeIcon>
-              </Button>
-              <Button
-                name="confirm-order"
-                className="button-orange-first bg-success square-30 mx-1"
-                onClick={() => confirmOrder()}
-              >
-                <FontAwesomeIcon
-                  className="font-xs"
-                  icon={faCheck}
-                ></FontAwesomeIcon>
-              </Button>
-            </div>
-          </div>
-
-          {currentOrder.map(batch => (
-            <div
-              className="d-flex flex-wrap justify-content-between align-items-center col-12 px-3 border"
-              key={batch.id_batch}
+        {currentOrder.length > 0 && (
+          <div className="d-flex justify-content-start flex-wrap border border-shadow rounded">
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                confirmOrder();
+              }}
+              className="d-flex flex-wrap col-12 justify-content-between align-items-center orange-background rounded-top"
             >
-              <div className="d-flex justify-content-start align-items-center col-6 p-1">
-                <div className="d-flex justify-content-center align-items-center image-product-order">
-                  <img
-                    className="image-pallet-batch-small p-1 "
-                    src={batch.image || '/images/no-image.svg'}
-                    alt={''}
-                  />
-                </div>
-                <div className="col-5 mx-3">{'Laptop Lenovo ideapad'}</div>
+              <span className="text-white font-l px-4 py-2">
+                Aktualne zamówienie
+              </span>
+              <label className="d-flex font-m text-white my-2">
+                <span className="mx-2">Klient:</span>
+                <select
+                  className="form-control py-0"
+                  value={selectedClient}
+                  onChange={e => setSelectedClient(e.target.value)}
+                  required
+                >
+                  <option value="" disabled>
+                    Wybierz
+                  </option>
+                  {isGetMyClientsSucces &&
+                    myClients.map(client => (
+                      <option key={client.id_client} value={client.id_client}>
+                        {client.client_name}
+                      </option>
+                    ))}
+                </select>
+                {/* {errors.id_supplier && (
+          <span className="font-13 text-danger">
+            {errors.id_supplier.message}
+          </span>
+        )} */}
+              </label>
+              <div className="text-white font-l">
+                Cena: {currentPriceOrder} zł
               </div>
+              <div className="d-flex">
+                <Button
+                  name="delete-pallet"
+                  className="button-orange-first bg-danger square-30 mx-1"
+                  onClick={() => cancelOrder()}
+                >
+                  <FontAwesomeIcon
+                    className="font-xs"
+                    icon={faCancel}
+                  ></FontAwesomeIcon>
+                </Button>
+                <Button
+                  name="confirm-order"
+                  className="button-orange-first bg-success square-30 mx-1"
+                  type="submit"
+                >
+                  <FontAwesomeIcon
+                    className="font-xs"
+                    icon={faCheck}
+                  ></FontAwesomeIcon>
+                </Button>
+              </div>
+            </form>
 
-              <div className="d-flex justify-content-start align-items-center col-6">
-                <div className="d-flex justify-content-start col-4">
-                  Sztuk: {batch.quantity_in_order}
+            {currentOrder.map(batch => (
+              <div
+                className="d-flex flex-wrap justify-content-between align-items-center col-12 px-sm-3 border"
+                key={batch.id_batch}
+              >
+                <div className="d-flex justify-content-start align-items-center col-6 p-1">
+                  <div className="d-flex justify-content-center align-items-center image-product-order">
+                    <img
+                      className="image-pallet-batch-small p-1 "
+                      src={batch.image || '/images/no-image.svg'}
+                      alt={''}
+                    />
+                  </div>
+                  <div className="col-5 mx-3">{'Laptop Lenovo ideapad'}</div>
                 </div>
-                <div className="d-flex justify-content-center col-4 ">
-                  {batch.price.toFixed(2)} zł
-                </div>
-                <div className="d-flex flex-wrap justify-content-end col-4">
-                  <Button
-                    name="delete-product"
-                    className="button-orange-second square-30 mx-1"
-                    onClick={() => {
-                      console.log('click');
-                      changeCountProduct(
-                        {
-                          id_batch: batch.id_batch,
-                          quantity_in_order: -1,
-                          price: batch.price,
-                          quantity_in_stock: batch.quantity_in_stock,
-                        },
-                        -1
-                      );
-                    }}
-                    disabled={batch.quantity_in_order - 1 < 0}
-                  >
-                    <FontAwesomeIcon
-                      className="font-xs"
-                      icon={faMinus}
-                    ></FontAwesomeIcon>
-                  </Button>
-                  <Button
-                    name="delete-pallet"
-                    className="button-orange-second square-30"
-                    onClick={() => {
-                      console.log('click');
-                      changeCountProduct(
-                        {
-                          id_batch: batch.id_batch,
-                          quantity_in_order: 1,
-                          price: batch.price,
-                          quantity_in_stock: batch.quantity_in_stock,
-                        },
-                        1
-                      );
-                    }}
-                    disabled={
-                      batch.quantity_in_order + 1 > batch.quantity_in_stock
-                    }
-                  >
-                    <FontAwesomeIcon
-                      className="font-xs"
-                      icon={faPlus}
-                    ></FontAwesomeIcon>
-                  </Button>
+
+                <div className="d-flex justify-content-start align-items-center col-6">
+                  <div className="d-flex justify-content-start col-4">
+                    Sztuk: {batch.quantity_in_order}
+                  </div>
+                  <div className="d-flex justify-content-center col-4 ">
+                    {batch.price.toFixed(2)} zł
+                  </div>
+                  <div className="d-flex flex-wrap justify-content-end col-4">
+                    <Button
+                      name="delete-product"
+                      className="button-orange-second square-30 mx-1"
+                      onClick={() => {
+                        console.log('click');
+                        changeCountProduct(
+                          {
+                            id_batch: batch.id_batch,
+                            quantity_in_order: -1,
+                            price: batch.price,
+                            quantity_in_stock: batch.quantity_in_stock,
+                          },
+                          -1
+                        );
+                      }}
+                      disabled={batch.quantity_in_order - 1 < 0}
+                    >
+                      <FontAwesomeIcon
+                        className="font-xs"
+                        icon={faMinus}
+                      ></FontAwesomeIcon>
+                    </Button>
+                    <Button
+                      name="delete-pallet"
+                      className="button-orange-second square-30"
+                      onClick={() => {
+                        console.log('click');
+                        changeCountProduct(
+                          {
+                            id_batch: batch.id_batch,
+                            quantity_in_order: 1,
+                            price: batch.price,
+                            quantity_in_stock: batch.quantity_in_stock,
+                          },
+                          1
+                        );
+                      }}
+                      disabled={
+                        batch.quantity_in_order + 1 > batch.quantity_in_stock
+                      }
+                    >
+                      <FontAwesomeIcon
+                        className="font-xs"
+                        icon={faPlus}
+                      ></FontAwesomeIcon>
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        )}
+        <div className="d-flex flex-wrap justify-content-center justify-content-md-start align-items-start col-12">
+          {isGetMyBatchesSucces && myBatches.length > 0 ? (
+            myBatches.map(batch => (
+              <BatchCard
+                key={batch.id_batch}
+                {...batch}
+                changeCountProduct={changeCountProduct}
+                currentCountOrder={
+                  currentOrder.find(
+                    currentOrderBatch =>
+                      currentOrderBatch.id_batch === batch.id_batch
+                  )?.quantity_in_order || 0
+                }
+              />
+            ))
+          ) : (
+            <span className="mt-2">Brak produktów na magazynie</span>
+          )}
+        </div>
+      </div>
+      {isGetMyBatchesSoldSucces && myBatchesSold.length > 0 && (
+        <div className="mt-4">
+          <h2>Wyprzedane</h2>
+          <div className="d-flex flex-wrap justify-content-start ">
+            {myBatchesSold.map(batch => (
+              <BatchCard
+                key={batch.id_batch}
+                {...batch}
+                changeCountProduct={changeCountProduct}
+                currentCountOrder={
+                  currentOrder.find(
+                    currentOrderBatch =>
+                      currentOrderBatch.id_batch === batch.id_batch
+                  )?.quantity_in_order || 0
+                }
+              />
+            ))}
+          </div>
         </div>
       )}
-      <div className="d-flex flex-wrap justify-content-start">
-        {myBatches.map(batch => (
-          <BatchCard
-            key={batch.id_batch}
-            {...batch}
-            changeCountProduct={changeCountProduct}
-            currentCountOrder={
-              currentOrder.find(
-                currentOrderBatch =>
-                  currentOrderBatch.id_batch === batch.id_batch
-              )?.quantity_in_order || 0
-            }
-          />
-        ))}
-      </div>
     </div>
   );
 };

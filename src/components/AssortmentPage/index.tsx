@@ -26,120 +26,110 @@ const AssortmentPage = () => {
   const [activeField, setActiveField] = useState('pallets');
 
   return (
-    <div className="content-min-height d-flex justify-content-center align-items-start col-10 m-auto">
-      <div className="col-2">
-        <aside className="asside-menu-account border border-shadow my-5 mx-5">
-          <NavLink
-            to="pallets"
-            className={({ isActive }) => clsx(isActive && 'orange-color')}
-            end={false}
+    <div className="content-min-height d-md-flex justify-content-around align-items-start col-12 m-auto bg-da ">
+      <aside className="mt-md-5 d-flex flex-wrap flex-md-column justify-content-start asside-menu-account ">
+        {/* <aside className="mt-md-5 d-flex flex-wrap flex-grow-1 justify-content-center asside-menu-account "> */}
+
+        <NavLink
+          to="pallets"
+          className={({ isActive }) => clsx(isActive && 'orange-color')}
+          end={false}
+        >
+          <div
+            role="button"
+            className={`d-flex justify-content-center align-items-center flex-wrap py-2 border`}
+            id="pallets"
           >
-            <div
-              role="button"
-              className={`d-flex justify-content-center align-items-center flex-wrap pt-2`}
-              id="pallets"
-            >
-              <FontAwesomeIcon icon={faPallet} className="account-icon w-100" />
-              <div>
-                <span className="font-s ">Palety</span>
-              </div>
-            </div>
-          </NavLink>
-          <NavLink
-            to="stock"
-            className={({ isActive }) => clsx(isActive && 'orange-color')}
-            end={true}
+            <FontAwesomeIcon icon={faPallet} className="account-icon w-100" />
+            <span className="font-16 d-none d-md-block">Palety</span>
+          </div>
+        </NavLink>
+
+        <NavLink
+          to="stock"
+          className={({ isActive }) => clsx(isActive && 'orange-color')}
+          end={true}
+        >
+          <div
+            role="button"
+            className={`d-flex justify-content-center align-items-center flex-wrap py-2 border`}
+            id="stock"
           >
-            <div
-              role="button"
-              className={`d-flex justify-content-center align-items-center flex-wrap py-2 ${
-                'stock' === activeField && 'orange-color'
-              }`}
-              id="stock"
-            >
-              <FontAwesomeIcon
-                icon={faBoxesPacking}
-                className="account-icon w-100"
-              />
-              <span className="font-s">Magazyn</span>
-            </div>
-          </NavLink>
-          <NavLink
-            to="suppliers"
-            className={({ isActive }) => clsx(isActive && 'orange-color')}
-            end={true}
+            <FontAwesomeIcon
+              icon={faBoxesPacking}
+              className="account-icon w-100"
+            />
+            <span className="font-16 d-none d-md-block">Magazyn</span>
+          </div>
+        </NavLink>
+        <NavLink
+          to="suppliers"
+          className={({ isActive }) => clsx(isActive && 'orange-color')}
+          end={true}
+        >
+          <div
+            role="button"
+            className={`d-flex justify-content-center align-items-center flex-wrap py-2 border`}
+            id="suppliers"
           >
-            <div
-              role="button"
-              className={`d-flex justify-content-center align-items-center flex-wrap py-2 ${
-                'suppliers' === activeField && 'orange-color'
-              }`}
-              id="suppliers"
-            >
-              <FontAwesomeIcon
-                icon={faTruckMoving}
-                className="account-icon w-100"
-              />
-              <span className="font-s">Dostawcy</span>
-            </div>
-          </NavLink>
-          <NavLink
-            to="clients"
-            className={({ isActive }) => clsx(isActive && 'orange-color')}
-            end={true}
+            <FontAwesomeIcon
+              icon={faTruckMoving}
+              className="account-icon w-100"
+            />
+            <span className="font-16 d-none d-md-block">Dostawcy</span>
+          </div>
+        </NavLink>
+        <NavLink
+          to="clients"
+          className={({ isActive }) => clsx(isActive && 'orange-color')}
+          end={true}
+        >
+          <div
+            role="button"
+            className={`d-flex justify-content-center align-items-center flex-wrap py-2 border`}
+            id="clients"
           >
-            <div
-              role="button"
-              className={`d-flex justify-content-center align-items-center flex-wrap py-2 ${
-                'clients' === activeField && 'orange-color'
-              }`}
-              id="clients"
-            >
-              <FontAwesomeIcon
-                icon={faPeopleGroup}
-                className="account-icon w-100"
-              />
-              <span className="font-s">Klienci</span>
-            </div>
-          </NavLink>
-          <NavLink
-            to="orders"
-            className={({ isActive }) => clsx(isActive && 'orange-color')}
-            end={true}
+            <FontAwesomeIcon
+              icon={faPeopleGroup}
+              className="account-icon w-100"
+            />
+            <span className="font-16 d-none d-md-block">Klienci</span>
+          </div>
+        </NavLink>
+        <NavLink
+          to="orders"
+          className={({ isActive }) => clsx(isActive && 'orange-color')}
+          end={true}
+        >
+          <div
+            role="button"
+            className={`d-flex justify-content-center align-items-center flex-wrap py-2 border`}
+            id="orders"
           >
-            <div
-              role="button"
-              className={`d-flex justify-content-center align-items-center flex-wrap py-2 ${
-                'orders' === activeField && 'orange-color'
-              }`}
-              id="orders"
-            >
-              <FontAwesomeIcon
-                icon={faShoppingBasket}
-                className="account-icon w-100"
-              />
-              <span className="font-s">Zamówienia</span>
-            </div>
-          </NavLink>
-          <NavLink
-            to="products"
-            className={({ isActive }) => clsx(isActive && 'orange-color')}
-            end={true}
+            <FontAwesomeIcon
+              icon={faShoppingBasket}
+              className="account-icon w-100"
+            />
+            <span className="font-16 d-none d-md-block">Zamówienia</span>
+          </div>
+        </NavLink>
+        <NavLink
+          to="products"
+          className={({ isActive }) => clsx(isActive && 'orange-color')}
+          end={true}
+        >
+          <div
+            role="button"
+            className={`d-flex justify-content-center align-items-center flex-wrap py-2 border`}
+            id="products"
           >
-            <div
-              role="button"
-              className={`d-flex justify-content-center align-items-center flex-wrap py-2 ${
-                'products' === activeField && 'orange-color'
-              }`}
-              id="products"
-            >
-              <FontAwesomeIcon icon={faDolly} className="account-icon w-100" />
-              <span className="font-s">Produkty</span>
-            </div>
-          </NavLink>
-        </aside>
-      </div>
-      <div className="my-3 col-10 px-5">
+            <FontAwesomeIcon icon={faDolly} className="account-icon w-100" />
+            <span className="font-16 d-none d-md-block">Produkty</span>
+          </div>
+        </NavLink>
+      </aside>
+
+      <div className="my-3 col-12 col-md-10 px-sm-2 px-md-3 px-lg-4 ">
         <Outlet />
       </div>
     </div>

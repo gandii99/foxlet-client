@@ -15,7 +15,7 @@ const CreateAccont = z.object({
     .min(1, { message: 'Email jest wymagany' })
     .email({ message: 'Podano nieprawidłowy email' }),
   password: z.string().min(1, { message: 'Hasło jest wymagane' }),
-  role: z.string().min(1, { message: 'Wybierz role' }),
+  role: z.string().min(1, { message: 'Wybierz role' }).optional(),
 });
 
 type registerSchema = z.infer<typeof CreateAccont>;
@@ -25,6 +25,7 @@ const RegisterPage = () => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<registerSchema>({
     resolver: zodResolver(CreateAccont),
@@ -32,13 +33,13 @@ const RegisterPage = () => {
 
   const onSubmit = (data: registerSchema) => {
     authAPI.register(
-      data,
+      { ...data, role: 'employee' },
       () =>
         onSuccess('Rejestracja zakończona powodzeniem.', '/login', navigation),
       e => onError(e, 'Rejestracja nie powiodła się')
     );
   };
-
+  console.log(errors);
   return (
     <div className="content-min-height d-flex justify-content-around align-items-start flex-wrap col-lg-12 col-xl-8 m-auto py-5">
       <div className="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5 px-4 border rounded-4 py-4 content-fit-height border-shadow my-4">
@@ -77,8 +78,8 @@ const RegisterPage = () => {
             classError="font-13 text-danger"
             errors={errors}
           />
-          <label className="font-xs col-11 mt-3">
-            Dostawca
+          {/* <label className="font-xs col-11 mt-3">
+            Rola
             <select {...register('role')} className="form-control">
               <option value="">Wybierz</option>
               <option value="employee">Pracownik</option>
@@ -89,13 +90,13 @@ const RegisterPage = () => {
             {errors.role && (
               <span className="font-13 text-danger">{errors.role.message}</span>
             )}
-          </label>
+          </label> */}
           <Button
             type="submit"
             // disabled={isCreatePalletLoading}
             className="col-11 mt-4 button-orange-first"
           >
-            Dodaj
+            Zarejestruj się
           </Button>
         </form>
       </div>

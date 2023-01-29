@@ -18,6 +18,7 @@ import InputNumber from '../../InputNumber';
 import InputDate from '../../InputDate';
 import { SupplierCardType } from '../SupplierView/types';
 import { onSuccess } from '../../../lib/toastHelpers';
+import { useGetMySuppliersQuery } from '../../../hooks/query/assortment';
 
 const PalletsSchema = z.object({
   id_supplier: z.preprocess(val => val && Number(val), z.number()),
@@ -48,11 +49,11 @@ const PalletDetails = () => {
     resolver: zodResolver(PalletsSchema),
   });
 
-  console.log(currentPallets);
+  const { data: mySuppliers, isSuccess: isGetMySuppliersSuccess } =
+    useGetMySuppliersQuery();
 
   const [editActive, setEditActive] = useState(false);
   const [modalActive, setModalActive] = useState(false);
-  const [suppliers, setSuppliers] = useState<SupplierCardType[]>([]);
 
   useEffect(() => {
     if (!isSuccess) return;
@@ -70,20 +71,7 @@ const PalletDetails = () => {
         ),
       });
     }
-
-    if (session?.user.id_user) {
-      const suppliers = assortmentAPI
-        .getAllSuppliers()
-        .then(response => {
-          console.log('suppliers', response.data);
-          setSuppliers(response.data);
-        })
-        .catch(err => {
-          console.log('error', err);
-        });
-      console.log(suppliers);
-    }
-  }, [isSuccess, currentPallets, reset, session?.user.id_user]);
+  }, [isSuccess, currentPallets, reset]);
 
   if (!isSuccess) {
     return <>Loading</>;
@@ -153,14 +141,15 @@ const PalletDetails = () => {
               disabled={!editActive}
             >
               <option value="">Wybierz</option>
-              {suppliers.map(supplier => (
-                <option
-                  key={supplier.id_supplier}
-                  value={Number(supplier.id_supplier)}
-                >
-                  {supplier.supplier_name}
-                </option>
-              ))}
+              {isGetMySuppliersSuccess &&
+                mySuppliers.map(supplier => (
+                  <option
+                    key={supplier.id_supplier}
+                    value={Number(supplier.id_supplier)}
+                  >
+                    {supplier.supplier_name}
+                  </option>
+                ))}
             </select>
             {errors.id_supplier && (
               <span className="font-13 text-danger">

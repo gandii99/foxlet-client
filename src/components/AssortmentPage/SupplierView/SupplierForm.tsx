@@ -29,8 +29,6 @@ type typeSupplierCreate = z.infer<typeof SupplierCreateSchema>;
 type SupplierCreateProps = { handleCloseModal: () => void };
 
 const SupplierForm = ({ handleCloseModal }: SupplierCreateProps) => {
-  const { session } = useAuth();
-
   const { mutate: createSupplier, isLoading: isCreateSupplierLoading } =
     useCreateSupplierMutation(() => {
       handleCloseModal();

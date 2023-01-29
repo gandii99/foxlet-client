@@ -144,9 +144,9 @@ const UserForm = () => {
             <option key="employee" value="employee">
               Pracownik
             </option>
-            <option key="client" value="client">
+            {/* <option key="client" value="client">
               Wybierz
-            </option>
+            </option> */}
           </select>
           {errors.role && <span>{errors.role.message}</span>}
         </label>

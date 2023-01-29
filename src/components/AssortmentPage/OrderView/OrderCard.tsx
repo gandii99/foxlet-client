@@ -2,21 +2,31 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { useDeleteOrderMutation } from '../../../hooks/mutation/assortment';
-import { onSuccess } from '../../../lib/toastHelpers';
-import assortmentAPI, { OrderType } from '../../../services/assortment';
+import {
+  useDeleteOrderMutation,
+  useUpdateStatusMutation,
+} from '../../../hooks/mutation/assortment';
+import { onError, onSuccess } from '../../../lib/toastHelpers';
+import assortmentAPI, {
+  BatchOrderType,
+  OrderStatusType,
+  OrderType,
+  StatusType,
+} from '../../../services/assortment';
+import DescriptionMore from '../../DescriptionMore';
+import { ClientType } from '../ClientsView';
 import BatchImageCard from '../PalletView/BatchImageCard';
 import { ProductType } from '../PalletView/types';
 
 interface OrderCardPropsType {
-  id_product: number;
-  id_category: number;
-  product_name: string;
-  EAN: string;
-  ASIN: string;
-  description: string;
-  category_name: string;
-  category_description: string;
+  id_order: number;
+  order_date: string;
+  order_price: number;
+  comments: string;
+  batch_order: BatchOrderType[];
+  order_status: OrderStatusType[];
+  client: ClientType;
+  statuses: StatusType[];
 }
 
 const OrderCard = ({
@@ -27,8 +37,19 @@ const OrderCard = ({
   batch_order,
   order_status,
   client,
-}: OrderType) => {
-  const [showMore, setShowMore] = useState(false);
+  statuses,
+}: OrderCardPropsType) => {
+  // const { data: orderStatus, isSuccess: isOrderStatusSuccess } =
+  //   useGetStatusQuery(id_order);
+  // console.log(orderStatus);
+
+  const [currentStatus, setCurrentStatus] = useState<number>(
+    order_status[0].id_status
+  );
+
+  const { mutate: updateStatus, isLoading: isUpdateStatusLoading } =
+    useUpdateStatusMutation(() => onSuccess('Status został zaktualizowany'));
+
   const { mutate: deleteOrder, isLoading: isDeleteOrderLoading } =
     useDeleteOrderMutation(() => onSuccess('Zamówienie zostało usunięte'));
 
@@ -39,74 +60,155 @@ const OrderCard = ({
     }
   };
 
+  const changeStatusHandler = (statusId: number) => {
+    console.log('currentStatus', currentStatus);
+    updateStatus({
+      id_status: statusId,
+      id_order: id_order,
+      comments: '',
+    });
+  };
+
   return (
-    <div className="my-2 px-2 py-3 border rounded-4 border-shadow col-3 mx-1 ">
-      <div className="d-flex flex-wrap col-12 justify-content-start align-items-center col-6 mb-2 position-relative">
-        <div>
-          <div>Partia: {id_order}</div>
+    // <div className="d-flex justify-content-between col-12 col-xl-6">
+    <div className="d-flex justify-content-between col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4 px-1 px-lg-2">
+      <div className="my-2 p-3 border rounded-4 border-shadow col-12">
+        <div className="d-flex flex-wrap col-12 mb-2 position-relative">
+          {/* <div className="d-flex justify-content-around align-items-center flex-wrap "> */}
 
-          <div className="d-flex justify-content-between flex-wrap aling-items-center">
-            <span className="font-12 text-nowrap">EAN: {order_date}</span>
-            <span className="font-12 text-nowrap">ASIN: {order_price}</span>
+          <div className="lh-1 col-12 col-md-9 col-lg-6 px-1">
+            <span className="font-14 text-muted">Klient:</span>
+            <div className="font-18 mt-1">{client.client_name}</div>
           </div>
-          <div>
-            <span className="font-m text">{comments}</span>
-          </div>
-          <div className="d-flex justify-content-between flex-wrap aling-items-center">
-            <span className="font-s text">
-              W magazynie: {batch_order[0].id_batch}
-            </span>
-            <span className="font-s text">
-              Cena: {order_status[0].id_employee}
-            </span>
-          </div>
-          <div className="d-flex flex-wrap h-auto">
-            <p className="font-xs mb-0 ">
-              {showMore
-                ? comments
-                : `${comments && comments.substring(0, 38)}... `}
-              <span
-                className="font-xs border rounded-3 px-1"
-                role="button"
-                onClick={() => setShowMore(!showMore)}
-              >
-                {showMore ? 'Ukryj' : 'Więcej'}
+          {(client.first_name || client.last_name) && (
+            <div className="lh-1 col-12 col-md-9 col-lg-6 px-1">
+              <span className="font-14 text-muted">Właściciel:</span>
+              <div className="font-18 mt-1">
+                {client.first_name} {client.last_name}
+              </div>
+            </div>
+          )}
+
+          {(client.phone || client.email) && (
+            <div className="my-2 lh-1 col-12 col-md-9 col-lg-6 px-1">
+              <span className="font-14 text-muted">Kontakt:</span>
+              <div className="font-18 text-wrap mt-1">{client.phone}</div>
+              <div className="font-18 text-wrap text-break ">
+                {client.email}
+              </div>
+            </div>
+          )}
+          {(client.postal_code || client.city) && (
+            <div className="my-2 lh-1 col-12 col-md-9 col-lg-6 px-1">
+              <span className="font-14 text-muted">Adres:</span>
+              <div className="font-18 mt-1">
+                {client.postal_code} {client.city}
+              </div>
+              <div className="font-18">
+                {client.street}, {client.country}
+              </div>
+            </div>
+          )}
+
+          {(client.REGON || client.NIP) && (
+            <div className="lh-1 col-12 col-md-9 col-lg-6 px-1">
+              <span className="font-14 text-muted">
+                {client.REGON ? 'REGON' : 'NIP'}
               </span>
-            </p>
+              <div className="font-18 mt-1">{client.REGON || client.NIP}</div>
+            </div>
+          )}
+
+          <div className="lh-1 col-12 col-md-9 col-lg-6 px-1">
+            {/* <span className="font-14 text-muted">{REGON ? 'REGON' : 'NIP'}</span> */}
+            <div className="font-14">
+              <label className="text-muted font-14">
+                Status
+                <select
+                  className="form-control font-18 mt-1"
+                  value={currentStatus}
+                  onChange={e => {
+                    setCurrentStatus(Number(e.target.value));
+                    changeStatusHandler(Number(e.target.value));
+                  }}
+                  disabled={isUpdateStatusLoading}
+                  // onChange={() => changeStatusHandler()}
+                >
+                  <option value="">Wybierz</option>
+                  {statuses.map(status => (
+                    <option key={status.id_status} value={status.id_status}>
+                      {status.status_name}
+                    </option>
+                  ))}
+                </select>
+                {/* {errors.id_condition && (
+                  <span className="font-13 text-danger">
+                    {errors.id_condition.message}
+                  </span>
+                )} */}
+              </label>
+            </div>
+          </div>
+
+          <div className="position-absolute top-0 end-0">
+            <Button
+              name="delete-pallet"
+              className="button-orange-first square-30 mx-1"
+              onClick={() => {
+                console.log('click');
+                deleteHandler();
+              }}
+              disabled={isDeleteOrderLoading}
+            >
+              <FontAwesomeIcon
+                className="font-18"
+                icon={faTrashCan}
+              ></FontAwesomeIcon>
+            </Button>
           </div>
         </div>
-        <div className="position-absolute top-0 end-0">
-          <Button
-            name="delete-pallet"
-            className="button-orange-first bg-danger square-30 mx-1"
-            onClick={() => {
-              console.log('click');
-              deleteHandler();
-            }}
-            disabled={isDeleteOrderLoading}
-          >
-            <FontAwesomeIcon
-              className="font-xs"
-              icon={faTrashCan}
-            ></FontAwesomeIcon>
-          </Button>
+        <div className="d-flex flex-wrap col-12 justify-content-start align-items-center">
+          {batch_order.map(batches_order => (
+            <div
+              className="d-flex flex-wrap col-12 justify-content-between align-items-center"
+              key={batches_order.id_batch}
+            >
+              <BatchImageCard
+                key={batches_order.id_batch}
+                batch_name={batches_order.batch.batch_name}
+                image={batches_order.batch.product.image}
+                product_name={batches_order.batch.product.product_name}
+                id_condition={batches_order.batch.condition.id_condition}
+              />
+              <div className="d-flex flex-column align-items-start flex-grow-1 text-muted">
+                <span className="font-14">
+                  {batches_order.quantity_in_order} Szt.
+                </span>
+                <span className="font-14">
+                  {batches_order.batch.product.product_name}
+                </span>
+              </div>
+              <div className="d-flex flex-column text-muted">
+                <span className="font-14">
+                  {(
+                    batches_order.batch.selling_price *
+                    batches_order.quantity_in_order
+                  ).toFixed(2)}{' '}
+                  zł
+                </span>
+                <span className="font-14">
+                  {batches_order.batch.selling_price.toFixed(2)} zł
+                </span>
+              </div>
+
+              {/* <div>{batches_order.batch.product.product_name}</div> */}
+            </div>
+          ))}
         </div>
-      </div>
 
-      <div className="d-flex flex-wrap col-12 justify-content-start align-items-center col-6 mb-2">
-        {batch_order.map(batches_order => (
-          <BatchImageCard
-            key={batches_order.id_batch}
-            batch_name={batches_order.batch.batch_name}
-            image={batches_order.batch.product.image}
-            product_name={batches_order.batch.product.product_name}
-            id_condition={batches_order.batch.condition.id_condition}
-          />
-        ))}
-      </div>
-
-      <div className="d-flex flex-wrap h-auto">
-        {/* <span className="font-xs">{description}</span> */}
+        <div className="d-flex flex-wrap h-auto">
+          {/* <span className="font-xs">{description}</span> */}
+        </div>
       </div>
     </div>
   );

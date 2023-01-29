@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button } from 'react-bootstrap';
 import { useAuth } from '../../../hooks/use-auth';
 import assortmentAPI from '../../../services/assortment';
@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
 import InputText from '../../InputText';
 import InputNumber from '../../InputNumber';
 import InputDate from '../../InputDate';
+import { useGetMySuppliersQuery } from '../../../hooks/query/assortment';
 
 const PalletSchema = z.object({
   id_supplier: z.preprocess(val => val && Number(val), z.number()),
@@ -40,23 +41,8 @@ const PalletCreate = ({ handleCloseModal }: PalletCreateProps) => {
     useCreatePalletsMutation(() => {
       handleCloseModal(), onSuccess('Paleta została utworzona');
     });
-  const { session } = useAuth();
-
-  const [suppliers, setSuppliers] = useState<SupplierCardType[]>([]);
-
-  useEffect(() => {
-    if (session?.user.id_user) {
-      assortmentAPI
-        .getAllSuppliers()
-        .then(response => {
-          console.log('suppliers', response.data);
-          setSuppliers(response.data);
-        })
-        .catch(err => {
-          console.log('error', err);
-        });
-    }
-  }, [session?.user.id_user]);
+  const { data: mySuppliers, isSuccess: isGetMySuppliersSuccess } =
+    useGetMySuppliersQuery();
 
   const onSubmit = (data: typePallet) => {
     createPallet(data);
@@ -81,11 +67,12 @@ const PalletCreate = ({ handleCloseModal }: PalletCreateProps) => {
         Dostawca
         <select {...register('id_supplier')} className="form-control">
           <option value="">Wybierz</option>
-          {suppliers.map(supplier => (
-            <option key={supplier.id_supplier} value={supplier.id_supplier}>
-              {supplier.supplier_name}
-            </option>
-          ))}
+          {isGetMySuppliersSuccess &&
+            mySuppliers.map(supplier => (
+              <option key={supplier.id_supplier} value={supplier.id_supplier}>
+                {supplier.supplier_name}
+              </option>
+            ))}
         </select>
         {errors.id_supplier && (
           <span className="font-13 text-danger">

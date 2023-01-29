@@ -1,26 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { faUser } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faBoxesPacking,
-  faBriefcase,
-  faBuilding,
-  faCancel,
-  faCheck,
-  faDolly,
-  faMinus,
-  faPallet,
-  faPlus,
-} from '@fortawesome/free-solid-svg-icons';
-import { NavLink } from 'react-router-dom';
-import { Outlet } from 'react-router-dom';
-import clsx from 'clsx';
 import { Button } from 'react-bootstrap';
 import assortmentAPI, { CategoryType } from '../../../services/assortment';
-import { BatchType, ProductType } from '../PalletView/types';
+import { ProductType } from '../PalletView/types';
 import ProductCard from './ProductCard';
-import BatchCard from './BatchCard';
 import { onError, onSuccess } from '../../../lib/toastHelpers';
+import { useGetAllProductsQuery } from '../../../hooks/query/assortment';
 
 interface modifiedCategory {
   id_category: number;
@@ -36,31 +20,23 @@ export interface ProductToCart {
 }
 
 const ProductView = () => {
-  const [allProducts, setAllProducts] = useState<ProductType[]>([]);
+  const { data: allProducts, isSuccess: isGetAllProductsSuccess } =
+    useGetAllProductsQuery();
 
-  useEffect(() => {
-    assortmentAPI
-      .getAllProducts()
-      .then(response => {
-        setAllProducts(response);
-      })
-      .catch(err => {
-        console.log('error', err);
-      });
-  }, []);
+  if (!isGetAllProductsSuccess) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
-      <h2>Wszystkie produkty</h2>
-      <div className="d-flex flex-wrap justify-content-start">
+      <h2 className="d-flex justify-content-center justify-content-md-start">
+        Wszystkie produkty
+      </h2>
+      <div className="d-flex flex-wrap justify-content-center justify-content-md-start align-items-start col-12">
         {allProducts.map(product => (
           <ProductCard key={product.id_product} {...product} />
         ))}
       </div>
-
-      <Button type="submit" className="w-100 mt-4 button-orange-first">
-        Dodaj sprzedawce
-      </Button>
     </div>
   );
 };

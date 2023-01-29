@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ButtonGroup, Dropdown, DropdownButton } from 'react-bootstrap';
+import { AiOutlineCaretDown, AiOutlinePlusCircle } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { useGetMyUserProfileQuery } from '../../hooks/query/account';
 import { useAuth } from '../../hooks/use-auth';
@@ -17,7 +18,7 @@ const Header: React.FC = () => {
   }, [myUserProfile]);
 
   return (
-    <header className="header d-flex flex-wrap justify-content-between m-auto header-min-height border-bottom">
+    <header className="header d-flex flex-wrap justify-content-between align-items-center header-min-height border-bottom">
       <Link to="/" className="text-decoration-none text-black">
         <div>
           <img src="/images/foxlet-logo.jpg" alt="logo lis" />
@@ -37,6 +38,7 @@ const Header: React.FC = () => {
             >
               Wyloguj
             </button>
+
             <div className="d-flex justify-content-between align-itmes-center login-header">
               <span id="user-name">Witaj, {session.user.user_name}!</span>
               <img

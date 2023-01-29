@@ -186,10 +186,10 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
       />
       <Button
         type="submit"
-        className="w-100 mt-4 button-orange-first"
+        className="col-11 mt-4 button-orange-first"
         disabled={isCreateClientLoading}
       >
-        Dodaj dostawcę
+        Dodaj klienta
       </Button>
     </form>
   );

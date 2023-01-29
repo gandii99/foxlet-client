@@ -13,28 +13,6 @@ import {
 } from '../../../hooks/mutation/account';
 import { onSuccess } from '../../../lib/toastHelpers';
 
-const EmployeeCreateSchema = z.object({
-  // id_company: z.number().optional(),
-  first_name: z.string().min(1, { message: 'Imię jest wymagane' }),
-  last_name: z.string().min(1, { message: 'Nazwisko jest wymagane' }),
-  PESEL: z.string().length(11, { message: 'PESEL jest nieprawidłowy' }),
-  phone: z
-    .string()
-    .min(9, { message: 'Numer telefonu jest zbyt którki' })
-    .max(12, { message: 'Numer telefonu jest zbyt długi' }),
-  email: z
-    .string()
-    .min(1, { message: 'Adres email jest wymagany' })
-    .email({ message: 'Nieprawidłowy adres email' }),
-  country: z.string().min(1, { message: 'Kraj jest wymagany' }),
-  province: z.string().min(1, { message: 'Województwo jest wymagane' }),
-  postal_code: z.string().min(1, { message: 'Kod pocztowy jest wymagany' }),
-  city: z.string().min(1, { message: 'Miasto jest wymagane' }),
-  street: z.string().min(1, { message: 'Ulica jest wymagana' }),
-});
-
-type typeEmployeeCreate = z.infer<typeof EmployeeCreateSchema>;
-
 const EmployeeUpdateSchema = z.object({
   id_company: z.number().optional(),
   // id_user: z.number().optional(),
@@ -60,13 +38,9 @@ const EmployeeUpdateSchema = z.object({
   street: z.string().optional(),
 });
 
-type typeUpdateEmployee = z.infer<typeof EmployeeUpdateSchema>;
+export type typeUpdateEmployee = z.infer<typeof EmployeeUpdateSchema>;
 
 const EmployeeForm = () => {
-  const [currentSchema, setCurrentSchema] = useState<
-    typeof EmployeeCreateSchema | typeof EmployeeUpdateSchema
-  >(EmployeeCreateSchema);
-
   const { data: myEmployeeProfile, isSuccess: isGetMyEmployeeProfileSuccess } =
     useGetMyEmployeeProfileQuery();
   const {
@@ -90,8 +64,8 @@ const EmployeeForm = () => {
     setError,
     setValue,
     formState: { errors },
-  } = useForm<typeEmployeeCreate | typeUpdateEmployee>({
-    resolver: zodResolver(currentSchema),
+  } = useForm<typeUpdateEmployee>({
+    resolver: zodResolver(EmployeeUpdateSchema),
   });
 
   const { session } = useAuth();
@@ -100,23 +74,12 @@ const EmployeeForm = () => {
     if (session?.user.id_user) {
       if (myEmployeeProfile) {
         console.log('istnieje', myEmployeeProfile);
-        setCurrentSchema(EmployeeUpdateSchema);
         reset(myEmployeeProfile);
-      } else {
-        console.log('nie istnieje', myEmployeeProfile);
-        setCurrentSchema(EmployeeCreateSchema);
-        reset({});
       }
     }
   }, [myEmployeeProfile, reset, session?.user.id_user]);
 
-  const onSubmit = (data: typeEmployeeCreate | typeUpdateEmployee) => {
-    if (!myEmployeeProfile) {
-      createMyEmployeeProfile({
-        ...(data as typeEmployeeCreate),
-        id_company: undefined,
-      });
-    }
+  const onSubmit = (data: typeUpdateEmployee) => {
     if (myEmployeeProfile) {
       updateMyEmployeeProfile({
         ...data,
@@ -129,7 +92,7 @@ const EmployeeForm = () => {
   if (!isGetMyEmployeeProfileSuccess) {
     return <div>Loading</div>;
   }
-  console.log(errors);
+
   return (
     <div>
       <h2>Pracownik</h2>

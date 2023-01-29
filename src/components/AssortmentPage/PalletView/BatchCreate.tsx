@@ -13,6 +13,7 @@ import { onError, onSuccess } from '../../../lib/toastHelpers';
 import { useCreateBatchMutation } from '../../../hooks/mutation/batches';
 import InputText from '../../InputText';
 import InputNumber from '../../InputNumber';
+import { useGetAllProductsQuery } from '../../../hooks/query/assortment';
 
 const BatchSchema = z.object({
   id_product: z.preprocess(val => val && Number(val), z.number()),
@@ -20,7 +21,7 @@ const BatchSchema = z.object({
   // id_pallet: z.preprocess(val => val && Number(val), z.number()),
   batch_name: z.string().min(3),
   quantity_in_delivery: z.preprocess(val => val && Number(val), z.number()),
-  quantity_in_stock: z.preprocess(val => val && Number(val), z.number()),
+  // quantity_in_stock: z.preprocess(val => val && Number(val), z.number()),
   purchase_price: z.preprocess(val => val && Number(val), z.number()),
   selling_price: z.preprocess(val => val && Number(val), z.number()),
   description: z
@@ -50,11 +51,10 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
     formState: { errors },
   } = useForm<typeBatch>({
     resolver: zodResolver(BatchSchema),
-    defaultValues: { id_product: 0 },
+    // defaultValues: { id_product: '' },
   });
 
   const { session } = useAuth();
-  const [products, setProducts] = useState<ProductType[]>([]);
   const [catagories, setCategories] = useState<CategoryType[]>([]);
   const [conditions, setConditions] = useState<ConditionType[]>([]);
   const { mutate: createBatch, isLoading: isCreateBatchLoading } =
@@ -63,9 +63,17 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
       onSuccess('Partia została utworzona');
     });
 
-  const onSubmit = (data: CreateBatchType) => {
+  const { data: allProducts, isSuccess: isGetAllProductsSuccess } =
+    useGetAllProductsQuery();
+
+  const onSubmit = (data: typeBatch) => {
     console.log('onSubmit');
-    createBatch({ ...data, id_pallet: id_pallet });
+    createBatch({
+      ...data,
+      id_pallet: Number(id_pallet),
+      id_product: Number(data.id_product),
+      quantity_in_stock: data.quantity_in_delivery,
+    });
   };
 
   console.log(errors);
@@ -75,14 +83,6 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
         .getAllCategories()
         .then(response => {
           setCategories(response);
-        })
-        .catch(err => {
-          console.log('error', err);
-        });
-      assortmentAPI
-        .getAllProducts()
-        .then(response => {
-          setProducts(response);
         })
         .catch(err => {
           console.log('error', err);
@@ -100,17 +100,26 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
   }, []);
 
   const getUniqueCategory = (productsList: ProductType[]) => {
-    const uniqueCategory = productsList
-      .map(product => product.id_category)
-      .filter(
-        (item, index) =>
-          products.map(product => product.id_category).indexOf(item) === index
-      );
-    console.log('getUniqueCategory', uniqueCategory);
-    return uniqueCategory;
+    if (isGetAllProductsSuccess) {
+      const uniqueCategory = productsList
+        .map(product => product.id_category)
+        .filter(
+          (item, index) =>
+            allProducts.map(product => product.id_category).indexOf(item) ===
+            index
+        );
+      console.log('getUniqueCategory', uniqueCategory);
+      return uniqueCategory;
+    }
+    return [];
   };
 
+  if (!isGetAllProductsSuccess) {
+    return <div>Loading</div>;
+  }
+
   console.log('catagories', catagories);
+  console.log('catagories', allProducts);
   return (
     <form
       className="d-flex flex-wrap justify-content-around"
@@ -121,7 +130,7 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
         placeholder="PS4 pro"
         name="batch_name"
         register={register('batch_name')}
-        classLabel="font-xs col-11 mt-3"
+        classLabel="font-xs col-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -131,22 +140,26 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
         Produkt
         <select
           className="form-control"
-          defaultValue={'sdaasda'}
+          defaultValue={''}
           {...register('id_product')}
         >
-          <option value="sdaasda">Wybierz</option>
+          <option value="" disabled>
+            Wybierz
+          </option>
           {/* <> */}
-          {products.length > 0 &&
-            getUniqueCategory(products).map(categoryId => (
+          {allProducts.length > 0 &&
+            getUniqueCategory(allProducts).map(categoryId => (
               <optgroup
                 label={
-                  catagories.filter(
-                    category => category.id_category === categoryId
-                  )[0].category_name
+                  catagories && catagories.length > 0
+                    ? catagories.filter(
+                        category => category.id_category === categoryId
+                      )[0].category_name
+                    : ''
                 }
                 key={categoryId}
               >
-                {products.map(
+                {allProducts.map(
                   product =>
                     product.id_category === categoryId && (
                       <option
@@ -189,16 +202,6 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
         placeholder={5}
         name="quantity_in_delivery"
         register={register('quantity_in_delivery')}
-        classLabel="font-xs col-5 mt-3"
-        classInput="form-control"
-        classError="font-13 text-danger"
-        errors={errors}
-      />
-      <InputNumber
-        label="Ilość w magazynie"
-        placeholder={5}
-        name="quantity_in_stock"
-        register={register('quantity_in_stock')}
         classLabel="font-xs col-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"

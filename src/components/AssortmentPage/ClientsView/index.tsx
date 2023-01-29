@@ -31,8 +31,6 @@ export interface ClientType {
 }
 
 const ClientView = () => {
-  const { session } = useAuth();
-  const [clients, setClients] = useState<ClientType[]>([]);
   const [modalActive, setModalActive] = useState(false);
 
   const handleCloseModal = () => {
@@ -51,7 +49,7 @@ const ClientView = () => {
 
   return (
     <div>
-      <div className="d-flex flex-wrap justify-content-start align-items-center col-12 mb-4">
+      <div className="d-flex flex-wrap justify-content-center justify-content-md-start align-items-center col-12 mb-4">
         <h2>Klienci</h2>
         <Button
           name="create-palet"
@@ -61,17 +59,19 @@ const ClientView = () => {
           <FontAwesomeIcon icon={faPlus} className=" account-icon" />
         </Button>
       </div>
-      {(!myClients || myClients.length) <= 0 ? (
-        <span>Aktualnie nie dodałeś jeszcze żadnych klientów...</span>
-      ) : (
-        <div className="d-flex">
-          {myClients &&
-            myClients.length > 0 &&
-            myClients.map(client => (
-              <ClientCard key={client.id_client} {...client} />
-            ))}
-        </div>
-      )}
+      <div className="d-flex flex-wrap justify-content-center justify-content-md-start col-12">
+        {(!myClients || myClients.length) <= 0 ? (
+          <span>Aktualnie nie dodałeś jeszcze żadnych klientów...</span>
+        ) : (
+          <>
+            {myClients &&
+              myClients.length > 0 &&
+              myClients.map(client => (
+                <ClientCard key={client.id_client} {...client} />
+              ))}
+          </>
+        )}
+      </div>
       {modalActive && (
         <ModalWrapper
           title={'Dodaj klienta'}

@@ -64,6 +64,22 @@ interface EmployeeType {
 }
 
 interface SupplierType {
+  id_supplier: number;
+  first_name: string;
+  last_name: string;
+  supplier_name?: string;
+  NIP?: string;
+  REGON?: string;
+  phone?: string;
+  email?: string;
+  country: string;
+  province: string;
+  postal_code: string;
+  city: string;
+  street: string;
+}
+
+interface CreateSupplierType {
   first_name: string;
   last_name: string;
   supplier_name?: string;
@@ -154,8 +170,19 @@ export interface CreateOrderType {
   batches: BatchOrderTypeCreate[];
 }
 
+export interface StatusType {
+  id_status: number;
+  status_name: string;
+  description: string;
+}
+export interface updateStatusType {
+  id_status: number;
+  id_order: number;
+  comments?: string;
+}
+
 const createSupplier = async (
-  formData: SupplierType,
+  formData: CreateSupplierType,
   onSucess?: VoidFunction,
   onError?: (error: APIError) => void
 ) => {
@@ -190,14 +217,19 @@ const getMyBatches = async (): Promise<BatchType[]> => {
   return data;
 };
 
+const getMybatchesSold = async (): Promise<BatchType[]> => {
+  const { data } = await api.get('/batches/my-batches-sold');
+  return data;
+};
+
 const getAllConditions = async () => {
   const result = await api.get('/conditions');
   return result;
 };
 
-const getMySuppliers = async () => {
-  const result = await api.get(`/suppliers/my-suppliers`);
-  return result;
+const getMySuppliers = async (): Promise<SupplierType[]> => {
+  const { data } = await api.get(`/suppliers/my-suppliers`);
+  return data;
 };
 const createPallet = async (
   formData: CreatePalletType
@@ -221,7 +253,7 @@ const getMyClients = async (): Promise<ClientType[]> =>
   // onSucess?: VoidFunction,
   // onError?: (error: APIError) => void
   {
-    const { data } = await api.get('/clients/my-client');
+    const { data } = await api.get('/clients/my-clients');
     return data;
   };
 
@@ -270,6 +302,32 @@ const getAllCategories = async (): Promise<CategoryType[]> => {
   return data;
 };
 
+const getOrderStatus = async (orderId: number): Promise<StatusType> => {
+  const { data } = await api.get(`/statuses/` + orderId);
+  return data;
+};
+const getAllStatuses = async (): Promise<StatusType[]> => {
+  const { data } = await api.get(`/statuses`);
+  return data;
+};
+
+const updateStatus = async (
+  data: updateStatusType,
+  onSucess?: VoidFunction,
+  onError?: (error: APIError) => void
+) => {
+  const result = api
+    .post('/statuses', data)
+    .then(respons => {
+      console.log(respons);
+      onSucess && onSucess();
+    })
+    .catch(error => {
+      onError && onError(error);
+    });
+  return result;
+};
+
 const deletePallets = async (
   id_pallets: number[],
   onSucess?: (url: string, message: string) => void,
@@ -283,6 +341,40 @@ const deletePallets = async (
     })
     .catch(error => {
       onError && onError(error, '', 'Błąd podczas usuwania palety.');
+    });
+  return result;
+};
+
+const deleteSupplier = async (
+  id_supplier: number,
+  onSucess?: (url: string, message: string) => void,
+  onError?: (error: APIError, url: string, message: string) => void
+) => {
+  const result = await api
+    .delete(`/suppliers/my-suppliers/` + id_supplier)
+    .then(respons => {
+      console.log(respons);
+      onSucess && onSucess('', 'Dostawca została usunięta.');
+    })
+    .catch(error => {
+      onError && onError(error, '', 'Błąd podczas usuwania dostawcy.');
+    });
+  return result;
+};
+
+const deleteClient = async (
+  id_client: number,
+  onSucess?: (url: string, message: string) => void,
+  onError?: (error: APIError, url: string, message: string) => void
+) => {
+  const result = await api
+    .delete(`/clients/my-clients/` + id_client)
+    .then(respons => {
+      console.log(respons);
+      onSucess && onSucess('', 'Klient została usunięta.');
+    })
+    .catch(error => {
+      onError && onError(error, '', 'Błąd podczas usuwania klienta.');
     });
   return result;
 };
@@ -384,6 +476,7 @@ const assortmentAPI = {
   getAllSuppliers,
   getMySuppliers,
   getSelectedPalettes,
+  deleteSupplier,
 
   createPallet,
   deletePallets,
@@ -396,10 +489,12 @@ const assortmentAPI = {
 
   createBatch,
   getMyBatches,
+  getMybatchesSold,
   deleteBatches,
 
   createClient,
   getMyClients,
+  deleteClient,
 
   createCategory,
   getAllCategories,
@@ -407,6 +502,10 @@ const assortmentAPI = {
   createOrder,
   getMyOrders,
   deleteOrder,
+
+  getAllStatuses,
+  getOrderStatus,
+  updateStatus,
 };
 
 export default assortmentAPI;

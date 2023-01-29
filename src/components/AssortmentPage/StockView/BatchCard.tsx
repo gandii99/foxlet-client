@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { ProductToCart } from '.';
 import { CategoryType } from '../../../services/assortment';
+import DescriptionMore from '../../DescriptionMore';
 import {
   BatchType,
   ConditionType,
@@ -42,11 +43,10 @@ const BatchCard = ({
   currentCountOrder,
   changeCountProduct,
 }: BatchProps) => {
-  const [showMore, setShowMore] = useState(false);
   return (
-    <div className="p-2 col-sm-12 col-lg-6 col-xl-3 pallet-min-width flex-grow-1 ">
+    <div className="d-flex justify-content-between align-self-stretch col-12 col-sm-10 col-md-6 col-lg-4 col-xl-3 px-1 px-sm-2">
       <div
-        className={`my-2 p-2 border rounded-4 border-shadow ${clsx(
+        className={`my-2 px-3 py-3 border rounded-4 border-shadow col-12 ${clsx(
           condition.id_condition && `color-condition-${condition.id_condition}`
         )}`}
       >
@@ -80,35 +80,27 @@ const BatchCard = ({
           </Button>
         </div>
 
-        <div>Partia: {batch_name}</div>
-
-        <div className="d-flex justify-content-between flex-wrap aling-items-center">
+        <div className="d-flex justify-content-between flex-wrap aling-items-center ">
           <span className="font-12 text-nowrap">EAN: {product.EAN}</span>
           <span className="font-12 text-nowrap">ASIN: {product.ASIN}</span>
         </div>
-        <div>
+
+        <div className="d-flex justify-content-between flex-wrap aling-items-center">
+          <div>Partia: {batch_name}</div>
           <span className="font-m text">{product.product_name}</span>
         </div>
         <div className="d-flex justify-content-between flex-wrap aling-items-center">
-          <span className="font-s text">
-            W magazynie: {quantity_in_stock - currentCountOrder}
+          <span className="font-14 text-nowrap">
+            Szt. {quantity_in_stock - currentCountOrder}
           </span>
-          <span className="font-s text">Cena: {selling_price}</span>
+          <span className="font-14 text-nowrap">Cena: {selling_price}</span>
         </div>
 
-        <div className="d-flex flex-wrap h-auto">
-          <p className="font-xs mb-0 ">
-            {showMore
-              ? description
-              : `${description && description.substring(0, 38)}... `}
-            <span
-              className="font-xs border rounded-3 px-1"
-              role="button"
-              onClick={() => setShowMore(!showMore)}
-            >
-              {showMore ? 'Ukryj' : 'Więcej'}
-            </span>
-          </p>
+        <div className="d-flex flex-wrap h-auto mt-2">
+          <DescriptionMore
+            text={description}
+            classSpan="font-14 text-justify"
+          />
         </div>
       </div>
     </div>

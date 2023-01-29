@@ -21,7 +21,7 @@ const PalletView = () => {
 
   return (
     <div>
-      <div className="d-flex flex-wrap justify-content-start align-items-center col-12 mb-4">
+      <div className="d-flex flex-wrap justify-content-center justify-content-md-start align-items-center col-12 mb-4">
         <h2 className="mb-0">Palety</h2>
         <Button
           name="create-palet"
@@ -35,7 +35,8 @@ const PalletView = () => {
       {myPallets.length === 0 ? (
         <span>Aktualnie nie posiadasz jeszcze żadnych palet...</span>
       ) : (
-        <div className="d-flex flex-wrap flex-grow justify-content-start align-items-start">
+        // <div className="mt-md-5 d-flex m-auto justify-content-center flex-wrap">
+        <div className="d-flex flex-wrap justify-content-start align-items-start col-12">
           {myPallets.map(pallet => {
             console.log(pallet.id_pallet);
             return <PalletCard key={pallet.id_pallet} {...pallet} />;
