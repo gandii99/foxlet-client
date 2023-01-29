@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { useAuth } from '../../../hooks/use-auth';
-import assortmentAPI from '../../../services/assortment';
-import { useCreatePalletsMutation } from '../../../hooks/mutation/assortment';
 import { onSuccess } from '../../../lib/toastHelpers';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod/dist/zod';
 import InputText from '../../InputText';
 import InputNumber from '../../InputNumber';
-import InputDate from '../../InputDate';
-import { CompanyType } from '../../../services/account';
 import { useCreateMyCompanyMutation } from '../../../hooks/mutation/account';
 
 const CompanyCreateSchema = z.object({
@@ -46,9 +41,9 @@ const CompanyCreate = ({ handleCloseModal }: CompanyCreateProps) => {
 
   const { mutate: createCompany, isLoading: isCreateCompanyLoading } =
     useCreateMyCompanyMutation(() => {
-      handleCloseModal(), onSuccess('Firma została utworzona');
+      handleCloseModal();
+      onSuccess('Firma została utworzona');
     });
-  const { session } = useAuth();
 
   const onSubmit = (data: typeCompanyCreate) => {
     createCompany(data);
