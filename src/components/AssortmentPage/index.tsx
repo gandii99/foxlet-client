@@ -26,7 +26,7 @@ const AssortmentPage = () => {
   const [activeField, setActiveField] = useState('pallets');
 
   return (
-    <div className="content-min-height d-md-flex justify-content-around align-items-start col-12 m-auto bg-da ">
+    <div className="content-min-height d-md-flex justify-content-around align-items-start col-12 m-auto">
       <aside className="mt-md-5 d-flex flex-wrap flex-md-column justify-content-start asside-menu-account ">
         {/* <aside className="mt-md-5 d-flex flex-wrap flex-grow-1 justify-content-center asside-menu-account "> */}
 
@@ -129,7 +129,7 @@ const AssortmentPage = () => {
         </NavLink>
       </aside>
 
-      <div className="my-3 col-12 col-md-10 px-sm-2 px-md-3 px-lg-4 ">
+      <div className="my-3 col-12 col-md-10 px-sm-2 px-md-3 px-lg-4">
         <Outlet />
       </div>
     </div>

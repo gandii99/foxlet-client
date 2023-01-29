@@ -17,8 +17,8 @@ import clsx from 'clsx';
 
 const AccountPage = () => {
   return (
-    <div className="content-min-height d-flex justify-content-around align-items-start col-xl-10 m-auto">
-      <aside className="asside-menu-account border border-shadow my-5">
+    <div className="content-min-height d-md-flex justify-content-around align-items-start col-12 m-auto ">
+      <aside className="mt-md-5 d-flex flex-wrap flex-md-column justify-content-start asside-menu-account ">
         {/* <NavLink to="user" className="bg-warning"> */}
         <NavLink
           to="user"
@@ -27,12 +27,12 @@ const AccountPage = () => {
         >
           <div
             role="button"
-            className={`d-flex justify-content-center align-items-center flex-wrap pt-2`}
+            className={`d-flex justify-content-center align-items-center flex-wrap py-2 border`}
             id="pallets"
           >
             <FontAwesomeIcon icon={faUser} className="account-icon w-100" />
             <div>
-              <span className="font-s">Ja</span>
+              <span className="font-16 d-none d-md-block">Ja</span>
             </div>
           </div>
         </NavLink>
@@ -43,14 +43,14 @@ const AccountPage = () => {
         >
           <div
             role="button"
-            className={`d-flex justify-content-center align-items-center flex-wrap py-2 `}
+            className={`d-flex justify-content-center align-items-center flex-wrap py-2 border`}
             id="products"
           >
             <FontAwesomeIcon
               icon={faBriefcase}
               className="account-icon w-100"
             />
-            <span className="font-s">Pracownik</span>
+            <span className="font-16 d-none d-md-block">Pracownik</span>
           </div>
         </NavLink>
         <NavLink
@@ -60,15 +60,15 @@ const AccountPage = () => {
         >
           <div
             role="button"
-            className={`d-flex justify-content-center align-items-center flex-wrap py-2 `}
+            className={`d-flex justify-content-center align-items-center flex-wrap py-2 border`}
             id="companies"
           >
             <FontAwesomeIcon icon={faBuilding} className="account-icon w-100" />
-            <span className="font-s">Firma</span>
+            <span className="font-16 d-none d-md-block">Firma</span>
           </div>
         </NavLink>
       </aside>
-      <div className="col-5 my-3">
+      <div className="my-3 col-12 col-md-10 px-sm-2 px-md-3 px-lg-4">
         <Outlet />
       </div>
     </div>

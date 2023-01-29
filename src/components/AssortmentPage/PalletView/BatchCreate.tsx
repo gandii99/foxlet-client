@@ -130,13 +130,13 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
         placeholder="PS4 pro"
         name="batch_name"
         register={register('batch_name')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
       />
 
-      <label className="font-xs col-5 mt-3">
+      <label className="font-xs col-12 col-sm-5 mt-3">
         Produkt
         <select
           className="form-control"
@@ -180,7 +180,7 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
           </span>
         )}
       </label>
-      <label className="font-xs col-5 mt-3">
+      <label className="font-xs col-12 col-sm-5 mt-3">
         Stan
         <select {...register('id_condition')} className="form-control">
           <option value="">Wybierz</option>
@@ -202,7 +202,7 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
         placeholder={5}
         name="quantity_in_delivery"
         register={register('quantity_in_delivery')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -212,7 +212,7 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
         placeholder={249.99}
         name="purchase_price"
         register={register('purchase_price')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -222,13 +222,13 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
         placeholder={249.99}
         name="selling_price"
         register={register('selling_price')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
       />
 
-      <label className="font-xs col-11 mt-3">
+      <label className="font-xs col-12 col-sm-11 mt-3">
         Opis
         <textarea {...register('description')} className="form-control" />
         {errors.description && (
@@ -240,7 +240,7 @@ const BatchCreate = ({ id_pallet, handleCloseModal }: BatchAddProps) => {
       <Button
         type="submit"
         disabled={isCreateBatchLoading}
-        className="col-11 mt-4 button-orange-first"
+        className="col-11 mt-4 button-orange-first "
       >
         Dodaj
       </Button>

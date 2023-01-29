@@ -145,17 +145,18 @@ const CompanyView = () => {
   console.log(myCompany, session);
 
   return (
-    <div>
-      <div className="d-flex justify-content-start align-items-center">
-        <h2>Firma</h2>
-
-        <Button
-          className=" button-orange-first button-add-size mx-3 font-m "
-          onClick={() => handleCloseModal()}
-        >
-          <FontAwesomeIcon icon={faPlus} className=" account-icon" />
-        </Button>
-        <div className="d-flex justify-content-start align-items-center mx-4">
+    <div className="d-flex flex-column col-xl-8 align-items-start justify-content-center m-auto">
+      <div className="col-12 px-3 d-flex flex-wrap justify-content-center justify-content-md-start align-items-center">
+        <div className="d-flex flex-row col-12 col-sm-6 justify-content-center justify-content-sm-start py-2 px-sm-4">
+          <h2 className="">Firma</h2>
+          <Button
+            className="button-orange-first button-add-size font-m mx-2"
+            onClick={() => handleCloseModal()}
+          >
+            <FontAwesomeIcon icon={faPlus} className=" account-icon" />
+          </Button>
+        </div>
+        <div className="d-flex flex-row col-12 col-sm-6 justify-content-center justify-content-sm-start py-2 px-sm-3">
           <label className="d-inline-block font-xs ">
             <select
               className="form-control"
@@ -183,7 +184,7 @@ const CompanyView = () => {
             </select>
           </label>
 
-          <div className="d-flex justify-content-start align-items-center mx-4">
+          <div className="d-flex justify-content-start align-items-center ">
             {companySwitchActive ? (
               <Button
                 className="button-orange-first button-add-size font-m "
@@ -232,152 +233,154 @@ const CompanyView = () => {
       </div>
 
       {(myCompany || showCompanyForm) && (
-        <form
-          className="d-flex flex-wrap justify-content-around"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <InputText
-            label="Nazwa"
-            placeholder="Foxlet"
-            name="company_name"
-            register={register('company_name')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          <InputNumber
-            label="NIP"
-            placeholder={6734562398}
-            name="NIP"
-            register={register('NIP')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          <InputNumber
-            label="REGON"
-            placeholder={6734562398}
-            name="REGON"
-            register={register('REGON')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          <InputText
-            label="Imię"
-            placeholder="Jan"
-            name="first_name"
-            register={register('first_name')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          <InputText
-            label="Nazwisko"
-            placeholder="Kowalski"
-            name="last_name"
-            register={register('last_name')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          <InputText
-            label="Email"
-            placeholder="jan.kowalski@gmail.com"
-            name="email"
-            register={register('email')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          <InputNumber
-            label="Numer telefonu"
-            placeholder={536097236}
-            name="phone"
-            register={register('phone')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          <InputText
-            label="Kraj"
-            placeholder="Polska"
-            name="country"
-            register={register('country')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          <InputText
-            label="Województwo"
-            placeholder="jan.kowalski@gmail.com"
-            name="province"
-            register={register('province')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          <InputText
-            label="Kod pocztowy"
-            placeholder="jan.kowalski@gmail.com"
-            name="postal_code"
-            register={register('postal_code')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          <InputText
-            label="Miasto"
-            placeholder="Sandomierz"
-            name="city"
-            register={register('city')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          <InputText
-            label="Ulica"
-            placeholder="Ogrodowa 5"
-            name="street"
-            register={register('street')}
-            classLabel="font-xs col-5 mt-3"
-            classInput="form-control"
-            classError="font-13 text-danger"
-            errors={errors}
-            disabled={myCompany?.id_owner != session?.user.id_user}
-          />
-          {myCompany?.id_owner === session?.user.id_user && (
-            <Button
-              type="submit"
-              className="w-100 mt-4 button-orange-first"
-              disabled={isCreateMyCompanyLoading || isUpdateMyCompanyLoading}
-            >
-              {myCompany ? 'Aktualizuj' : 'Utwórz konto firmy'}
-            </Button>
-          )}
-        </form>
+        <div className="d-flex flex-wrap justify-content-center col-12 ">
+          <form
+            className="d-flex flex-wrap justify-content-around"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <InputText
+              label="Nazwa"
+              placeholder="Foxlet"
+              name="company_name"
+              register={register('company_name')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            <InputNumber
+              label="NIP"
+              placeholder={6734562398}
+              name="NIP"
+              register={register('NIP')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            <InputNumber
+              label="REGON"
+              placeholder={6734562398}
+              name="REGON"
+              register={register('REGON')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            <InputText
+              label="Imię"
+              placeholder="Jan"
+              name="first_name"
+              register={register('first_name')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            <InputText
+              label="Nazwisko"
+              placeholder="Kowalski"
+              name="last_name"
+              register={register('last_name')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            <InputText
+              label="Email"
+              placeholder="jan.kowalski@gmail.com"
+              name="email"
+              register={register('email')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            <InputNumber
+              label="Numer telefonu"
+              placeholder={536097236}
+              name="phone"
+              register={register('phone')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            <InputText
+              label="Kraj"
+              placeholder="Polska"
+              name="country"
+              register={register('country')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            <InputText
+              label="Województwo"
+              placeholder="jan.kowalski@gmail.com"
+              name="province"
+              register={register('province')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            <InputText
+              label="Kod pocztowy"
+              placeholder="jan.kowalski@gmail.com"
+              name="postal_code"
+              register={register('postal_code')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            <InputText
+              label="Miasto"
+              placeholder="Sandomierz"
+              name="city"
+              register={register('city')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            <InputText
+              label="Ulica"
+              placeholder="Ogrodowa 5"
+              name="street"
+              register={register('street')}
+              classLabel="font-xs col-5 mt-3"
+              classInput="form-control"
+              classError="font-13 text-danger"
+              errors={errors}
+              disabled={myCompany?.id_owner != session?.user.id_user}
+            />
+            {myCompany?.id_owner === session?.user.id_user && (
+              <Button
+                type="submit"
+                className="col-11 mt-4 button-orange-first"
+                disabled={isCreateMyCompanyLoading || isUpdateMyCompanyLoading}
+              >
+                {myCompany ? 'Aktualizuj' : 'Utwórz konto firmy'}
+              </Button>
+            )}
+          </form>
+        </div>
       )}
 
       {modalActive && (

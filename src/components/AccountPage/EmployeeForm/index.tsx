@@ -94,8 +94,11 @@ const EmployeeForm = () => {
   }
 
   return (
-    <div>
-      <h2>Pracownik</h2>
+    <div className="d-flex flex-column col-xl-8 align-items-start justify-content-center m-auto">
+      <div className="d-flex flex-row col-12 col-sm-6 justify-content-center justify-content-sm-start py-2 px-sm-4">
+        <h2 className="">Pracownik</h2>
+      </div>
+
       <form
         className="d-flex flex-wrap justify-content-around"
         onSubmit={handleSubmit(onSubmit)}
@@ -203,7 +206,7 @@ const EmployeeForm = () => {
         <Button
           name="update-employee"
           type="submit"
-          className="w-100 mt-4 button-orange-first"
+          className="col-11 mt-4 button-orange-first"
           disabled={
             isUpdateMyEmployeeProfileLoading || isCreateMyEmployeeProfileLoading
           }

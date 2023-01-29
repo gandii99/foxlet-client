@@ -7,9 +7,9 @@
 }
 
 .home-image {
-  max-height: auto;
-  max-width: 550px;
-  width: 100%;
+  /* max-height: auto */
+  max-height: 100;
+  max-width: 100%;
   /* flex-basis: 250px; */
   /* object-fit: cover; */
 }

@@ -291,3 +291,8 @@ a {
 .text-justify {
   text-align: justify;
 }
+
+.modal-height {
+  height: 80vh;
+  overflow-y: auto;
+}

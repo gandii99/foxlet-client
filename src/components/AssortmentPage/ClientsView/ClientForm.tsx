@@ -69,7 +69,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder="Foxlet"
         name="client_name"
         register={register('client_name')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -79,7 +79,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder={6734562398}
         name="NIP"
         register={register('NIP')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -89,7 +89,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder={6734562398}
         name="REGON"
         register={register('REGON')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -99,7 +99,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder="Jan"
         name="first_name"
         register={register('first_name')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -109,7 +109,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder="Kowalski"
         name="last_name"
         register={register('last_name')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -119,7 +119,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder="jan.kowalski@gmail.com"
         name="email"
         register={register('email')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -129,7 +129,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder={536097236}
         name="phone"
         register={register('phone')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -139,7 +139,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder="Polska"
         name="country"
         register={register('country')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -149,7 +149,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder="Małopolska"
         name="province"
         register={register('province')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -159,7 +159,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder="30-100"
         name="postal_code"
         register={register('postal_code')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -169,7 +169,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder="Sandomierz"
         name="city"
         register={register('city')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -179,7 +179,7 @@ const ClientForm = ({ handleCloseModal }: ClientCreateProps) => {
         placeholder="Ogrodowa 5"
         name="street"
         register={register('street')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}

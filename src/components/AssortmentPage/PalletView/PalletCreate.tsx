@@ -58,12 +58,12 @@ const PalletCreate = ({ handleCloseModal }: PalletCreateProps) => {
         placeholder="Konsole"
         name="pallet_name"
         register={register('pallet_name')}
-        classLabel="font-xs col-11 mt-3"
+        classLabel="font-xs col-12 col-sm-11 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
       />
-      <label className="font-xs col-5 mt-3">
+      <label className="font-xs col-12 col-sm-5 mt-3">
         Dostawca
         <select {...register('id_supplier')} className="form-control">
           <option value="">Wybierz</option>
@@ -86,7 +86,7 @@ const PalletCreate = ({ handleCloseModal }: PalletCreateProps) => {
         placeholder={123}
         name="purchase_price"
         register={register('purchase_price')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -96,7 +96,7 @@ const PalletCreate = ({ handleCloseModal }: PalletCreateProps) => {
         placeholder="Konsole"
         name="purchase_date"
         register={register('purchase_date')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
@@ -107,7 +107,7 @@ const PalletCreate = ({ handleCloseModal }: PalletCreateProps) => {
         placeholder="Konsole"
         name="delivery_date"
         register={register('delivery_date')}
-        classLabel="font-xs col-5 mt-3"
+        classLabel="font-xs col-12 col-sm-5 mt-3"
         classInput="form-control"
         classError="font-13 text-danger"
         errors={errors}
