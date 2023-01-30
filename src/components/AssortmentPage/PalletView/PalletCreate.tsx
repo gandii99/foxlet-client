@@ -39,7 +39,8 @@ const PalletCreate = ({ handleCloseModal }: PalletCreateProps) => {
 
   const { mutate: createPallet, isLoading: isCreatePalletLoading } =
     useCreatePalletsMutation(() => {
-      handleCloseModal(), onSuccess('Paleta została utworzona');
+      handleCloseModal();
+      onSuccess('Paleta została utworzona');
     });
   const { data: mySuppliers, isSuccess: isGetMySuppliersSuccess } =
     useGetMySuppliersQuery();
