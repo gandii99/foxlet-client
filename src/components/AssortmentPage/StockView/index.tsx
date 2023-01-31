@@ -33,6 +33,7 @@ export interface ProductToCart {
   price: number;
   quantity_in_stock: number;
   image?: string;
+  product: ProductType;
 }
 
 const StockView = () => {
@@ -198,11 +199,11 @@ const StockView = () => {
                   <div className="d-flex justify-content-center align-items-center image-product-order">
                     <img
                       className="image-pallet-batch-small p-1 "
-                      src={batch.image || '/images/no-image.svg'}
+                      src={batch.product.image || '/images/no-image.svg'}
                       alt={''}
                     />
                   </div>
-                  <div className="col-5 mx-3">{'Laptop Lenovo ideapad'}</div>
+                  <div className="col-5 mx-3">{batch.product.product_name}</div>
                 </div>
 
                 <div className="d-flex justify-content-start align-items-center col-6">
@@ -224,6 +225,7 @@ const StockView = () => {
                             quantity_in_order: -1,
                             price: batch.price,
                             quantity_in_stock: batch.quantity_in_stock,
+                            product: batch.product,
                           },
                           -1
                         );
@@ -246,6 +248,7 @@ const StockView = () => {
                             quantity_in_order: 1,
                             price: batch.price,
                             quantity_in_stock: batch.quantity_in_stock,
+                            product: batch.product,
                           },
                           1
                         );

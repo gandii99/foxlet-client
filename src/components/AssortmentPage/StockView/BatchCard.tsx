@@ -66,7 +66,7 @@ const BatchCard = ({
                   quantity_in_order: 1,
                   quantity_in_stock: quantity_in_stock,
                   price: selling_price,
-                  image: product.image,
+                  product: product,
                 },
                 1
               );
